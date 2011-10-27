@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
-
+  
+  has_many :repositories, :primary_key => "uid", :foreign_key => "user_uid"
+  
   
   def self.create_with_omniauth(auth)
     create! do |user|
@@ -20,4 +22,11 @@ class User < ActiveRecord::Base
     GitHub.user(self.username)
   end
 
+
+  def save_watched
+    self.api.watched.each do |repo|
+      Repository.create_with_api(repo)
+    end
+  end
+  
 end

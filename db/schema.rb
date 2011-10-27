@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111027063302) do
+ActiveRecord::Schema.define(:version => 20111027194256) do
+
+  create_table "repositories", :force => true do |t|
+    t.string   "uid"
+    t.string   "user_uid"
+    t.string   "name"
+    t.text     "description"
+    t.string   "language"
+    t.integer  "watchers"
+    t.integer  "forks"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "provider"
