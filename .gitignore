@@ -1,0 +1,16 @@
+.bundle
+db/*.sqlite3
+log/*.log
+tmp/**/*
+tmp/*
+.sass-cache
+
+config/database.yml
+config/sendgrid.yml
+config/s3.yml
+config/deploy.rb
+
+Thumbs.db
+.DS_Store
+.sass-cache/*
+
