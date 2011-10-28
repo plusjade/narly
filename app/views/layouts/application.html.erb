@@ -7,18 +7,85 @@
   <%= csrf_meta_tags %>
 <style type="text/css">
 	body {
-		background:#eee;
+		background:#ddd;
 	}
 	.container {
-		background:#fff;
+	}
+	#user_nav {
+		text-align:center;
+		overflow:hidden;
+		margin-bottom:10px;
 	}
 	
-	.repo {
+	#left_pane {
+		float:left;
+		width:40%;
+		height:100%;
 		position:relative;
+	}
+	#right_pane {
+		float:right;
+		width:60%;
+		position:relative;
+	}
+	
+
+	#tag_container {
+		clear:right;
+		background: #EEE;
+		padding: 10px;
+		overflow:hidden;
+		margin-bottom:8px;
+		height:100%;
+	}
+	
+	#tag_container a {
+		display: block;
+		padding: 5px 10px;
+		float: right;
+		clear:right;
+		background: #333;
+		color: #EEE;
+		border-radius: 3px;
+		margin: 2px;
+	}
+	
+	#left_pane .header, #right_pane .header {
+		background:#eee;
+		border-radius:5px 5px 0 0;
+		width:50%;
+		padding:5px 10px;
+	}
+	
+	#left_pane .header {
+		float:right;
+		text-align:right;
+	}
+	
+	#repo-container {
+		padding:10px;
+		text-align:center;
+		background:#eee;
+		overflow:hidden;
+	}
+	#user_nav img {
+		float:right;
+		width:40px;
+		height:40px;
+		padding:2px;
+		margin:2px;
+		border:1px solid #ccc;
+	}
+	.repo {
+		float:left;
+		height:120px;
+		width:200px;
+		overflow:hidden;
 		padding:5px;
 		margin:5px;
 		border:1px solid #ccc;
 		background:#FFF;
+		text-align:left;
 	}
 	.repo img {
 		float:left;
@@ -29,9 +96,14 @@
 		margin-right:10px;
 		border:1px solid #ccc;
 	}
-	.repo .meta {
+	.repo p {
 		clear:both;
-		float:right;
+	}
+	.repo .meta {
+
+	}
+	#footer {
+		clear:both;
 	}
 </style>
 </head>
@@ -39,8 +111,23 @@
 
 
 <div class="container">
-	<%= yield %>
+	<div id="user_nav">
+	  <% if current_user %>
+			<%= image_tag current_user.avatar_url %>
+	    Welcome, <%= link_to current_user.username, current_user.github_url %>!
+
+			<%= link_to "Sign Out", signout_path %>
+	  <% else %>
+	    <%= link_to "Sign in with Github", "/auth/github" %>
+	  <% end %>
+	</div>
+	
 </div>
 
+<%= yield %>
+
+<div id="footer">
+	&#160;
+</div>
 </body>
 </html>
