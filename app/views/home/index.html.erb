@@ -1,25 +1,20 @@
-<% if current_user %>
 
 <div id="left_pane">
 
-	<div class="header">
-		<h3>Tags</h3>
-	</div>
-	
 	<div id="tag_container">
-
+	<% 20.times do %>
+		<% current_user.tags.each do |tag| %>
+			<%= link_to tag, "#" %>
+		<% end %>
+	<% end %>
 	</div>
 
 </div>
 
-<div id="right_pane">
-	<div class="header">
-		<h3>Repositories: #all</h3>
-	</div>
-	
+<div id="right_pane">	
 	<div id="repo-container">
 
-	<% current_user.api.watched.each do |repo| %>
+	<% @user.watched.each do |repo| %>
 		<div class="repo">
 			<%= image_tag repo.owner.login["avatar_url"] %>
 			<span class="name">
@@ -39,5 +34,4 @@
 
 </div>
 	
-<% end %>
 
