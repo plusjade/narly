@@ -1,5 +1,6 @@
 class User
   include DataMapper::Resource
+  include HubWire::User
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
