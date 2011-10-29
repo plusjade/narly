@@ -15,6 +15,24 @@ class User
   has n, :repositories, :child_key => [:user_ghid]
   
   
+  # Overwrite DM finder to try load_from_github on miss
+  # This is so we can save this user behind the scenes.
+  #
+  def self.first(*args)
+    user = super(*args)
+    if user.nil? && (login = args.first[:login])
+      puts "to network!"
+      user = load_from_github(login)
+      user = nil unless user.save
+    end  
+
+    user
+  end
+
+  def self.first!(*args)
+    first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find user with conditions: #{args.first.inspect}") 
+  end
+  
   def self.create_with_omniauth(auth)
     create! do |user|
       user.provider = auth["provider"]
