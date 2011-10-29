@@ -7,32 +7,80 @@
   <%= csrf_meta_tags %>
 <style type="text/css">
 	body {
-		background:#ddd;
+		background:#FAF9F8;
+		
 	}
-	.container {
+	#top {
+		position:fixed;
+		width:100%;
+		height:130px;
+		background:#FFF;
+		z-index:10;
 	}
+	#top_spacer {
+		height:130px;
+	}
+
+	
 	#user_nav {
 		text-align:center;
 		overflow:hidden;
-		margin-bottom:10px;
+		height:50px;
+		border-bottom:1px solid #8BB1C8;
+	}
+	#user_nav img {
+		float:left;
+		width:40px;
+		height:40px;
+		padding:2px;
+		margin:2px;
+		border:1px solid #ccc;
 	}
 	
-	#left_pane {
+	
+	#headers div.tag_header {
 		float:left;
-		width:40%;
+		width:30%;
+	}
+	#headers div.repo_header {
+		float:left;
+		width:70%;
+	}
+	
+	#headers h3 {
+		height:40px;
+		line-height:40px;
+		color:#C70808;
+		padding:0 10px;
+		background:#BED2D9;
+	}
+	
+	#headers  div.repo_header div, #headers div.tag_header div {
+		height:40px;
+		line-height:40px;
+		padding:0 10px;
+	}
+	
+	
+	
+	
+	#tag_pane {
+		float:left;
+		width:30%;
 		height:100%;
 		position:relative;
+		background:#FFF;
 	}
-	#right_pane {
-		float:right;
-		width:60%;
+	
+	#repo_pane {
+		float:left;
+		width:70%;
 		position:relative;
 	}
 	
 
 	#tag_container {
 		clear:right;
-		background: #EEE;
 		padding: 10px;
 		overflow:hidden;
 		margin-bottom:8px;
@@ -42,49 +90,31 @@
 	#tag_container a {
 		display: block;
 		padding: 5px 10px;
-		float: right;
-		clear:right;
+		float: left;
+		clear:left;
 		background: #333;
 		color: #EEE;
 		border-radius: 3px;
 		margin: 2px;
 	}
 	
-	#left_pane .header, #right_pane .header {
-		background:#eee;
-		border-radius:5px 5px 0 0;
-		width:50%;
-		padding:5px 10px;
-	}
-	
-	#left_pane .header {
-		float:right;
-		text-align:right;
-	}
+
 	
 	#repo-container {
 		padding:10px;
 		text-align:center;
-		background:#eee;
 		overflow:hidden;
 	}
-	#user_nav img {
-		float:right;
-		width:40px;
-		height:40px;
-		padding:2px;
-		margin:2px;
-		border:1px solid #ccc;
-	}
+
 	.repo {
 		float:left;
-		height:120px;
+		height:150px;
 		width:200px;
 		overflow:hidden;
 		padding:5px;
 		margin:5px;
-		border:1px solid #ccc;
-		background:#FFF;
+		border:1px solid #EEE9DE;
+		background:#fff;
 		text-align:left;
 	}
 	.repo img {
@@ -110,24 +140,50 @@
 <body>
 
 
-<div class="container">
-	<div id="user_nav">
-	  <% if current_user %>
-			<%= image_tag current_user.avatar_url %>
-	    Welcome, <%= link_to current_user.username, current_user.github_url %>!
+	<div id="top">
+		<div id="user_nav">
+		  <% if current_user %>
+				<%= link_to (image_tag current_user.avatar_url), user_path(current_user.username) %>
+		    Welcome, <%= link_to current_user.username, current_user.github_url %>!
 
-			<%= link_to "Sign Out", signout_path %>
-	  <% else %>
-	    <%= link_to "Sign in with Github", "/auth/github" %>
-	  <% end %>
+				<%= link_to "Sign Out", signout_path %>
+		  <% else %>
+		    <%= link_to "Sign in with Github", "/auth/github" %>
+		  <% end %>
+		</div>
+	
+		<div id="headers">
+		
+			<div class="repo_header">
+				<h3>Repositories</h3> 
+				<div>
+					<strong><%= raw "user:#{@user.username} + tag:watched &#9658;" if @user %></strong>
+					<!--
+						<input type="text" value="<%= "#{@user.username}'s Watched Repos" if @user %>"/>
+					-->
+				</div>
+			</div>
+
+			<div class="tag_header">
+				<h3>Tags</h3> 
+				<div>
+					<strong><%= raw "user:#{@user.username} &#9658;" if @user %></strong>
+					Sort by:
+						<%= link_to "alpha", "#" %>
+							<%= link_to "popular", "#" %>
+				</div>
+			</div>
+		
+		</div>
+	
+	</div>
+	<div id="top_spacer">&#160;</div>
+
+	<%= yield %>
+
+	<div id="footer">
+		&#160;
 	</div>
 	
-</div>
-
-<%= yield %>
-
-<div id="footer">
-	&#160;
-</div>
 </body>
 </html>
