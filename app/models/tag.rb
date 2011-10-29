@@ -10,4 +10,12 @@ class Tag
     "TAG:#{self.name}:#{scope}"
   end
   
+  def repos
+    $redis.smembers redis_key(:repos)
+  end
+  
+  def users
+    $redis.smembers redis_key(:users)
+  end
+  
 end
