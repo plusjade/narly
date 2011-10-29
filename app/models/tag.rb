@@ -7,7 +7,7 @@ class Tag
   end
   
   def redis_key(scope)
-    "USER:#{self.name}:#{scope}"
+    "TAG:#{self.name}:#{scope}"
   end
   
 end
