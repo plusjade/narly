@@ -2,15 +2,16 @@ class User
   include DataMapper::Resource
   
   property :id, Serial
-  property :uid, Integer, :index => true
-  property :provider, String
+  property :ghid, Integer, :unique => true, :required => true
+  property :provider, String, :default => "github"
   property :name, String
-  property :username, String
-  property :login, String, :field => "username" # for the github api
+  property :login, String, :required => true
   property :email, String
-  property :avatar_url, String
+  property :avatar_url, String, :length => 256
   property :created_at, DateTime
   property :updated_at, DateTime
+  
+  has n, :repositories, :child_key => [:user_ghid]
   
   
   def self.create_with_omniauth(auth)
@@ -23,40 +24,7 @@ class User
       user.avatar_url = auth["extra"]["user_hash"]["avatar_url"]
     end
   end
-
-  # gh_user is an instance of GitHub:User
-  def self.create_with_api(gh_user)
-    create! do |user|
-      user.provider = "github"
-      user.uid = gh_user.id
-      user.name = gh_user.name
-      user.username = gh_user.login
-      user.email = gh_user.email
-      user.avatar_url = gh_user.avatar_url
-    end
-  end
-  
-  
-  # get watched repositories for this uer
-  # we want to use hubruby to get the data via github api
-  # but for localhost development let's marshal the data and store it in
-  # redis - i dont want to depend on nor wait for the network.
-  #
-  def watched(refresh=false)
-    str = $redis.get self.redis_key(:marshalled_watched)
-    if str && refresh == false
-      puts "local!"
-      Marshal.load(str)
-    else
-      puts "to network!"
-      data = GitHub.user(self.username).watched
-      data.each {|repo| self.tag_repo("watched", repo.id) }
-
-      $redis.set self.redis_key(:marshalled_watched), Marshal.dump(data)
-      data
-    end
-  end
-  
+    
   # returns array with tag_name, score.
   # ex: ["ruby", "1", "git", "1"] 
   #
@@ -98,20 +66,8 @@ class User
 
   end
   
-  
   def github_url
     "http://github.com/#{self.username}"
-  end
-
-  def api
-    GitHub.user(self.username)
-  end
-
-
-  def save_watched
-    self.api.watched.each do |repo|
-      Repository.create_with_api(repo)
-    end
   end
   
   def redis_key(scope)
