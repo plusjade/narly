@@ -45,6 +45,37 @@ class User < ActiveRecord::Base
     end
   end
   
+  
+  # tag a repo with the given tag name
+  # in code-english: plusjade:uid tags:"mysql" on repo:112 
+  #
+  def tag_repo(tag_name, repo_uid)
+    $redis.multi do
+    # TAGS  
+      #Tag:mysql:users add plusjade.uid
+      $redis.sadd "TAG:#{tag_name.downcase}:users", self.uid 
+
+      #Tag:mysql:repos add 112
+      $redis.sadd "TAG:#{tag_name.downcase}:repos", repo_uid
+
+    # USER  
+      #User:uid:tags add +1:"mysql"
+      $redis.zincrby self.redis_key(:tags), 1, tag_name
+
+      #User:uid:repos add 112
+      $redis.sadd self.redis_key(:repos), repo_uid
+
+    # REPO  
+      #Repo:112:tags  +1:"mysql"
+      $redis.zincrby "REPO:#{repo_uid}:tags", 1, tag_name
+
+      #Repo:112:users add uid
+      $redis.sadd "REPO:#{repo_uid}:users", self.uid
+    end  
+
+  end
+
+  
   def github_url
     "http://github.com/#{self.username}"
   end
