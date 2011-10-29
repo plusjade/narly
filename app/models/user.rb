@@ -45,6 +45,12 @@ class User < ActiveRecord::Base
     end
   end
   
+  # returns array with tag_name, score.
+  # ex: ["ruby", "1", "git", "1"] 
+  #
+  def tags
+    $redis.zrevrange self.redis_key(:tags), 0, -1, :with_scores => true
+  end
   
   # tag a repo with the given tag name
   # in code-english: plusjade:uid tags:"mysql" on repo:112 
@@ -74,7 +80,7 @@ class User < ActiveRecord::Base
     end  
 
   end
-
+  
   
   def github_url
     "http://github.com/#{self.username}"
