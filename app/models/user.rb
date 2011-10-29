@@ -97,4 +97,8 @@ class User < ActiveRecord::Base
     end
   end
   
+  def redis_key(scope)
+    "USER:#{self.uid}:#{scope}"
+  end
+  
 end
