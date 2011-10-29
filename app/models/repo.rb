@@ -50,7 +50,7 @@ class Repo
   
     
   def owner
-    User.find_by_uid(self.owner_uid)
+    User.first(:uid => self.owner_uid)
   end
   
   

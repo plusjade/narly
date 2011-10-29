@@ -1,6 +1,16 @@
-class User < ActiveRecord::Base
+class User
+  include DataMapper::Resource
   
-  has_many :repositories, :primary_key => "uid", :foreign_key => "user_uid"
+  property :id, Serial
+  property :uid, Integer, :index => true
+  property :provider, String
+  property :name, String
+  property :username, String
+  property :login, String, :field => "username" # for the github api
+  property :email, String
+  property :avatar_url, String
+  property :created_at, DateTime
+  property :updated_at, DateTime
   
   
   def self.create_with_omniauth(auth)
