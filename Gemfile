@@ -9,7 +9,7 @@ gem 'mysql2'
 gem 'redis', '2.1.1'
 
 gem 'omniauth'
-gem 'hubruby'
+gem 'httparty'
 
 
 # Gems used only for assets and not required
