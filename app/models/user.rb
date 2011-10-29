@@ -48,8 +48,13 @@ class User < ActiveRecord::Base
   # returns array with tag_name, score.
   # ex: ["ruby", "1", "git", "1"] 
   #
-  def tags
-    $redis.zrevrange self.redis_key(:tags), 0, -1, :with_scores => true
+  def tags(limit=nil)
+    $redis.zrevrange( 
+      self.redis_key(:tags),
+      0, 
+      (limit.to_i.nil? ? -1 : limit.to_i - 1),
+      :with_scores => true
+    )
   end
   
   # tag a repo with the given tag name
