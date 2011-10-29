@@ -1,0 +1,37 @@
+
+<div id="repo_pane">	
+	<div id="repo-container">
+
+	<% @user.watched.each do |repo| %>
+		<div class="repo">
+			<%= link_to (image_tag repo.owner.login["avatar_url"]), user_path(repo.owner.login["login"]) %>
+			<span class="name">
+				<%= repo.owner.login["login"] %> / <%= link_to repo.name, repo.html_url, :target => "_blank"  %>
+			</span>
+			(<%= repo.id %>)
+			<div class="meta">
+				<span class="watchers-forks">&#9678; <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
+			</div>
+			
+			<p><%= repo.description %></p>
+			<p><%= output_tags(Repo.new(repo.id).tags(5)) %></p>
+		</div>
+	<% end %>
+
+	</div>
+
+
+</div>
+
+
+<div id="tag_pane">
+
+	<div id="tag_container">
+		<%= output_tags(@user.tags) %>
+	</div>
+
+</div>
+
+
+	
+
