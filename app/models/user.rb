@@ -17,7 +17,7 @@ class User
   def self.create_with_omniauth(auth)
     create! do |user|
       user.provider = auth["provider"]
-      user.uid = auth["uid"]
+      user.ghid = auth["uid"]
       user.name = auth["user_info"]["name"]
       user.username = auth["user_info"]["nickname"]
       user.email = auth["user_info"]["email"]
@@ -38,40 +38,40 @@ class User
   end
   
   # tag a repo with the given tag name
-  # in code-english: plusjade:uid tags:"mysql" on repo:112 
+  # in code-english: plusjade:ghid tags:"mysql" on repo:112 
   #
-  def tag_repo(tag_name, repo_uid)
+  def tag_repo(tag_name, repo_ghid)
     $redis.multi do
     # TAGS  
-      #Tag:mysql:users add plusjade.uid
-      $redis.sadd "TAG:#{tag_name.downcase}:users", self.uid 
+      #Tag:mysql:users add plusjade.ghid
+      $redis.sadd "TAG:#{tag_name.downcase}:users", self.ghid 
 
       #Tag:mysql:repos add 112
-      $redis.sadd "TAG:#{tag_name.downcase}:repos", repo_uid
+      $redis.sadd "TAG:#{tag_name.downcase}:repos", repo_ghid
 
     # USER  
-      #User:uid:tags add +1:"mysql"
+      #User:ghid:tags add +1:"mysql"
       $redis.zincrby self.redis_key(:tags), 1, tag_name
 
-      #User:uid:repos add 112
-      $redis.sadd self.redis_key(:repos), repo_uid
+      #User:ghid:repos add 112
+      $redis.sadd self.redis_key(:repos), repo_ghid
 
     # REPO  
       #Repo:112:tags  +1:"mysql"
-      $redis.zincrby "REPO:#{repo_uid}:tags", 1, tag_name
+      $redis.zincrby "REPO:#{repo_ghid}:tags", 1, tag_name
 
-      #Repo:112:users add uid
-      $redis.sadd "REPO:#{repo_uid}:users", self.uid
+      #Repo:112:users add ghid
+      $redis.sadd "REPO:#{repo_ghid}:users", self.ghid
     end  
 
   end
   
   def github_url
-    "http://github.com/#{self.username}"
+    "http://github.com/#{self.login}"
   end
   
   def redis_key(scope)
-    "USER:#{self.uid}:#{scope}"
+    "USER:#{self.ghid}:#{scope}"
   end
   
 end
