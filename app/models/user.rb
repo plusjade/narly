@@ -26,6 +26,25 @@ class User < ActiveRecord::Base
     end
   end
   
+  
+  # get watched repositories for this uer
+  # we want to use hubruby to get the data via github api
+  # but for localhost development let's marshal the data and store it in
+  # redis - i dont want to depend on nor wait for the network.
+  #
+  def watched 
+    str = $redis.get self.redis_key(:marshalled_watched)
+    if str
+      puts "local!"
+      Marshal.load(str)
+    else
+      puts "to network!"
+      data = GitHub.user(self.username).watched
+      $redis.set self.redis_key(:marshalled_watched), Marshal.dump(data)
+      data
+    end
+  end
+  
   def github_url
     "http://github.com/#{self.username}"
   end
