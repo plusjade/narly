@@ -1,13 +1,61 @@
 class Repo
-  
-  attr_accessor :uid
+  include HubWire::Repo
 
-  def initialize(uid)
-    @uid = uid
+  attr_accessor :id,
+    :login, 
+    :name, 
+    :html_url, 
+    :watchers, 
+    :forks, 
+    :owner_uid, 
+    :language,
+    :description
+  
+  
+  def initialize(attributes)
+
+    if attributes["owner"]
+      self.owner_uid = attributes["owner"]["id"]
+    end  
+
+    attributes.each do |k, v|
+      if respond_to?("#{k}=")
+        send("#{k}=", v)
+      end
+    end
+    
+    
   end
   
+  # import the repo into our datastore
+  def import
+    repo = get_repo
+    if repo.blank?
+      nil
+    else
+      $redis.set "REPO:#{repo["id"]}", ActiveSupport::JSON.encode(repo)
+      repo
+    end
+  end
+  
+    
+  # find a repo by id
+  def self.find(id)
+    repo = $redis.get "REPO:#{id}"
+    if repo
+      new ActiveSupport::JSON.decode(repo)
+    end
+    
+  end
+  
+    
+  def owner
+    User.find_by_uid(self.owner_uid)
+  end
+  
+  
   def redis_key(scope)
-    "REPO:#{self.uid}:#{scope}"
+    "REPO:#{self.id}:#{scope}"
   end
   
   # returns array with tag_name, score.
