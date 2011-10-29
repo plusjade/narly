@@ -26,11 +26,30 @@
 		
 		USER
 			:{"1"}
-				:tags = [1:"mysql", 3:"ruby"] # tags used by this user and the # of repos tagged related ot this user.
+				:tags = [1:"mysql", 3:"ruby"] # tags used by this user and the # of repos tagged related to this user.
 				:repos = [1,2] # repos watched/owned by this user
 		
 		REPO
 			:{"1"}
 				:tags = [1:"mysql", 3:"ruby"] # tags on this repo (by users) and total count
-				:users = [1,2] # users watching/owning this repo
+				:users = [1,2] # users that have tagged this repo.
+			
+			
+Usage:
+
+plusjade:uid tags:"mysql" on repo:112 
+
+
+
+Tag:mysql:users add plusjade.uid
+Tag:mysql:repos add 112
+
+User:uid:tags add +1:"mysql"
+User:uid:repos add 112
+
+Repo:112:tags  +1:"mysql"
+Repo:112:users add uid
+
+
+
 			
