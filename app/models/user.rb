@@ -40,6 +40,8 @@ class User < ActiveRecord::Base
     else
       puts "to network!"
       data = GitHub.user(self.username).watched
+      data.each {|repo| self.tag_repo("watched", repo.id) }
+
       $redis.set self.redis_key(:marshalled_watched), Marshal.dump(data)
       data
     end
