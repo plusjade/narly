@@ -14,6 +14,18 @@ class User < ActiveRecord::Base
     end
   end
 
+  # gh_user is an instance of GitHub:User
+  def self.create_with_api(gh_user)
+    create! do |user|
+      user.provider = "github"
+      user.uid = gh_user.id
+      user.name = gh_user.name
+      user.username = gh_user.login
+      user.email = gh_user.email
+      user.avatar_url = gh_user.avatar_url
+    end
+  end
+  
   def github_url
     "http://github.com/#{self.username}"
   end
