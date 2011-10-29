@@ -32,9 +32,9 @@ class User < ActiveRecord::Base
   # but for localhost development let's marshal the data and store it in
   # redis - i dont want to depend on nor wait for the network.
   #
-  def watched 
+  def watched(refresh=false)
     str = $redis.get self.redis_key(:marshalled_watched)
-    if str
+    if str && refresh == false
       puts "local!"
       Marshal.load(str)
     else
