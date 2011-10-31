@@ -1,6 +1,7 @@
 class User
   include DataMapper::Resource
-  include HubWire::User
+  include HubWire
+  githubify :type => "user"
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
