@@ -44,6 +44,13 @@ class User
       user.avatar_url = auth["extra"]["user_hash"]["avatar_url"]
     end
   end
+  
+  # Get a count of repos tagged with given tag by the given user
+  # Tag is a single Tag instance
+  #
+  def repos_count(tag)
+    (tag.is_a?(Tag) ? ($redis.zscore self.redis_key(:tags), tag.name) : 0).to_i
+  end
     
   # returns array with tag_name, score.
   # ex: ["ruby", "1", "git", "1"] 
