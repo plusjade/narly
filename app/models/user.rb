@@ -57,12 +57,7 @@ class User
     # So we load the user's watched repos from github but only in this default case.
     #
     if (ghids.blank? && tags.count == 1 && tags.first.name == "watched")
-      HubWire::DSL.watched(self.login).each do |repo|
-        dm_repo = Repository.new_from_github_hash(repo)
-        dm_repo.save
-        self.tag_repo(tags.first.name, dm_repo.ghid)
-        ghids << dm_repo.ghid
-      end
+      ghids = self.import_watched
     end
       
     Repository.all(:ghid => ghids)
@@ -132,6 +127,17 @@ class User
   
   def redis_key_for_tag_repos(tag)
     "#{redis_key(:tag)}:#{tag}:repos"
+  end
+  
+  # Import watched repos from github.
+  # Returns an array of ghids for the imported repos.
+  def import_watched
+    HubWire::DSL.watched(self.login).map do |repo|
+      Repository.new_from_github_hash(repo).save
+      self.tag_repo("watched", repo["id"])
+
+      repo["id"]
+    end
   end
   
 end
