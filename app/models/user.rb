@@ -4,6 +4,7 @@ class User
   include TagSystem
   
   githubify :type => "user"
+  define_tag_strategy :namespace => "USER", :scope_by_field => :ghid
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
@@ -51,7 +52,7 @@ class User
   # tags is a single or an array of Tag instances
   def repos(tags)
     tags = Array(tags)
-    keys = tags.map { |tag| self.redis_key_for_tag_repos(tag.name) }
+    keys = tags.map { |tag| self.storage_key_for_tag_repos(tag.name) }
     ghids = $redis.send(:sinter, *keys)
     
     # The default repo search should be via the "watched" tag.
@@ -69,7 +70,7 @@ class User
   # Tag is a single Tag instance
   #
   def repos_count(tag)
-    (tag.is_a?(Tag) ? ($redis.zscore self.redis_key(:tags), tag.name) : 0).to_i
+    (tag.is_a?(Tag) ? ($redis.zscore self.storage_key(:tags), tag.name) : 0).to_i
   end
     
   # returns array with tag_name, score.
@@ -77,7 +78,7 @@ class User
   #
   def tags(limit=nil)
     $redis.zrevrange( 
-      self.redis_key(:tags),
+      self.storage_key(:tags),
       0, 
       (limit.to_i.nil? ? -1 : limit.to_i - 1),
       :with_scores => true
@@ -95,12 +96,9 @@ class User
     "http://github.com/#{self.login}"
   end
   
-  def redis_key(scope)
-    "USER:#{self.ghid}:#{scope}"
-  end
   
-  def redis_key_for_tag_repos(tag)
-    "#{redis_key(:tag)}:#{tag}:repos"
+  def storage_key_for_tag_repos(tag)
+    storage_key(:tag, tag, :repos)
   end
   
   # Import watched repos from github.

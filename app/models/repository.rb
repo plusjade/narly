@@ -4,6 +4,7 @@ class Repository
   include TagSystem
   
   githubify :type => "repo"
+  define_tag_strategy :namespace => "REPO", :scope_by_field => :ghid
   
   property :id, Serial
   property :ghid, Integer, :unique => true
@@ -33,7 +34,7 @@ class Repository
   #
   def tags(limit=nil)
     $redis.zrevrange( 
-      self.redis_key(:tags),
+      self.storage_key(:tags),
       0, 
       (limit.to_i.nil? ? -1 : limit.to_i - 1),
       :with_scores => true
@@ -41,15 +42,11 @@ class Repository
   end
   
   def users
-    $redis.smembers redis_key(:users)
+    $redis.smembers storage_key(:users)
   end
     
   def html_url
     "http://github.com/#{self.login}/#{self.name}"
   end
   
-  def redis_key(scope)
-    "REPO:#{self.ghid}:#{scope}"
-  end
-
 end
