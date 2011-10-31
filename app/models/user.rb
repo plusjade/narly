@@ -59,6 +59,9 @@ class User
   
   # tag a repo with the given tag name
   # in code-english: plusjade:ghid tags:"mysql" on repo:112 
+  # TODO: 
+  #  only increment counters is tag-repo doesn't exist.
+  #  use Tag instance rather than a string.
   #
   def tag_repo(tag_name, repo_ghid)
     $redis.multi do
@@ -75,7 +78,10 @@ class User
 
       #User:ghid:repos add 112
       $redis.sadd self.redis_key(:repos), repo_ghid
-
+      
+      #USER:ghid:tag:"mysql" add 112
+      $redis.sadd self.redis_key_for_tag_repos(tag_name), repo_ghid
+      
     # REPO  
       #Repo:112:tags  +1:"mysql"
       $redis.zincrby "REPO:#{repo_ghid}:tags", 1, tag_name
@@ -92,6 +98,10 @@ class User
   
   def redis_key(scope)
     "USER:#{self.ghid}:#{scope}"
+  end
+  
+  def redis_key_for_tag_repos(tag)
+    "#{redis_key(:tag)}:#{tag}:repos"
   end
   
 end
