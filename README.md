@@ -12,13 +12,6 @@
 
 ## 3 kinds of objects right now.
 
-
-- TAG 
-- USER 
-- REPO
-
-
-
     TAG
 			:{"mysql"}
 				:users = [1,2]  # all users that are using the tag "mysql"
@@ -38,7 +31,7 @@
 				:users = [1,2] # all users that have tagged this repo.
 			
 			
-Usage:
+## Usage
 
 plusjade:uid tags:"mysql" on repo:112 
 
