@@ -1,6 +1,7 @@
 class Repository
   include DataMapper::Resource
-  include HubWire::Repo
+  include HubWire
+  githubify :type => "repo"
   
   property :id, Serial
   property :ghid, Integer, :unique => true
