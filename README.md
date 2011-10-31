@@ -21,18 +21,21 @@
 
     TAG
 			:{"mysql"}
-				:users = [1,2]  # users that are using the tag "mysql"
-				:repos = [1,2]  # repos tagged "mysql"
+				:users = [1,2]  # all users that are using the tag "mysql"
+				:repos = [1,2]  # all repos tagged "mysql"
 		
 		USER
 			:{"1"}
-				:tags = [1:"mysql", 3:"ruby"] # tags used by this user and the # of repos tagged related to this user.
-				:repos = [1,2] # repos watched/owned by this user
+				:tags = [1:"mysql", 3:"ruby"] # all tags used by this user and the # of repos tagged related to this user.
+				:repos = [1,2] # all repos tagged by this user
+				:tag
+					:{"mysql"}
+					 	:repos = [1,2] # repos tagged with this tag by this user.
 		
 		REPO
 			:{"1"}
-				:tags = [1:"mysql", 3:"ruby"] # tags on this repo (by users) and total count
-				:users = [1,2] # users that have tagged this repo.
+				:tags = [1:"mysql", 3:"ruby"] # all tags on this repo (by users) and total count
+				:users = [1,2] # all users that have tagged this repo.
 			
 			
 Usage:
