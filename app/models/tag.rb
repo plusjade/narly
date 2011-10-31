@@ -1,5 +1,5 @@
 class Tag
-  
+  include TagSystem
   attr_accessor :name
 
   BlackList = /[^a-z 0-9 + # - .]/
@@ -7,6 +7,10 @@ class Tag
   def initialize(name)
     self.name = name.to_s.downcase.gsub(BlackList, "")
     raise "tag cant be blank" if self.name.blank?
+  end
+  
+  def tag_by_user_repo(user, repo)
+    make_tag_associations(user, repo, self)
   end
   
   def redis_key(scope)
@@ -33,5 +37,5 @@ class Tag
   def self.to_tag_string(tags)
     Array(tags).map! { |tag| tag.name }.join(":")
   end
-  
+    
 end

@@ -1,6 +1,8 @@
 class Repository
   include DataMapper::Resource
   include HubWire
+  include TagSystem
+  
   githubify :type => "repo"
   
   property :id, Serial
@@ -22,6 +24,10 @@ class Repository
     :child_key => [:user_ghid]
 
 
+  def tag_by_user(user, tag)
+    make_tag_associations(user, self, tag)
+  end
+    
   # returns array with tag_name, score.
   # ex: ["ruby", "1", "git", "1"] 
   #
@@ -37,7 +43,7 @@ class Repository
   def users
     $redis.smembers redis_key(:users)
   end
-  
+    
   def html_url
     "http://github.com/#{self.login}/#{self.name}"
   end
@@ -45,4 +51,5 @@ class Repository
   def redis_key(scope)
     "REPO:#{self.ghid}:#{scope}"
   end
+
 end
