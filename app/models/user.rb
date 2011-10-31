@@ -45,6 +45,29 @@ class User
     end
   end
   
+  # Get repos tagged by this user.
+  # tags is a single or an array of Tag instances
+  def repos(tags)
+    tags = Array(tags)
+    keys = tags.map { |tag| self.redis_key_for_tag_repos(tag.name) }
+    ghids = $redis.send(:sinter, *keys)
+    
+    # The default repo search should be via the "watched" tag.
+    # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
+    # So we load the user's watched repos from github but only in this default case.
+    #
+    if (ghids.blank? && tags.count == 1 && tags.first.name == "watched")
+      HubWire::DSL.watched(self.login).each do |repo|
+        dm_repo = Repository.new_from_github_hash(repo)
+        dm_repo.save
+        self.tag_repo(tags.first.name, dm_repo.ghid)
+        ghids << dm_repo.ghid
+      end
+    end
+      
+    Repository.all(:ghid => ghids)
+  end
+  
   # Get a count of repos tagged with given tag by the given user
   # Tag is a single Tag instance
   #
