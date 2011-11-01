@@ -16,7 +16,7 @@ module TagSystem
   def add_tag_associations(user, repo, tag)
     user = (user.is_a? User)       ? user : User.first(:ghid => user.to_i)
     repo = (repo.is_a? Repository) ? repo : Repository.new(:ghid => repo.to_i)
-    tag  = (tag.is_a? Tag)         ? tag  : Tag.new(tag)
+    tag  = (tag.is_a? Tag)         ? tag  : Tag.new(:name => tag)
 
     # Add REPO to the USER'S total REPO collection relative to TAG
     is_new_tag_on_repo_for_user = ($redis.sadd user.storage_key_for_tag_repos(tag.name), repo.ghid)
@@ -56,7 +56,7 @@ module TagSystem
   def remove_tag_associations(user, repo, tag)
     user = (user.is_a? User)       ? user : User.first(:ghid => user.to_i)
     repo = (repo.is_a? Repository) ? repo : Repository.new(:ghid => repo.to_i)
-    tag  = (tag.is_a? Tag)         ? tag  : Tag.new(tag)
+    tag  = (tag.is_a? Tag)         ? tag  : Tag.new(:name => tag)
 
     # Remove REPO from the USER'S total REPO collection relative to TAG
     was_removed_tag_on_repo_for_user = ($redis.srem user.storage_key_for_tag_repos(tag.name), repo.ghid)
@@ -102,6 +102,18 @@ module TagSystem
     }.join(StorageDeliminator)
   end
 
+  
+  # returns array with tag_name, score.
+  # ex: ["ruby", "1", "git", "1"] 
+  #
+  def tags_data(limit=nil)
+    $redis.zrevrange( 
+      self.storage_key(:tags),
+      0, 
+      (limit.to_i.nil? ? -1 : limit.to_i - 1),
+      :with_scores => true
+    )
+  end
   
   module ClassMethods
     

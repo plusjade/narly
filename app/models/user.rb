@@ -72,17 +72,9 @@ class User
   def repos_count(tag)
     (tag.is_a?(Tag) ? ($redis.zscore self.storage_key(:tags), tag.name) : 0).to_i
   end
-    
-  # returns array with tag_name, score.
-  # ex: ["ruby", "1", "git", "1"] 
-  #
+  
   def tags(limit=nil)
-    $redis.zrevrange( 
-      self.storage_key(:tags),
-      0, 
-      (limit.to_i.nil? ? -1 : limit.to_i - 1),
-      :with_scores => true
-    )
+    Tag.new_from_tags_data(tags_data(limit))
   end
   
   # Tag a repo with the given tag

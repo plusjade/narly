@@ -32,19 +32,11 @@ class Repository
   def untag_by_user(user, tag)
     remove_tag_associations(user, self, tag)
   end  
-    
-  # returns array with tag_name, score.
-  # ex: ["ruby", "1", "git", "1"] 
-  #
-  def tags(limit=nil)
-    $redis.zrevrange( 
-      self.storage_key(:tags),
-      0, 
-      (limit.to_i.nil? ? -1 : limit.to_i - 1),
-      :with_scores => true
-    )
-  end
   
+  def tags(limit=nil)
+    Tag.new_from_tags_data(tags_data(limit))
+  end
+      
   def users
     $redis.smembers storage_key(:users)
   end
