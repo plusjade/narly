@@ -169,9 +169,23 @@
 		border-radius:2px;
 		text-decoration:none;
 	}
+	
+	.users_container img {
+		
+	}
+	
+	img.thumb {
+		width:40px;
+		height:40px;
+		padding:2px;
+		margin:2px;
+		border:1px solid #ccc;
+	}
+		
 	#footer {
 		clear:both;
 	}
+	
 </style>
 </head>
 <body>
@@ -190,27 +204,7 @@
 		</div>
 	
 		<div id="headers">
-		
-			<div class="repo_header">
-				<h3>Repositories</h3> 
-				<div class="filters">
-					<%= (image_tag(@owner.avatar_url)) %> 
-					<div>
-						<%= raw "user:#{@owner.login} + #{format_tags(@tag_filters)} &#9658;" %>
-					</div>
-				</div>
-			</div>
-
-			<div class="tag_header">
-				<h3>Tags</h3> 
-				<div>
-					<strong><%= raw "user:#{@owner.login} &#9658;" if @owner %></strong>
-					Sort by:
-						<%= link_to "alpha", "#" %>
-							<%= link_to "popular", "#" %>
-				</div>
-			</div>
-		
+			<%= yield :headers %>
 		</div>
 	
 	</div>

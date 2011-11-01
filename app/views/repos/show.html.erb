@@ -1,0 +1,86 @@
+<% content_for :headers do %>
+
+<div class="repo_header">
+	<h3>Repository</h3> 
+	<div class="filters">
+		<%= (image_tag(@owner.avatar_url)) %> 
+		<div>
+			<%= raw "user:#{@owner.login} / repo:#{@repo.name}" %>
+		</div>
+	</div>
+</div>
+
+<div class="tag_header">
+	<h3>Tags</h3> 
+	<div>
+		<strong><%= raw "user:#{@owner.login} &#9658;" if @owner %></strong>
+	</div>
+</div>
+
+<% end %>
+<div id="repo_pane">
+	<div id="repository_container">
+		
+		<h2 class="title">
+			<%= link_to (image_tag @owner.avatar_url, :class => "thumb"), user_path(@owner.login) %>  
+			<span><%= "#{@owner.login}/#{@repo.name}" %></span>
+		</h2>
+		<div class="repo_outline">
+			<p style="font-weight:bold">
+				<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
+			</p>
+			<p><%= @repo.description %></p>
+			<p>is fork?: <%= @repo.fork ? "yes" : "no" %></p>
+			<p>Language: <%= @repo.language %></p>
+			<p>Forks: <%= @repo.forks %></p>
+		</div>
+		
+		<h2>Tags</h2>
+
+		<div id="tag_container">
+			<% @repo.tags.each do |tag| %>
+				<%= link_to "#{tag.relative_count}-#{tag.name}", "#{user_path(@owner.login)}?tags=#{tag.name}" %>
+			<% end %>
+		</div>
+	
+	
+		<h2>Tagged By</h2>
+
+		<div id="users_container">
+			<% @repo.users.each do |user| %>
+			<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
+			<% end %>
+		</div>	
+	
+	</div>
+</div>
+
+
+<style type="text/css">
+	#repository_container {
+		padding:20px;
+	}
+	#repository_container h2.title {
+		position:relative;
+		line-height:50px;
+	}
+	#repository_container h2.title img {
+		position:absolute;
+		top:0;
+	}
+	#repository_container h2.title span {
+		position:relative;
+		left:55px;
+	}
+	
+	.repo_outline , #tag_container, #users_container {
+		padding:10px 20px;
+	}
+	
+	#tag_container a {
+		float:left;
+		clear:none;
+		margin-right:10px;
+	}
+	
+</style>
