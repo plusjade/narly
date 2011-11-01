@@ -29,6 +29,10 @@ class Repository
     make_tag_associations(user, self, tag)
   end
     
+  def untag_by_user(user, tag)
+    remove_tag_associations(user, self, tag)
+  end  
+    
   # returns array with tag_name, score.
   # ex: ["ruby", "1", "git", "1"] 
   #

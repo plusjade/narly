@@ -92,6 +92,10 @@ class User
     make_tag_associations(self, repo, tag)
   end
   
+  def untag_repo(repo, tag)
+    remove_tag_associations(self, repo, tag)
+  end
+  
   def github_url
     "http://github.com/#{self.login}"
   end

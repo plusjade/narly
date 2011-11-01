@@ -14,6 +14,10 @@ class Tag
     make_tag_associations(user, repo, self)
   end
     
+  def untag_by_user_repo(user, repo)
+    remove_tag_associations(user, repo, self)
+  end
+    
   def repos
     $redis.smembers storage_key(:repos)
   end
