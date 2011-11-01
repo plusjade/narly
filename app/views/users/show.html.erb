@@ -2,24 +2,27 @@
 <div id="repo_pane">	
 	<div id="repo-container">
 
-	<% @user.watched.each do |repo| %>
+	<% @repos.each do |repo| %>
 		<div class="repo">
-			<%= link_to (image_tag repo.owner.login["avatar_url"]), user_path(repo.owner.login["login"]) %>
+			<%= link_to (image_tag repo.owner.avatar_url), user_path(repo.owner.login) %>
 			<span class="name">
-				<%= repo.owner.login["login"] %> / <%= link_to repo.name, repo.html_url, :target => "_blank"  %>
+				<%= repo.owner.login %> / <%= link_to repo.name, repo.html_url, :target => "_blank"  %>
 			</span>
-			(<%= repo.id %>)
+			(<%= repo.ghid %>)
 			<div class="meta">
 				<span class="watchers-forks">&#9678; <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
 			</div>
 			
 			<p><%= repo.description %></p>
-			<p><%= output_tags(Repo.new(repo.id).tags(5)) %></p>
+			<p class="tags">
+				<% repo.tags(5).each do |tag| %>
+					<%= link_to "#{tag.relative_count}-#{tag.name}", "/?tags=#{tag.name}" %>
+				<% end %>				
+			</p>
 		</div>
 	<% end %>
 
 	</div>
-
 
 </div>
 
@@ -27,11 +30,11 @@
 <div id="tag_pane">
 
 	<div id="tag_container">
-		<%= output_tags(@user.tags) %>
+		<% @tags.each do |tag| %>
+			<%= link_to "#{tag.relative_count}-#{tag.name}", "#{user_path(@owner.login)}?tags=#{tag.name}" %>
+		<% end %>
 	</div>
 
 </div>
 
-
-	
 

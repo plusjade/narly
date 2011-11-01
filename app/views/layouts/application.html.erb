@@ -45,8 +45,37 @@
 	#headers div.repo_header {
 		float:left;
 		width:70%;
+		background:#FDE8B0;
+		border-radius:0 0 5px 0;
 	}
 	
+	div.repo_header .filters {
+		font-weight:bold;
+		position:relative;
+	}
+	
+	div.repo_header .filters div {
+		position:absolute;
+		top:0;
+		left:65px;
+	}
+	div.repo_header .filters span{
+		padding:2px 8px;
+		background:#57A957;
+		border:1px solid #4C964D;
+		border-radius:3px;
+		color:#FFF;
+		cursor:pointer;
+	}
+	div.repo_header .filters img{
+		position:absolute;
+		top:0;
+		height:45px;
+		width:45px;
+		border:1px solid #B2A37C;
+		background:#FDE8B0;
+		padding:1px;
+	}	
 	#headers h3 {
 		height:40px;
 		line-height:40px;
@@ -132,6 +161,14 @@
 	.repo .meta {
 
 	}
+	.repo .tags a{
+		margin-right:4px;
+		padding:2px 6px;
+		background:#eee;
+		border:1px solid #ddd;
+		border-radius:2px;
+		text-decoration:none;
+	}
 	#footer {
 		clear:both;
 	}
@@ -143,8 +180,8 @@
 	<div id="top">
 		<div id="user_nav">
 		  <% if current_user %>
-				<%= link_to (image_tag current_user.avatar_url), user_path(current_user.username) %>
-		    Welcome, <%= link_to current_user.username, current_user.github_url %>!
+				<%= link_to (image_tag current_user.avatar_url), user_path(current_user.login) %>
+		    Welcome, <%= link_to current_user.login, current_user.github_url %>!
 
 				<%= link_to "Sign Out", signout_path %>
 		  <% else %>
@@ -156,18 +193,18 @@
 		
 			<div class="repo_header">
 				<h3>Repositories</h3> 
-				<div>
-					<strong><%= raw "user:#{@user.username} + tag:watched &#9658;" if @user %></strong>
-					<!--
-						<input type="text" value="<%= "#{@user.username}'s Watched Repos" if @user %>"/>
-					-->
+				<div class="filters">
+					<%= (image_tag(@owner.avatar_url)) %> 
+					<div>
+						<%= raw "user:#{@owner.login} + #{format_tags(@tag_filters)} &#9658;" %>
+					</div>
 				</div>
 			</div>
 
 			<div class="tag_header">
 				<h3>Tags</h3> 
 				<div>
-					<strong><%= raw "user:#{@user.username} &#9658;" if @user %></strong>
+					<strong><%= raw "user:#{@owner.login} &#9658;" if @owner %></strong>
 					Sort by:
 						<%= link_to "alpha", "#" %>
 							<%= link_to "popular", "#" %>

@@ -1,19 +1,14 @@
 class UsersController < ApplicationController
 
   def show
-    params[:username] ||= "plusjade"
-    @user = User.find_by_username(params[:username])
+    @owner = User.first!(:login => params[:login])
     
-    unless @user
-      user = GitHub.user(params[:username])
+    @tag_filters = Tag.new_from_tag_string(params[:tags])
+    @tag_filters = [Tag.new(:name => "watched")] if @tag_filters.blank?
+    @repos = @owner.repos(@tag_filters)
 
-      # a nil message means the object exists.
-      if user.message.nil?
-        @user = User.create_with_api(user)
-      end
-    end
-    
-    raise ActiveRecord::RecordNotFound unless @user
+    # get these last in case the owner.repos call spawns defaults
+    @tags = @owner.tags
   end
   
 end
