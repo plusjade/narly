@@ -27,11 +27,11 @@ class Tag
   end
     
   def repos
-    $redis.smembers storage_key(:repos)
+    Repository.all(:ghid => Array($redis.smembers storage_key(:repos)))
   end
   
   def users
-    $redis.smembers storage_key(:users)
+    User.all(:ghid => Array($redis.smembers storage_key(:users)))
   end
   
   def self.new_from_tag_string(tag_string)

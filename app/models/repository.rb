@@ -38,7 +38,7 @@ class Repository
   end
       
   def users
-    $redis.smembers storage_key(:users)
+    User.all(:ghid => Array($redis.smembers storage_key(:users)))
   end
     
   def html_url
