@@ -15,8 +15,7 @@ module HubWire
     #
     def githubify(opts={})
       opts[:type] ||= "user"
-
-      self.github_object_type = opts[:type].to_s
+      self.github_object_type = opts[:type].to_s.downcase
     end
     
     
