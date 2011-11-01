@@ -26,7 +26,7 @@ class User
     user = super(*args)
     if user.nil? && (login = args.first[:login])
       puts "to network!"
-      user = load_from_github(login)
+      user = new_from_github(login)
       user = nil unless user.save
     end  
 
