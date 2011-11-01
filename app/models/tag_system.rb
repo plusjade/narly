@@ -32,7 +32,7 @@ module TagSystem
       $redis.sadd tag.storage_key(:users), user.ghid
 
       # Add REPO to the TAG's total REPO collection.
-      $redis.sadd tag.storage_key(:repo), repo.ghid
+      $redis.sadd tag.storage_key(:repos), repo.ghid
       
       if is_new_tag_on_repo_for_user
         # Increment the USER's TAG count for TAG
@@ -72,7 +72,7 @@ module TagSystem
       $redis.srem tag.storage_key(:users), user.ghid
 
       # Remove REPO from the TAG's total REPO collection.
-      $redis.srem tag.storage_key(:repo), repo.ghid
+      $redis.srem tag.storage_key(:repos), repo.ghid
     end
     
     if was_removed_tag_on_repo_for_user
