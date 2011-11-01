@@ -11,7 +11,7 @@ class Tag
   end
   
   def tag_by_user_repo(user, repo)
-    make_tag_associations(user, repo, self)
+    add_tag_associations(user, repo, self)
   end
     
   def untag_by_user_repo(user, repo)

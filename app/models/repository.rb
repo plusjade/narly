@@ -26,7 +26,7 @@ class Repository
 
 
   def tag_by_user(user, tag)
-    make_tag_associations(user, self, tag)
+    add_tag_associations(user, self, tag)
   end
     
   def untag_by_user(user, tag)

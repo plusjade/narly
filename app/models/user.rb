@@ -89,7 +89,7 @@ class User
   # tag is a Tag instance.
   #
   def tag_repo(repo, tag)
-    make_tag_associations(self, repo, tag)
+    add_tag_associations(self, repo, tag)
   end
   
   def untag_repo(repo, tag)

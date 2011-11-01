@@ -13,7 +13,7 @@ module TagSystem
   #   $redis.sadd returns bool for singular value additions.
   #   Bool value reflects whether the insertion was newly added.
   #
-  def make_tag_associations(user, repo, tag)
+  def add_tag_associations(user, repo, tag)
     user = (user.is_a? User)       ? user : User.first(:ghid => user.to_i)
     repo = (repo.is_a? Repository) ? repo : Repository.new(:ghid => repo.to_i)
     tag  = (tag.is_a? Tag)         ? tag  : Tag.new(tag)
