@@ -121,7 +121,12 @@ module HubWire
     private
 
     def self.json(path)
-      HTTParty.get('https://api.github.com' << path).parsed_response
+      data = HTTParty.get('https://api.github.com' << path).parsed_response
+      if data.is_a?(Array)
+        data
+      else
+        data["message"].blank? ? data : {}
+      end
     end
 
   end # DSL
