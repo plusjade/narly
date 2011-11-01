@@ -59,6 +59,17 @@ class Repository
     User.all(:ghid => Array($redis.smembers storage_key(:users)))
   end
     
+  # What repos share this repo's top 3 tags.
+  # Ideally we want what repos share the top 3 tags in *their* top n tags
+  # but that's kind of hard right now.
+  #
+  def similar_repos
+    keys = tags(3).map {|tag| tag.storage_key(:repos) }
+    ghids = $redis.send(:sinter, *keys)
+    ghids.delete(self.ghid.to_s)
+    Repository.all(:ghid => ghids)
+  end
+    
   def html_url
     "http://github.com/#{self.login}/#{self.name}"
   end
