@@ -50,7 +50,7 @@ class User
   
   # Get repos tagged by this user.
   # tags is a single or an array of Tag instances
-  def repos(tags, limit = nil)
+  def repos_by_tags(tags, limit = nil)
     tags = Array(tags)
     keys = tags.map { |tag| self.storage_key_for_tag_repos(tag.name) }
     ghids = $redis.send(:sinter, *keys)
