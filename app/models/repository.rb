@@ -84,9 +84,13 @@ class Repository
       ghids.index(x.id) <=> ghids.index(y.id)
     }
   end
+  
+  def full_name
+    "#{self.login}/#{self.name}"
+  end
     
   def html_url
-    "http://github.com/#{self.login}/#{self.name}"
+    "http://github.com/#{self.full_name}"
   end
   
 end
