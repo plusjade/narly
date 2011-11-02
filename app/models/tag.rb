@@ -40,6 +40,19 @@ class Tag
     end
   end
   
+  def self.repos(tags)
+    tags = case tags
+    when String
+      new_from_tag_string(tags)
+    else
+      Array(tags)
+    end
+    
+    keys = tags.map { |tag| tag.storage_key(:repos) }
+    ghids = $redis.send(:sinter, *keys)
+    Repository.all(:ghid => ghids)
+  end
+    
   # tags_data format: 
   #   ["ruby", "1", "git", "1"] 
   #   where scores represent tag count and come directly after their tag.
