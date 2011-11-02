@@ -50,7 +50,7 @@ class User
   
   # Get repos tagged by this user.
   # tags is a single or an array of Tag instances
-  def repos(tags)
+  def repos(tags, limit = nil)
     tags = Array(tags)
     keys = tags.map { |tag| self.storage_key_for_tag_repos(tag.name) }
     ghids = $redis.send(:sinter, *keys)
@@ -62,8 +62,12 @@ class User
     if (ghids.blank? && tags.count == 1 && tags.first.name == "watched")
       ghids = self.import_watched
     end
-      
-    Repository.all(:ghid => ghids)
+    
+    ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
+    
+    Repository.all(:ghid => ghids).sort! { |x,y|
+      ghids.index(x.id) <=> ghids.index(y.id)
+    }
   end
   
   # Get a count of repos tagged with given tag by the given user

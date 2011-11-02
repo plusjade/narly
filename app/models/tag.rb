@@ -20,7 +20,7 @@ class Tag
   
   # Get all Tags
   def self.all(limit=nil)
-    new_from_tags_data(
+    self.new_from_tags_data(
       $redis.zrevrange( 
         "TAGS",
         0, 
@@ -37,22 +37,45 @@ class Tag
   def untag_by_user_repo(user, repo)
     remove_tag_associations(user, repo, self)
   end
+  
+  # Get repos this tag is attached to.
+  #  
+  def repos(limit = nil)
+    ghids = Array($redis.smembers storage_key(:repos))
+    ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
+
+    Repository.all(:ghid => ghids).sort! { |x,y|
+      ghids.index(x.id) <=> ghids.index(y.id)
+    }
+  end
+  
+  # Return an Array of User instances this tag is associated with.
+  # A user is attached to a tag when the user tags a repo with said tag.
+  #
+  def users(limit = nil)
+    ghids = Array($redis.smembers storage_key(:users))
+    ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
     
-  def repos
-    Repository.all(:ghid => Array($redis.smembers storage_key(:repos)))
+    User.all(:ghid => ghids).sort! { |x,y| 
+      ghids.index(x.id) <=> ghids.index(y.id)
+    }
   end
   
-  def users
-    User.all(:ghid => Array($redis.smembers storage_key(:users)))
-  end
-  
+  # Spawn Tag instances from the given tag_string
+  # where tag_string is a String of the format:
+  #   tag1:tag2:tag3:tagN:...
+  # This format is used in the url as paramater
+  #
   def self.new_from_tag_string(tag_string)
     tag_string.to_s.split(":").map do |name|
       new(:name => name)
     end
   end
   
-  def self.repos(tags)
+  # Return an Array of Repository instances associated with the provided tags.
+  # tags can be one or an Array of Tag instances or a tag_string
+  #
+  def self.repos(tags, limit = nil)
     tags = case tags
     when String
       new_from_tag_string(tags)
@@ -62,7 +85,11 @@ class Tag
     
     keys = tags.map { |tag| tag.storage_key(:repos) }
     ghids = $redis.send(:sinter, *keys)
-    Repository.all(:ghid => ghids)
+    ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
+    
+    Repository.all(:ghid => ghids).sort! { |x,y| 
+      ghids.index(x.id) <=> ghids.index(y.id)
+    }
   end
     
   # tags_data format: 
