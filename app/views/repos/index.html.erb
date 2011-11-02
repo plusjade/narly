@@ -1,0 +1,23 @@
+<% content_for :headers do %>
+
+<div class="repo_header">
+	<div id="filters">
+		<div>
+			<%= raw "#{format_tags(@tag_filters)} &#9658;" if @tag_filters %>
+		</div>
+	</div>
+</div>
+
+<div class="tag_header">
+	<div>
+	</div>
+</div>
+
+<% end %>
+
+
+<div id="repo_pane">	
+	<div id="repo_container">
+		<%= render :partial => "repos/repo", :collection => @repos %>
+	</div>
+</div>

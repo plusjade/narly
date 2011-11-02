@@ -1,38 +1,37 @@
 <% content_for :headers do %>
 
 <div class="repo_header">
-	<h3>Repository</h3> 
-	<div class="filters">
-		<%= (image_tag(@owner.avatar_url)) %> 
+	<div id="filters">
+		<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
 		<div>
-			<%= raw "user:#{@owner.login} / repo:#{@repo.name}" %>
+			<%= "#{@owner.login}/#{@repo.name}" %>
 		</div>
 	</div>
 </div>
 
 <div class="tag_header">
-	<h3>Tags</h3> 
 	<div>
-		<strong><%= raw "user:#{@owner.login} &#9658;" if @owner %></strong>
 	</div>
 </div>
 
 <% end %>
+
 <div id="repo_pane">
 	<div id="repository_container">
 		
-		<h2 class="title">
-			<%= link_to (image_tag @owner.avatar_url, :class => "thumb"), user_path(@owner.login) %>  
-			<span><%= "#{@owner.login}/#{@repo.name}" %></span>
-		</h2>
-		<div class="repo_outline">
+		<h2 class="title"><%= "#{@owner.login}/#{@repo.name}" %></h2>
+		
+		<div class="repo_outline boxy">
+		
 			<p style="font-weight:bold">
 				<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
 			</p>
 			<p><%= @repo.description %></p>
-			<p>is fork?: <%= @repo.fork ? "yes" : "no" %></p>
-			<p>Language: <%= @repo.language %></p>
-			<p>Forks: <%= @repo.forks %></p>
+			<ul>
+				<li><strong>is fork?</strong>: <%= @repo.fork ? "yes" : "no" %></li>
+				<li><strong>Language</strong>: <%= @repo.language %></li>
+				<li><strong>Forks</strong>: <%= @repo.forks %></li>
+			</ul>
 		</div>
 		
 		<h2>Tags</h2>
@@ -44,14 +43,23 @@
 		</div>
 	
 	
+		<h2>Similar Repos</h2>
+		<div id="similar_repos_container">
+		<% if @similar_repos.blank? %>
+			None yet =(
+			<br/>Please tag some more repos!
+		<% else %>
+			<%= render :partial => "repos/repo", :collection => @similar_repos %>
+		<% end %>
+		</div>
+		
 		<h2>Tagged By</h2>
 
 		<div id="users_container">
 			<% @repo.users.each do |user| %>
-			<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
+				<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
 			<% end %>
 		</div>	
-	
 	</div>
 </div>
 
@@ -59,6 +67,9 @@
 <style type="text/css">
 	#repository_container {
 		padding:20px;
+	}
+	#repository_container li {
+		color:inherit;
 	}
 	#repository_container h2.title {
 		position:relative;
@@ -73,8 +84,9 @@
 		left:55px;
 	}
 	
-	.repo_outline , #tag_container, #users_container {
+	.repo_outline , #tag_container, #similar_repos_container,  #users_container {
 		padding:10px 20px;
+		overflow:hidden;
 	}
 	
 	#tag_container a {
@@ -83,4 +95,7 @@
 		margin-right:10px;
 	}
 	
+	.boxy {
+		margin-bottom:20px;
+	}
 </style>

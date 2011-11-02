@@ -1,0 +1,22 @@
+<div class="repo">
+	<%= link_to (image_tag repo.owner.avatar_url, :class => "thumb"), user_path(repo.owner.login) %>
+	<span class="name">
+		<%= link_to "#{repo.owner.login}/#{repo.name}", repo_path(repo.owner.login, repo.name), :title => repo.ghid %>
+	</span>
+	
+	<div class="meta">
+		<span class="watchers-forks">&#9678; <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
+	</div>
+	
+	<div class="main">
+		<p class="description" title="<%= repo.description %>">
+			<%= repo.description %>
+		</p>
+		
+		<p class="tags">
+			<% repo.tags(5).each do |tag| %>
+				<%= link_to "#{tag.relative_count}-#{tag.name}", repos_tagged_path(tag.name) %>
+			<% end %>				
+		</p>
+	</div>
+</div>
