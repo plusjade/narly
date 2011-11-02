@@ -11,7 +11,7 @@ html, body {
 	z-index:10;
 }
 #top_spacer {
-	height:96px;
+	height:90px;
 }
 
 /* USER NAV ======================================================== */
@@ -19,7 +19,7 @@ html, body {
 #user_nav {
 	text-align:center;
 	overflow:hidden;
-	height:50px;
+	height:45px;
 	border-bottom:1px solid #222;
 	background:#3B2E2A;
 }
@@ -36,16 +36,15 @@ html, body {
 }
 
 /* HEADERS ======================================================== */
-
-#headers div.tag_header {
-	float:left;
-	width:30%;
-}
-#headers div.repo_header {
+#filters_container {
 	float:left;
 	width:70%;
 	font-size:14px;
 	height:45px;
+}
+#headers div.tag_header {
+	float:left;
+	width:30%;
 }
 
 /* FILTERS ======================================================== */
@@ -96,6 +95,44 @@ html, body {
 	cursor:pointer;
 }
 
+/* TAG PANEL ======================================================== */
+
+#tag_panel_container {
+	display:none;
+	float:left;
+	width:70%;
+	font-size:14px;
+	height:45px;
+}
+#tag_panel {
+	position:relative;
+	line-height:45px;
+	height:45px;
+	margin:0;
+	padding:0 10px;
+	background:#DDF4FB;
+	border:1px solid #C6EDF9;
+	border-radius:0 0 5px 0;
+	font-weight:bold;
+	box-shadow:1px 1px 1px #ccc;
+	text-align:center;
+}
+#tag_panel a:first-child {
+	cursor:default !important;
+}
+#tag_panel_extended {
+	background:#FFF;
+	padding:10px;
+	margin:0 20px;
+	border:1px solid #C6EDF9;
+	border-top:0;
+	border-radius:0 0 5px 5px;
+	box-shadow:1px 1px 1px #ccc;
+}
+#tag_panel_extended a {
+	font-size:12px;
+}
+
 /* TAG HEADER ======================================================== */
 
 div.tag_header div {
@@ -110,6 +147,18 @@ div.tag_header h4 {
 	display:inline;
 	margin-right:6px;
 	color:#C70808;
+}
+
+#tag_panel_container .alert-message p{ 
+	height:40px;
+	font-size:14px;
+	line-height:40px;
+	text-align:center;
+}
+#tag_panel_container a.tag_panel_close { 
+	float:right;
+	position:relative;
+	top:8px;
 }
 
 /* MAIN CONTENT ======================================================== */
@@ -177,19 +226,13 @@ div.tag_header h4 {
 	border-radius: 3px;
 	text-decoration:none;
 }
-.tag_box a:hover {
-	background: #333;
-}
-.tag_box a.selected {
+
+.tag_box a.active {
 	background:#57A957;
 	border:1px solid #4C964D;
 	color:#FFF;
 }
-.tag_box a.selected:hover {
-	background: #555;
-	color: #EEE;
-	border:0;
-}
+
 
 
 /* repo ======================================================== */
@@ -209,6 +252,10 @@ div.tag_header h4 {
 }
 .repo.hover {
 	box-shadow:1px 1px 1px #eee;
+}
+.repo a.add_tag {
+	float:right;
+	font-size:11px;
 }
 
 .repo img {
