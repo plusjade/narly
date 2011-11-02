@@ -11,7 +11,9 @@
 - the user should be able to see/use the most popular tags.
 
 ## 3 kinds of objects right now.
-
+		
+		TAGS = [1:"mysql", 3:"ruby"] # all tags and their total counts from repos.
+		
     TAG
 			:{"mysql"}
 				:users = [1,2]  # all users that are using the tag "mysql"

@@ -41,6 +41,9 @@ module TagSystem
         # Increment the REPO's TAG count for TAG
         $redis.zincrby repo.storage_key(:tags), 1, tag.name
       end
+      
+      # Add TAG to total TAG collection
+      $redis.zincrby "TAGS", 1, tag.name
     end
       
   end
@@ -87,6 +90,10 @@ module TagSystem
       end
     end
       
+    # Decrement TAG count in TAG collection
+    if ($redis.zincrby "TAGS" -1, tag.name).to_i <= 0
+      $redis.zrem "TAGS", tag.name
+    end
   end
   
   

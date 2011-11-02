@@ -18,6 +18,18 @@ class Tag
     raise "tag cant be blank" if self.name.blank?
   end
   
+  # Get all Tags
+  def self.all(limit=nil)
+    new_from_tags_data(
+      $redis.zrevrange( 
+        "TAGS",
+        0, 
+        (limit.to_i.nil? ? -1 : limit.to_i - 1),
+        :with_scores => true
+      )
+    )
+  end
+  
   def tag_by_user_repo(user, repo)
     add_tag_associations(user, repo, self)
   end
