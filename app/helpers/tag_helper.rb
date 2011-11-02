@@ -1,5 +1,18 @@
 module TagHelper
-  
+
+  def link_to_tag(tag, path)
+    (link_to "#{tag.relative_count}-#{tag.name}", path, :class => "tag", :title => tag.name).html_safe
+  end
+    
+  def output_tag_links(tags, inline=false)
+    html = "<ul class=\"tag_box\" #{("inline" if inline)}>"
+    Array(tags).each do |tag|
+      html += "<li>" + (link_to "#{tag.relative_count}-#{tag.name}", repos_tagged_path(tag.name), :class => "tag", :title => tag.name) + "</li>"
+    end
+    html += "</ul>"
+
+    html.html_safe
+  end
   
   # tags come in the format: 
   # ["ruby", "1", "git", "1"] 
