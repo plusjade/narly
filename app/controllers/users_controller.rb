@@ -10,5 +10,24 @@ class UsersController < ApplicationController
     # get these last in case the owner.repos call spawns defaults
     @tags = @owner.tags
   end
+
+  def tag
+    if current_user
+      @repo = Repository.first!(:ghid => params[:repo][:ghid])
+      Tag.new_from_tag_string(params[:tag]).each do |tag|
+        current_user.tag_repo(@repo, tag)
+      end
+      
+      render :json => {
+        :status => "good", 
+        :message => "Repo Tagged!"
+      }
+    else
+      render :json => {
+        :status => "bad", 
+        :message => "Please login"
+      }
+    end
+  end
   
 end
