@@ -1,4 +1,5 @@
 <div class="repo">
+	<%= link_to "+/- tags", "#", :class => "add_tag btn", :rel => repo.ghid, :title => "#{repo.owner.login}/#{repo.name}"  %>
 	<%= link_to (image_tag repo.owner.avatar_url, :class => "thumb"), user_path(repo.owner.login) %>
 	<span class="name">
 		<%= link_to "#{repo.owner.login}/#{repo.name}", repo_path(repo.owner.login, repo.name), :title => repo.ghid %>

@@ -1,12 +1,15 @@
 <% content_for :filters do %>
 	<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
 	<div>
-		<%= "#{@owner.login}/#{@repo.name}" %>
+		<%= @repo.full_name %>
 	</div>
 <% end %>
 
 
-<h2 class="title"><%= "#{@owner.login}/#{@repo.name}" %></h2>
+<h2 class="title">
+	<a href="#" class="add_tag btn success" style="float:right" rel="<%=@repo.ghid %>" title="<%= @repo.full_name %>">+/- tags</a>
+	<%= @repo.full_name %>
+</h2>
 
 <div class="repo_outline boxy">
 
