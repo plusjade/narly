@@ -5,7 +5,7 @@
 	</span>
 	
 	<div class="meta">
-		<span class="watchers-forks">&#9678; <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
+		<span class="watchers-forks">watchers: <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
 	</div>
 	
 	<div class="main">
@@ -14,9 +14,9 @@
 		</p>
 		
 		<p class="tags">
-			<% repo.tags(5).each do |tag| %>
-				<%= link_to "#{tag.relative_count}-#{tag.name}", repos_tagged_path(tag.name) %>
-			<% end %>				
+		<% repo.tags(5).each do |tag| %>
+			<%= link_to_tag(tag, repos_tagged_path(tag.name) )%>
+		<% end %>				
 		</p>
 	</div>
 </div>

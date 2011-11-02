@@ -1,67 +1,55 @@
-<% content_for :headers do %>
-
-<div class="repo_header">
-	<div id="filters">
-		<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
-		<div>
-			<%= "#{@owner.login}/#{@repo.name}" %>
-		</div>
-	</div>
-</div>
-
-<div class="tag_header">
+<% content_for :filters do %>
+	<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
 	<div>
+		<%= "#{@owner.login}/#{@repo.name}" %>
 	</div>
-</div>
-
 <% end %>
 
-<div id="repo_pane">
-	<div id="repository_container">
-		
-		<h2 class="title"><%= "#{@owner.login}/#{@repo.name}" %></h2>
-		
-		<div class="repo_outline boxy">
-		
-			<p style="font-weight:bold">
-				<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
-			</p>
-			<p><%= @repo.description %></p>
-			<ul>
-				<li><strong>is fork?</strong>: <%= @repo.fork ? "yes" : "no" %></li>
-				<li><strong>Language</strong>: <%= @repo.language %></li>
-				<li><strong>Forks</strong>: <%= @repo.forks %></li>
-			</ul>
-		</div>
-		
-		<h2>Tags</h2>
 
-		<div id="tag_container">
-			<% @repo.tags.each do |tag| %>
-				<%= link_to "#{tag.relative_count}-#{tag.name}", "#{user_path(@owner.login)}?tags=#{tag.name}" %>
-			<% end %>
-		</div>
-	
-	
-		<h2>Similar Repos</h2>
-		<div id="similar_repos_container">
-		<% if @similar_repos.blank? %>
-			None yet =(
-			<br/>Please tag some more repos!
-		<% else %>
-			<%= render :partial => "repos/repo", :collection => @similar_repos %>
-		<% end %>
-		</div>
-		
-		<h2>Tagged By</h2>
+<h2 class="title"><%= "#{@owner.login}/#{@repo.name}" %></h2>
 
-		<div id="users_container">
-			<% @repo.users.each do |user| %>
-				<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
-			<% end %>
-		</div>	
-	</div>
+<div class="repo_outline boxy">
+
+	<p style="font-weight:bold">
+		<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
+	</p>
+	<p><%= @repo.description %></p>
+	<ul>
+		<li><strong>is fork?</strong>: <%= @repo.fork ? "yes" : "no" %></li>
+		<li><strong>Language</strong>: <%= @repo.language %></li>
+		<li><strong>Forks</strong>: <%= @repo.forks %></li>
+	</ul>
 </div>
+
+<h2>Tags</h2>
+
+<ul class="tag_box inline">
+<% @repo.tags.each do |tag| %>
+	<li><%= link_to_tag(tag, repos_tagged_path(tag.name))%></li>
+<% end %>
+</ul>
+
+
+<h2>Similar Repos</h2>
+<div id="similar_repos_container">
+<% if @similar_repos.blank? %>
+	None yet =(
+	<br/>Please tag some more repos!
+<% else %>
+	<% @similar_repos.each do |repo| %>
+		<%= render :partial => "repos/repo", :object => repo %>
+	<% end %>
+<% end %>
+</div>
+
+<h2>Tagged By</h2>
+
+<div id="users_container">
+	<% @repo.users.each do |user| %>
+		<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
+	<% end %>
+</div>	
+
 
 
 <style type="text/css">
@@ -84,15 +72,9 @@
 		left:55px;
 	}
 	
-	.repo_outline , #tag_container, #similar_repos_container,  #users_container {
+	.repo_outline , #side_content, #similar_repos_container,  #users_container {
 		padding:10px 20px;
 		overflow:hidden;
-	}
-	
-	#tag_container a {
-		float:left;
-		clear:none;
-		margin-right:10px;
 	}
 	
 	.boxy {

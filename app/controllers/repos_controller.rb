@@ -1,7 +1,8 @@
 class ReposController < ApplicationController
 
   def index
-    @repos = Tag.repos(params[:tags])
+    @tag_filters = Tag.new_from_tag_string(params[:tags])
+    @repos = Tag.repos(@tag_filters, 25)
   end
   
   def show
@@ -10,7 +11,7 @@ class ReposController < ApplicationController
       :login => @owner.login, 
       :name => params[:name].to_s
     })
-    @similar_repos = @repo.similar_repos
+    @similar_repos = @repo.similar_repos(10)
   end
   
 end

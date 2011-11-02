@@ -1,40 +1,26 @@
+<% content_for :filters do %>
+	<%= (image_tag(@owner.avatar_url)) %> 
+	<div>
+		<%= raw "user:#{@owner.login} + #{format_tags(@tag_filters)} &#9658;" if @tag_filters %>
+	</div>
+<% end %>
 
-<div id="repo_pane">	
-	<div id="repo-container">
+<% content_for :tag_header do %>
+	<h4>Tags</h4> 
+	 <strong><%= raw "user:#{@owner.login} &#9658;" %></strong>
+<% end %>
 
-	<% @repos.each do |repo| %>
-		<div class="repo">
-			<%= link_to (image_tag repo.owner.avatar_url), user_path(repo.owner.login) %>
-			<span class="name">
-				<%= repo.owner.login %> / <%= link_to repo.name, repo.html_url, :target => "_blank"  %>
-			</span>
-			(<%= repo.ghid %>)
-			<div class="meta">
-				<span class="watchers-forks">&#9678; <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
-			</div>
-			
-			<p><%= repo.description %></p>
-			<p class="tags">
-				<% repo.tags(5).each do |tag| %>
-					<%= link_to "#{tag.relative_count}-#{tag.name}", "/?tags=#{tag.name}" %>
-				<% end %>				
-			</p>
-		</div>
+<% content_for :side_content do %>
+	<ul class="tag_box">
+	<% @tags.each do |tag| %>
+		<li><%= link_to_tag(tag, user_tagged_path(@owner.login, tag.name) )%></li>
 	<% end %>
+	</ul>
+<% end %>
 
-	</div>
+<% @repos.each do |repo| %>
+	<%= render :partial => "repos/repo", :object => repo %>
+<% end %>
 
-</div>
-
-
-<div id="tag_pane">
-
-	<div id="tag_container">
-		<% @tags.each do |tag| %>
-			<%= link_to "#{tag.relative_count}-#{tag.name}", "#{user_path(@owner.login)}?tags=#{tag.name}" %>
-		<% end %>
-	</div>
-
-</div>
 
 

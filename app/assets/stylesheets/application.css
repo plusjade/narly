@@ -1,7 +1,276 @@
-/*
- * This is a manifest file that'll automatically include all the stylesheets available in this directory
- * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
- * the top of the compiled file, but it's generally better to create a new file per style scope.
- *= require_self
- *= require_tree . 
-*/
+html, body {
+	background:#FAF9F8;
+}
+
+/* TOP ======================================================== */
+
+#top {
+	position:fixed;
+	width:100%;
+	background:#FAF9F8;
+	z-index:10;
+}
+#top_spacer {
+	height:96px;
+}
+
+/* USER NAV ======================================================== */
+
+#user_nav {
+	text-align:center;
+	overflow:hidden;
+	height:50px;
+	border-bottom:1px solid #222;
+	background:#3B2E2A;
+}
+#user_nav a {
+	color:#eee;
+}
+#user_nav img {
+	float:left;
+	width:40px;
+	height:40px;
+	padding:2px;
+	margin:2px;
+	border:1px solid #ccc;
+}
+
+/* HEADERS ======================================================== */
+
+#headers div.tag_header {
+	float:left;
+	width:30%;
+}
+#headers div.repo_header {
+	float:left;
+	width:70%;
+	font-size:14px;
+	height:45px;
+}
+
+/* FILTERS ======================================================== */
+
+#filters {
+	position:relative;
+	line-height:45px;
+	height:45px;
+	background:#FDE8B0;
+	border:1px solid #EECB10;
+	border-radius:0 0 5px 0;
+	font-weight:bold;
+	box-shadow:1px 1px 1px #ccc;
+}
+#filters img{
+	position:absolute;
+	top:0;
+	left:15px;
+	height:50px;
+	width:50px;
+	padding:1px;
+	border:1px solid #B2A37C;
+	background:#FDE8B0;
+	background:#FFF;
+}
+#filters h4 {
+	position:absolute;
+	top:0;
+	line-height:44px;
+	left:15px;
+	width:50px;
+	color:#C70808;
+}
+#filters div {
+	position:absolute;
+	top:0;
+	left:85px;
+	height:45px;
+	line-height:45px;
+}
+/* these are tags */
+#filters span{
+	padding:2px 8px;
+	background:#57A957;
+	border:1px solid #4C964D;
+	border-radius:3px;
+	color:#FFF;
+	cursor:pointer;
+}
+
+/* TAG HEADER ======================================================== */
+
+div.tag_header div {
+	position:relative;
+	line-height:45px;
+	height:45px;
+	padding-left:20px;
+	background:#FFF;
+	font-weight:bold;
+}
+div.tag_header h4 {
+	display:inline;
+	margin-right:6px;
+	color:#C70808;
+}
+
+/* MAIN CONTENT ======================================================== */
+
+#main_content_container {
+	float:left;
+	width:70%;
+	position:relative;
+}
+#main_content {
+	padding:20px;
+	overflow:hidden;
+}
+
+/* SIDE CONTENT ======================================================== */
+
+#side_content_container {
+	float:right;
+	width:30%;
+	height:100%;
+	position:relative;
+	background:#FFF;
+}
+#side_content {
+	clear:right;
+	height:100%;
+	padding: 10px;
+	margin-bottom:8px;
+	overflow:hidden;
+}
+
+/* FOOTER ======================================================== */
+
+#footer {
+	clear:both;
+	padding:20px;
+}
+#footer ul {
+	list-style:none;
+}
+#footer ul li {
+	display:inline;
+	margin-right:10px;
+}
+
+/* tag_box ======================================================== */
+
+.tag_box {
+	list-style:none;
+	margin:0;
+	padding:5px 0 ;
+	overflow:hidden;
+}
+.tag_box li {
+	line-height:30px;
+}
+.tag_box.inline li {
+	float:left;
+}
+.tag_box a {
+	padding: 5px 10px;
+	margin: 2px;
+	background: #555;
+	color: #EEE;
+	border-radius: 3px;
+	text-decoration:none;
+}
+.tag_box a:hover {
+	background: #333;
+}
+.tag_box a.selected {
+	background:#57A957;
+	border:1px solid #4C964D;
+	color:#FFF;
+}
+.tag_box a.selected:hover {
+	background: #555;
+	color: #EEE;
+	border:0;
+}
+
+
+/* repo ======================================================== */
+
+.repo {
+	position:relative;
+	float:left;
+	height:130px;
+	width:400px;
+	overflow:visible;
+	padding:5px;
+	margin:5px;
+	border:1px solid #EEE9DE;
+	background:#fff;
+	text-align:left;
+	border-radius:3px;
+}
+.repo.hover {
+	box-shadow:1px 1px 1px #eee;
+}
+
+.repo img {
+	float:left;
+	margin-right:10px !important;
+}
+.repo p.description {
+	height:38px;
+	overflow:hidden;
+}
+.repo .main {
+	clear:left; 
+	padding:4px;
+	padding-bottom:0;
+}
+
+.repo .tags {
+	background:#FFF;
+	height:25px;
+	overflow:hidden;
+}
+.repo.hover .tags {
+	position:absolute;
+	top:55px;
+	left:0;
+	padding:10px 10px 0 10px;
+	display:block;
+	height:70px;
+	z-index:50;
+}
+.repo .tags a{
+	float:left;
+	font-size:12px;
+	margin-right:4px;
+	margin-bottom:4px;
+	padding:2px 5px;
+	background:#eee;
+	border:1px solid #ddd;
+	border-radius:2px;
+	text-decoration:none;
+}
+
+/* image thumb ======================================================== */
+
+img.thumb {
+	width:40px;
+	height:40px;
+	padding:2px;
+	margin:2px;
+	border:1px solid #ccc;
+	border-radius:2px;
+	background:#FFF;
+}
+	
+/* misc ======================================================== */
+
+.boxy {
+	border:1px solid #EEE9DE;
+	background:#fff;
+	text-align:left;
+	border-radius:3px;
+}
+
+
+	

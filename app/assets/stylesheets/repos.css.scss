@@ -1,3 +1,27 @@
-// Place all the styles related to the repos controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+#repository_container {
+	padding:20px;
+}
+#repository_container li {
+	color:inherit;
+}
+#repository_container h2.title {
+	position:relative;
+	line-height:50px;
+}
+#repository_container h2.title img {
+	position:absolute;
+	top:0;
+}
+#repository_container h2.title span {
+	position:relative;
+	left:55px;
+}
+
+.repo_outline , #side_content, #similar_repos_container,  #users_container {
+	padding:10px 20px;
+	overflow:hidden;
+}
+
+.boxy {
+	margin-bottom:20px;
+}
