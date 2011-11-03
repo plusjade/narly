@@ -98,7 +98,7 @@ module TagSystem
     end
       
     # Decrement TAG count in TAG collection
-    if ($redis.zincrby "TAGS" -1, tag.name).to_i <= 0
+    if ($redis.zincrby "TAGS", -1, tag.name).to_i <= 0
       $redis.zrem "TAGS", tag.name
     end
     
