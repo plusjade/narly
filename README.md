@@ -23,6 +23,10 @@
 			:{"1"}
 				:tags = [1:"mysql", 3:"ruby"] # all tags used by this user and the # of repos tagged related to this user.
 				:repos = [1,2] # all repos tagged by this user
+					# A dictionary of all tags per repo
+					:tags = {
+						:ghid => ["mysql", "ruby"] # as json
+					}
 				:tag
 					:{"mysql"}
 					 	:repos = [1,2] # repos tagged with this tag by this user.
