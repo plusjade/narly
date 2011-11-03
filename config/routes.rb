@@ -13,6 +13,7 @@ Superwatch::Application.routes.draw do
     get "/repos/:login/:name" => "repos#show", :as => :repo
   
     get "/tag" => "users#tag", :as => :tag
+    get "/untag" => "users#untag", :as => :untag
     get "/tags" => "tags#index", :as => :tags
   
   end
