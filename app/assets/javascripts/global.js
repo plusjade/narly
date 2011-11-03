@@ -48,6 +48,26 @@ $(function(){
 		return false;
 	})
 	
+	
+	$("#my_tags_on_repo").find("a").live("click", function(e){
+		if(confirm("This will remove this tag from this repo.")){
+			var $tag = $(this);
+			var ghid = $("#tag_panel").find("input.ghid").val();
+			var tag = $tag.attr("title");
+			$.ajax({
+			    dataType: "json",
+			    url: "/untag?repo[ghid]="+ghid+"&tag="+tag+"",
+			    success: function(rsp){
+						console.log(rsp);
+						$tag.remove();
+					}
+			});
+		}
+
+		e.preventDefault();
+		return false;
+	})
+	
 	$("#add_tag_container").find("a").live("click", function(e){
 		$(this).toggleClass("active");
 		formatTags();
