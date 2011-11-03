@@ -44,8 +44,15 @@ module TagSystem
       
       # Add TAG to total TAG collection
       $redis.zincrby "TAGS", 1, tag.name
+
     end
-      
+
+    # Add TAG to USER's tag collection relative to a repo
+    # (this is kept in a dictionary to save memory)
+    tag_array = user.tags_on_repo_as_array(repo)
+    tag_array.push(tag.name).uniq!
+    $redis.hset user.storage_key(:repos, :tags), repo.ghid, ActiveSupport::JSON.encode(tag_array)
+
   end
   
   
@@ -94,6 +101,12 @@ module TagSystem
     if ($redis.zincrby "TAGS" -1, tag.name).to_i <= 0
       $redis.zrem "TAGS", tag.name
     end
+    
+    # REMOVE TAG from USER's tag collection relative to REPO
+    # (this is kept in a dictionary to save memory)
+    tag_array = user.tags_on_repo_as_array(repo)
+    tag_array.delete(tag.name)
+    $redis.hset user.storage_key(:repos, :tags), repo.ghid, ActiveSupport::JSON.encode(tag_array)
   end
   
   
