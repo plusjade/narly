@@ -1,1 +1,35 @@
-Home Page
+<div id="home_text">
+	<p>
+		I <em>"watch"</em> repos on GitHub as a kind of <span class="bookmark">bookmark</span> -
+		<br/>there are tons of great people building tons of great stuff.</h2>
+	
+		<br/>But having one massive list of <span class="bookmark">bookmarks</span> doesn't make much sense -
+		<br/>I rarely find anything.
+	</p>
+
+	<p>
+		So I am building Superwatch - <strong>A tagging system for GitHub projects.</strong>
+	</p>
+
+	<p>
+		Now you can:
+	</p>
+	
+	<ul>
+		<li>
+			Manage any and all projects you are interested in by <span class="tagging">tagging</span> them.
+		</li>
+		<li>
+			Help others find projects by <span class="tagging">tagging</span> them with appropriate descriptions.
+		</li>
+	</ul>
+
+	<p>
+		I'll import your <em>"watched"</em> repos for you automatically.
+		<br/>You can go to your page right now, just type in your GitHub username:
+		<%= form_tag "/users", :method => :get do %>
+			<input type="text" name="login" /> <button class="btn success">Show My Page</button>
+		<% end %>
+	</p>
+	
+</div>
