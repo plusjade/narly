@@ -2,8 +2,14 @@
 <html>
 <head>
   <title>narly.us</title>
-	<%= javascript_include_tag "application" %>
-	<%= stylesheet_link_tag "application" %>
+	<% if Rails.env.production? %>
+		<%= stylesheet_link_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.css" %>
+		<%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" %>
+		<%= javascript_include_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.js" %>
+	<% else %>
+		<%= stylesheet_link_tag "application" %>
+		<%= javascript_include_tag "application" %>
+	<% end %>
   <%= csrf_meta_tags %>
 </head>
 <body>
