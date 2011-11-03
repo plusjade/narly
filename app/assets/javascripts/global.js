@@ -4,12 +4,13 @@ $(function(){
 
 	$("#tag_panel").submit(function(e){
 		var $form = $(this);
+		showStatus.submitting();
 		$.ajax({
 		    dataType: "json",
 		    url: $form.attr("action"),
 				data : $form.serialize(),
 		    success: function(rsp){
-					console.log(rsp);
+					showStatus.respond(rsp);
 				}
 		});
 		e.preventDefault();
@@ -48,17 +49,18 @@ $(function(){
 		return false;
 	})
 	
-	
+	/* Remove tag from a repo */
 	$("#my_tags_on_repo").find("a").live("click", function(e){
-		if(confirm("This will remove this tag from this repo.")){
-			var $tag = $(this);
+		var $tag = $(this);
+		var tag = $tag.attr("title");
+		if(confirm("Remove tag:'" +tag+ "' from this repo?")){
+			showStatus.submitting();
 			var ghid = $("#tag_panel").find("input.ghid").val();
-			var tag = $tag.attr("title");
 			$.ajax({
 			    dataType: "json",
 			    url: "/untag?repo[ghid]="+ghid+"&tag="+tag+"",
 			    success: function(rsp){
-						console.log(rsp);
+						showStatus.respond(rsp);
 						$tag.remove();
 					}
 			});

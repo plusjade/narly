@@ -132,6 +132,10 @@ html, body {
 #tag_panel_extended a {
 	font-size:12px;
 }
+#my_tags_on_repo a:hover {
+	background:#C43C35;
+	color:#FFF;
+}
 
 /* TAG HEADER ======================================================== */
 
@@ -321,3 +325,18 @@ img.thumb {
 
 
 	
+/* ajax responses */
+#status-bar { position: fixed; top: 0; left: 0; min-width: 890px; width: 100%; z-index: 9995; margin: 0; padding: 0; font-size: 12px; text-align: center; }
+#status-bar div#submitting { margin: auto; }
+#status-bar div.responding { margin: auto; width: 350px; }
+#status-bar div#submitting { width: 180px; padding: 3px 20px; background: #FFAA3E url("/assets/load.gif") no-repeat 80% 50%; color: #9A6801; height: 55px; text-align: left; border:2px solid #DC781B; border-top:0; border-radius:0 0 3px 3px; }
+#status-bar div#submitting strong { display: block; margin-top: 20px; font-size: 1.2em; }
+
+.loading { width: 200px; margin: auto; margin-top: 30px; padding-top: 45px; text-align: center; color: #222222; background: url("/images/loading.gif") no-repeat top center; }
+.loading.white { color: white; }
+
+div.responding.active { padding: 5px; font-size: 14px; color: white; font-weight: bold; }
+div.responding.active.good { background: green; color: white; }
+div.responding.active.bad { background: red; color: white; }
+div.responding.active.warn { background: orange; color: white; }
+div.ajax_loading { width: 100%; height: 90px; background: transparent url("/images/common/load.gif") no-repeat 50% 50%; text-align: center; }

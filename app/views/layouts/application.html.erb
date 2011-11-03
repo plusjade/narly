@@ -7,6 +7,11 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+	<div id="status-bar">
+    <div id="submitting" style="display:none"><strong>Submitting..</strong></div>
+    <div class="responding" style="display:none">&#160;</div>
+  </div>
+
 	<div id="top">		
 		<div id="user_nav">
 	  <% if current_user %>
