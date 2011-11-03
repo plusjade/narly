@@ -89,7 +89,20 @@ class User
   def untag_repo(repo, tag)
     remove_tag_associations(self, repo, tag)
   end
+
+  def tags_on_repo(repo)
+    tags_on_repo_as_array(repo).map do |name|
+      Tag.new(:name => name)
+    end
+  end
   
+  def tags_on_repo_as_array(repo)
+    tag_array = $redis.hget self.storage_key(:repos, :tags), repo.ghid
+    tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
+    
+    tag_array.sort!
+  end
+    
   def github_url
     "http://github.com/#{self.login}"
   end
