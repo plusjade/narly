@@ -1,5 +1,5 @@
 <% content_for :filters do %>
-	<%= (image_tag(@owner.avatar_url)) %> 
+	<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
 	<div>
 		<%= raw "user:#{@owner.login} + #{format_tags(@tag_filters)} &#9658;" if @tag_filters %>
 	</div>
