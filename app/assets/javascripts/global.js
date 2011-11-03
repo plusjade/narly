@@ -26,16 +26,18 @@ $(function(){
 		$("#tag_panel_container")
 			.find("input.ghid").val(ghid);
 		
-		$.ajax({
-			dataType: "json",
-		  url: "/users/"+currentUserLogin+"/repos/"+ ghid +"/tags",
-		  success: addMyTags
-		});
-		$.ajax({
-		  dataType: "json",
-		  url: "/repos/"+ ghid +"/tags",
-		  success: addTopTags
-		});
+		if (currentUserLogin !== ""){
+			$.ajax({
+				dataType: "json",
+			  url: "/users/"+currentUserLogin+"/repos/"+ ghid +"/tags",
+			  success: addMyTags
+			});
+			$.ajax({
+			  dataType: "json",
+			  url: "/repos/"+ ghid +"/tags",
+			  success: addTopTags
+			});
+		}
 			
 		e.preventDefault();
 		return false;
