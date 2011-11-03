@@ -30,6 +30,24 @@ class UsersController < ApplicationController
     end
   end
 
+  def untag
+    if current_user
+      Tag.new_from_tag_string(params[:tag]).each do |tag|
+        current_user.untag_repo(params[:repo][:ghid], tag)
+      end
+      
+      render :json => {
+        :status => "good", 
+        :message => "Tag removed!"
+      }
+    else
+      render :json => {
+        :status => "bad", 
+        :message => "Please login"
+      }
+    end
+  end
+
   # Return tags current_user has on given repo
   #
   def repo_tags
