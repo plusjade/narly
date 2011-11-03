@@ -20,19 +20,55 @@ html, body {
 	text-align:center;
 	overflow:hidden;
 	height:45px;
-	border-bottom:1px solid #222;
-	background:#3B2E2A;
+	line-height:45px;
 }
-#user_nav a {
-	color:#eee;
+#user_nav div {
+	padding: 0 10px;
+	background:#3B2E2A;
+	border-bottom:1px solid #222;
+	overflow:hidden;
+}
+
+#user_nav ul {
+	margin:0;
+	padding:0;
+	list-style:none;
+	line-height:45px;
+}
+#user_nav li {
+	display:inline;
+}
+
+#user_nav ul.right {
+	float:right;
+}
+#user_nav ul.right li { 
+	margin-left:10px;
+}
+
+#user_nav ul.left {
+	float:left;
+}
+#user_nav ul.left li { 
+	margin-right:10px;
+}
+
+#user_nav a.link{
+	color:#E6D5C1;
+	font-size:14px;
+}	
+
+#user_nav a.logo {
+	color:#E6D5C1;
+	font-size:14px;
+	font-weight:bold;
 }
 #user_nav img {
-	float:left;
-	width:40px;
-	height:40px;
+	vertical-align:middle;
+	width:25px;
+	height:25px;
 	padding:2px;
-	margin:2px;
-	border:1px solid #ccc;
+	border:1px solid #999;
 }
 
 /* HEADERS ======================================================== */
@@ -340,3 +376,29 @@ div.responding.active.good { background: green; color: white; }
 div.responding.active.bad { background: red; color: white; }
 div.responding.active.warn { background: orange; color: white; }
 div.ajax_loading { width: 100%; height: 90px; background: transparent url("/images/common/load.gif") no-repeat 50% 50%; text-align: center; }
+
+
+/* homepage */
+#home_text p {
+	font-size:24px;
+	line-height:40px;
+	margin-bottom:15px;
+}
+#home_text span {
+	font-size:22px;
+	color:inherit;
+	padding:3px 6px;
+	background:#eee;
+	border-radius:3px;
+}
+#home_text span.tagging {
+	color:#BE4C54;
+}
+#home_text span.bookmark {
+	color:#785D56;
+}
+#home_text ul li { 
+		font-size:22px;
+		line-height:40px;
+		color:inherit;
+	}

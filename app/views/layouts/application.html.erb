@@ -14,14 +14,23 @@
 
 	<div id="top">		
 		<div id="user_nav">
-	  <% if current_user %>
-			<%= link_to (image_tag current_user.avatar_url), user_path(current_user.login) %>
-	    Welcome, <%= link_to current_user.login, current_user.github_url %>!
+			<div>
+				
+				<ul class="left">
+					<li><a href="/" class="logo">superwatch | alpha</a></li>
+					<li><span>"it's like [old] delicious for GitHub projects."</span></li>
+				</ul>
 
-			<%= link_to "Sign Out", signout_path %>
-	  <% else %>
-	    <%= link_to "Sign in with Github", "/auth/github" %>
-	  <% end %>
+				<ul class="right">
+		  <% if current_user %>
+				<li>signed in as: <%= link_to current_user.login, user_path(current_user.login), :class => "link" %></li>
+				<li><%= link_to (image_tag current_user.avatar_url), user_path(current_user.login) %></li>
+				<li><%= link_to "Sign Out", signout_path, :class => "btn" %></li>
+		  <% else %>
+		    <li><%= link_to "Sign in with Github", "/auth/github", :class => "signin btn" %></li>
+		  <% end %>
+				</ul>
+			</div>
 		</div>
 	
 		<div id="headers">
@@ -63,7 +72,7 @@
 				<div class="alert-message warning">
 					<p>					
 						<a class="btn danger tag_panel_close" href="#">x</a>
-						<strong><%= link_to "Sign in with Github", "/auth/github" %></strong> to start adding tags.
+							You'll need to <%= link_to "Sign in with GitHub", "/auth/github", :class => "btn" %> to start adding tags.
 					</p>
 				</div>
 			<% end %>
@@ -94,8 +103,8 @@
 
 	<div id="footer">
 		<ul>
-			<li><a href="/about">about</a></li>
 			<li><a href="/">home</a></li>
+			<li><a href="/about">about</a></li>
 			<li><a href="http://github.com" target="_blank">github.com</a></li>
 		</ul>
 	</div>
