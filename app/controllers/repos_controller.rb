@@ -14,4 +14,9 @@ class ReposController < ApplicationController
     @similar_repos = @repo.similar_repos(10)
   end
   
+  def tags
+    @repo = Repository.new(:ghid => params[:ghid].to_i)
+    render :json => @repo.tags(10)
+  end
+  
 end

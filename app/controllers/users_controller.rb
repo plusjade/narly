@@ -29,5 +29,14 @@ class UsersController < ApplicationController
       }
     end
   end
+
+  # Return tags current_user has on given repo
+  #
+  def repo_tags
+    @owner = User.first!(:login => params[:login])
+    @repo = Repository.first!(:ghid => params[:ghid])
+    @tags = @owner.tags_on_repo(@repo)
+    render :json => @tags
+  end
   
 end
