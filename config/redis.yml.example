@@ -1,0 +1,12 @@
+development: &defaults
+  server: 
+    internal: "localhost"
+    public: "localhost"
+      
+test:
+  <<: *defaults
+
+production:
+  server: 
+    internal: "ec2.blah.internal"
+    public: "ec2.blah.com"

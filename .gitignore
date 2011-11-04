@@ -9,6 +9,7 @@ config/database.yml
 config/sendgrid.yml
 config/s3.yml
 config/omniauth.yml
+config/redis.yml
 config/deploy.rb
 
 Thumbs.db
