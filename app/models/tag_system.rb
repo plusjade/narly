@@ -17,11 +17,9 @@ module TagSystem
   #   $redis.sadd returns bool for singular value additions.
   #   Bool value reflects whether the insertion was newly added.
   #
-  def add_tag_associations(user, repo, tag)
+  def add_tag_associations(*args)
     collection = {}
-    [user, repo, tag].each do |o|
-      collection[o.get_tagging_system_type.to_sym] = o
-    end
+    args.each { |o| collection[o.get_tagging_system_type.to_sym] = o }
     
     # Add REPO to the USER'S total REPO collection relative to TAG
     is_new_tag_on_repo_for_user = ($redis.sadd user.storage_key_for_tag_repos(collection[:tag].scoped_field), collection[:item].scoped_field)
@@ -67,11 +65,9 @@ module TagSystem
   #   $redis.srem returns bool for singular value additions.
   #   Bool value reflects whether the the key exist before it was removed.
   #
-  def remove_tag_associations(user, repo, tag)
+  def remove_tag_associations(*args)
     collection = {}
-    [user, repo, tag].each do |o|
-      collection[o.get_tagging_system_type] = o
-    end
+    args.each { |o| collection[o.get_tagging_system_type.to_sym] = o }
     
     # Remove REPO from the USER'S total REPO collection relative to TAG
     was_removed_tag_on_repo_for_user = ($redis.srem user.storage_key_for_tag_repos(collection[:tag].scoped_field), collection[:item].scoped_field)
