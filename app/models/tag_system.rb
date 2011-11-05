@@ -18,47 +18,47 @@ module TagSystem
   #   Bool value reflects whether the insertion was newly added.
   #
   def add_tag_associations(*args)
-    collection = {}
-    args.each { |o| collection[o.get_tagging_system_type.to_sym] = o }
+    data = {}
+    args.each { |o| data[o.get_tagging_system_type.to_sym] = o }
     
-    # Add REPO to the USER'S total REPO collection relative to TAG
-    is_new_tag_on_repo_for_user = ($redis.sadd user.storage_key_for_tag_repos(collection[:tag].scoped_field), collection[:item].scoped_field)
+    # Add ITEM to the USER'S total ITEM data relative to TAG
+    is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
 
     $redis.multi do
-      # Add REPO to the USERS's total REPO collection.
-      $redis.sadd user.storage_key(:repos), collection[:item].scoped_field
+      # Add ITEM to the USERS's total ITEM data.
+      $redis.sadd data[:user].storage_key(:repos), data[:item].scoped_field
 
-      # Add USER to the REPO's total USER collection
-      $redis.sadd repo.storage_key(:users), collection[:user].scoped_field
+      # Add USER to the ITEM's total USER data
+      $redis.sadd data[:item].storage_key(:users), data[:user].scoped_field
       
-      # Add USER to the TAG's total USER collection.
-      $redis.sadd tag.storage_key(:users), collection[:user].scoped_field
+      # Add USER to the TAG's total USER data.
+      $redis.sadd data[:tag].storage_key(:users), data[:user].scoped_field
 
-      # Add REPO to the TAG's total REPO collection.
-      $redis.sadd tag.storage_key(:repos), collection[:item].scoped_field
+      # Add ITEM to the TAG's total ITEM data.
+      $redis.sadd data[:tag].storage_key(:repos), data[:item].scoped_field
       
-      if is_new_tag_on_repo_for_user
+      if is_new_tag_on_item_for_user
         # Increment the USER's TAG count for TAG
-        $redis.zincrby user.storage_key(:tags), 1, collection[:tag].scoped_field
+        $redis.zincrby data[:user].storage_key(:tags), 1, data[:tag].scoped_field
         
-        # Increment the REPO's TAG count for TAG
-        $redis.zincrby repo.storage_key(:tags), 1, collection[:tag].scoped_field
+        # Increment the ITEM's TAG count for TAG
+        $redis.zincrby data[:item].storage_key(:tags), 1, data[:tag].scoped_field
       end
       
-      # Add TAG to total TAG collection
-      $redis.zincrby "TAGS", 1, collection[:tag].scoped_field
+      # Add TAG to total TAG data
+      $redis.zincrby "TAGS", 1, data[:tag].scoped_field
 
     end
 
-    # Add TAG to USER's tag collection relative to a repo
+    # Add TAG to USER's tag data relative to ITEM
     # (this is kept in a dictionary to save memory)
-    tag_array = user.tags_on_repo_as_array(repo)
-    tag_array.push(collection[:tag].scoped_field).uniq!
-    $redis.hset user.storage_key(:repos, :tags), collection[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
+    tag_array = data[:user].tags_on_repo_as_array(data[:item])
+    tag_array.push(data[:tag].scoped_field).uniq!
+    $redis.hset data[:user].storage_key(:repos, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
 
   end
   
-  # Record everything needed to remove user<->rep tag associations.
+  # Record everything needed to remove user<->item tag associations.
   # We use redis to store associations and counts relative to those associations.
   #
   # Notes:
@@ -66,48 +66,48 @@ module TagSystem
   #   Bool value reflects whether the the key exist before it was removed.
   #
   def remove_tag_associations(*args)
-    collection = {}
-    args.each { |o| collection[o.get_tagging_system_type.to_sym] = o }
+    data = {}
+    args.each { |o| data[o.get_tagging_system_type.to_sym] = o }
     
-    # Remove REPO from the USER'S total REPO collection relative to TAG
-    was_removed_tag_on_repo_for_user = ($redis.srem user.storage_key_for_tag_repos(collection[:tag].scoped_field), collection[:item].scoped_field)
+    # Remove ITEM from the USER'S total ITEM data relative to TAG
+    was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
 
     $redis.multi do
-      # Remove REPO from the USERS's total REPO collection.
-      $redis.srem user.storage_key(:repos), collection[:item].scoped_field
+      # Remove ITEM from the USERS's total ITEM data.
+      $redis.srem data[:user].storage_key(:repos), data[:item].scoped_field
 
-      # Remove USER from the REPO's total USER collection
-      $redis.srem repo.storage_key(:users), collection[:user].scoped_field
+      # Remove USER from the ITEM's total USER data
+      $redis.srem data[:item].storage_key(:users), data[:user].scoped_field
       
-      # Remove USER from the TAG's total USER collection.
-      $redis.srem tag.storage_key(:users), collection[:user].scoped_field
+      # Remove USER from the TAG's total USER data.
+      $redis.srem data[:tag].storage_key(:users), data[:user].scoped_field
 
-      # Remove REPO from the TAG's total REPO collection.
-      $redis.srem tag.storage_key(:repos), collection[:item].scoped_field
+      # Remove ITEM from the TAG's total ITEM data.
+      $redis.srem data[:tag].storage_key(:repos), data[:item].scoped_field
     end
     
-    if was_removed_tag_on_repo_for_user
+    if was_removed_tag_on_item_for_user
       # Decrement the USER's TAG count for TAG
-      if($redis.zincrby user.storage_key(:tags), -1, collection[:tag].scoped_field).to_i <= 0
-        $redis.zrem user.storage_key(:tags), collection[:tag].scoped_field
+      if($redis.zincrby data[:user].storage_key(:tags), -1, data[:tag].scoped_field).to_i <= 0
+        $redis.zrem data[:user].storage_key(:tags), data[:tag].scoped_field
       end
       
-      # Decrement the REPO's TAG count for TAG
-      if ($redis.zincrby repo.storage_key(:tags), -1, collection[:tag].scoped_field).to_i <= 0
-        $redis.zrem repo.storage_key(:tags), collection[:tag].scoped_field
+      # Decrement the ITEM's TAG count for TAG
+      if ($redis.zincrby data[:item].storage_key(:tags), -1, data[:tag].scoped_field).to_i <= 0
+        $redis.zrem data[:item].storage_key(:tags), data[:tag].scoped_field
       end
     end
       
-    # Decrement TAG count in TAG collection
-    if ($redis.zincrby "TAGS", -1, collection[:tag].scoped_field).to_i <= 0
-      $redis.zrem "TAGS", collection[:tag].scoped_field
+    # Decrement TAG count in TAG data
+    if ($redis.zincrby "TAGS", -1, data[:tag].scoped_field).to_i <= 0
+      $redis.zrem "TAGS", data[:tag].scoped_field
     end
     
-    # REMOVE TAG from USER's tag collection relative to REPO
+    # REMOVE TAG from USER's tag data relative to ITEM
     # (this is kept in a dictionary to save memory)
-    tag_array = user.tags_on_repo_as_array(repo)
-    tag_array.delete(collection[:tag].scoped_field)
-    $redis.hset user.storage_key(:repos, :tags), collection[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
+    tag_array = data[:user].tags_on_repo_as_array(data[:item])
+    tag_array.delete(data[:tag].scoped_field)
+    $redis.hset data[:user].storage_key(:repos, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
   end
   
   
