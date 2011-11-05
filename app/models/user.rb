@@ -65,7 +65,7 @@ class User
     
     ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
     
-    Repository.all(:ghid => ghids, :order => [:name])
+    Repository.all(:ghid => ghids, :order => [:login])
   end
   
   # Get a count of repos tagged with given tag by the given user
