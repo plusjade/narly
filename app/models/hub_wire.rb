@@ -64,6 +64,7 @@ module HubWire
         instance = new({
           :ghid => hash["id"], 
           :user_ghid => hash["owner"]["id"],
+          :full_name => "#{hash["owner"]["login"]}-#{hash["name"]}",
           :login => hash["owner"]["login"]
         })
         
