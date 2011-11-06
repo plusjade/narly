@@ -8,19 +8,14 @@ module TagBuddy
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "USER"
     end
-        
+    
     # Get items tagged by this user with a particular tag or set of tags.
     # tags is a single or an array of Tag instances
     #
     def items_by_tags(tags, limit = nil)
-      tags = Array(tags)
-      keys = tags.map { |tag| self.storage_key_for_tag_items(tag.scoped_field) }
-
-      items = $redis.send(:sinter, *keys)
-      items = items[0, limit.to_i] unless limit.to_i.zero?
-      items
+      TagBuddy::Query.items_by_tags(self, tags, limit)
     end
-
+    
     # Get a count of items tagged with given tag by the given user
     # Tag is a single Tag instance
     #
@@ -33,10 +28,6 @@ module TagBuddy
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
 
       tag_array.sort!
-    end
-
-    def storage_key_for_tag_items(tag)
-      storage_key(:tag, tag, :items)
     end
         
   end

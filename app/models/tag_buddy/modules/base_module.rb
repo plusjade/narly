@@ -24,6 +24,24 @@ module TagBuddy
       )
     end
     
+    # Get items tagged by this user with a particular tag or set of tags.
+    # tags is a single or an array of Tag instances
+    #
+    def self.items_by_tags(class_or_instance, tags, limit = nil)
+      tags = Array(tags)
+      
+      # users have different storage_keys, how to merge?
+      if class_or_instance.is_a?(User)
+        keys = tags.map { |tag| class_or_instance.storage_key(:tag, tag.scoped_field, :items) }
+      else
+        keys = tags.map { |tag| tag.storage_key(:items) }
+      end
+        
+      items = $redis.send(:sinter, *keys)
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+      items
+    end
+        
   end
   
   # These are instance methods that get included on all 3 models.
@@ -141,7 +159,7 @@ module TagBuddy
         TagBuddy::Query.collection(self, type, limit)
       end
     end
-    
+        
     # Create and return the storage key for the calling resource.
     # Namespace and scoping field is applied.
     #

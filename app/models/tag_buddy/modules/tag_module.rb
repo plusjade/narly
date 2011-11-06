@@ -41,10 +41,7 @@ module TagBuddy
           Array(tags)
         end
 
-        keys = tags.map { |tag| tag.storage_key(:items) }
-        items = $redis.send(:sinter, *keys)
-        items = items[0, limit.to_i] unless limit.to_i.zero?
-        items
+        TagBuddy::Query.items_by_tags(self, tags, limit)
       end
 
       # tags_data format: 
