@@ -42,7 +42,7 @@ module TagBuddy
     end
         
   
-    def self.tags_on_item(user, item)
+    def self.tags_on_item(user, item, limit = nil)
       tag_array = $redis.hget user.storage_key(:items, :tags), item.scoped_field
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
 
