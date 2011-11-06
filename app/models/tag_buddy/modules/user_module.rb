@@ -23,11 +23,8 @@ module TagBuddy
       $redis.zscore self.storage_key(:tags), tag.scoped_field
     end
 
-    def tags_on_item_as_array(item)
-      tag_array = $redis.hget self.storage_key(:items, :tags), item.scoped_field
-      tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
-
-      tag_array.sort!
+    def tags_on_item(item)
+      TagBuddy::Query.tags_on_item(self, tags, limit)
     end
         
   end

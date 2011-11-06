@@ -42,6 +42,14 @@ module TagBuddy
       items
     end
         
+  
+    def self.tags_on_item(user, item)
+      tag_array = $redis.hget user.storage_key(:items, :tags), item.scoped_field
+      tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
+
+      tag_array.sort!
+    end
+    
   end
   
   # These are instance methods that get included on all 3 models.
@@ -91,7 +99,7 @@ module TagBuddy
 
       # Add TAG to USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_item_as_array(data[:item])
+      tag_array = data[:user].tags_on_item(data[:item])
       tag_array.push(data[:tag].scoped_field).uniq!
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
 
@@ -145,7 +153,7 @@ module TagBuddy
     
       # REMOVE TAG from USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_item_as_array(data[:item])
+      tag_array = data[:user].tags_on_item(data[:item])
       tag_array.delete(data[:tag].scoped_field)
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
     end
