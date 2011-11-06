@@ -9,13 +9,11 @@ module TagBuddy
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "USER"
     end
-    
+        
     # Get items tagged by this user.
     #
     def items(limit = nil)
-      items = $redis.smembers(self.storage_key(:items))
-      items = items[0, limit.to_i] unless limit.to_i.zero?
-      items
+      TagBuddy::Query.collection(self, :items, limit)
     end
     
     # Get items tagged by this user with a particular tag or set of tags.

@@ -11,21 +11,12 @@ module TagBuddy
       model.namespace = "TAG"
     end
     
-    # Return an Array of User instances this tag is associated with.
-    # A user is attached to a tag when the user tags a repo with said tag.
-    #
     def users(limit = nil)
-      users = Array($redis.smembers storage_key(:users))
-      users = users[0, limit.to_i] unless limit.to_i.zero?
-      users
+      TagBuddy::Query.collection(self, :users, limit)
     end
         
-    # Get items this tag is attached to.
-    #  
     def items(limit = nil)
-      items = Array($redis.smembers storage_key(:items))
-      items = items[0, limit.to_i] unless limit.to_i.zero?
-      items
+      TagBuddy::Query.collection(self, :items, limit)
     end
     
     module ClassMethods
