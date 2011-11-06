@@ -1,13 +1,9 @@
 module TagBuddy
-
+  StorageDeliminator = ":"
 
   # These are instance methods that get included on all 3 models.
   #
   module Base
-    
-    def get_tagging_system_type
-      self.class.tagging_system_type
-    end
   
     # Record everything needed to make user<->rep tag associations.
     # We use redis to store associations and counts relative to those associations.
@@ -18,7 +14,7 @@ module TagBuddy
     #
     def add_tag_associations(*args)
       data = {}
-      args.each { |o| data[o.get_tagging_system_type.to_sym] = o }
+      args.each { |o| data[o.class.tag_buddy_type] = o }
     
       # Add ITEM to the USER'S total ITEM data relative to TAG
       is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
@@ -66,7 +62,7 @@ module TagBuddy
     #
     def remove_tag_associations(*args)
       data = {}
-      args.each { |o| data[o.get_tagging_system_type.to_sym] = o }
+      args.each { |o| data[o.class.tag_buddy_type] = o }
     
       # Remove ITEM from the USER'S total ITEM data relative to TAG
       was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
@@ -145,10 +141,7 @@ module TagBuddy
     module ClassMethods
 
       def define_tag_strategy(opts={})
-        opts[:namespace] ||= ""
         opts[:scope_by_field] ||= ""
-
-        self.namespace = opts[:namespace].to_s
         self.scope_by_field = opts[:scope_by_field].to_s
       end
 

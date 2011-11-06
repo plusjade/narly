@@ -4,13 +4,11 @@ module TagBuddy
     include TagBuddy::Base
     
     def self.included(model)
-      puts "yay im being included"
-
       model.extend(TagBuddy::Base::ClassMethods)
       model.extend(ClassMethods)
       
-      class << model; attr_accessor :tagging_system_type, :namespace, :scope_by_field end
-      model.tagging_system_type = :tag
+      class << model; attr_accessor :namespace, :scope_by_field end
+      model.namespace = "TAG"
     end
 
     def tag_by_user_repo(user, repo)
@@ -46,6 +44,10 @@ module TagBuddy
     end
     
     module ClassMethods
+      
+      def tag_buddy_type
+        :tag
+      end
       
       # Get all Tags
       #

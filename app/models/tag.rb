@@ -4,7 +4,7 @@ class Tag
 
   BlackList = /[^a-z 0-9 + # - .]/
 
-  define_tag_strategy :namespace => "TAG", :scope_by_field => :name
+  define_tag_strategy :scope_by_field => :name
 
   def initialize(attrs={})
     attrs[:name] = attrs[:name].to_s.downcase.gsub(BlackList, "")
