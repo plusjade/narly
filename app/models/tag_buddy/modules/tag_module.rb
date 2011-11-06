@@ -12,12 +12,6 @@ module TagBuddy
     end
 
     module ClassMethods
-
-      # Get all Tags
-      #
-      def tags(limit=nil)
-        TagBuddy::Query.tags(self, limit)
-      end
       
       # Spawn Tag instances from the given tag_string
       # where tag_string is a String of the format:

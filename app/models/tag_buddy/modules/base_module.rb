@@ -182,6 +182,16 @@ module TagBuddy
         self.scope_by_field = opts[:scope_by_field].to_s
       end
 
+      def buddy_get(limit = nil)  
+        # TODO: take out rails dependency (pluralize)  
+        type = self.namespace.downcase.pluralize.to_sym
+        if type == :tags
+          TagBuddy::Query.tags(self, limit)
+        else
+          TagBuddy::Query.collection(self, type, limit)
+        end
+      end
+      
       # Create and return the storage for the calling class.
       # Note the keys are namepsaced the calling class.
       #
@@ -192,7 +202,6 @@ module TagBuddy
           v.to_s.gsub(StorageDeliminator, "") 
         }.join(StorageDeliminator)
       end
-      
       
     end # ClassMethods
       
