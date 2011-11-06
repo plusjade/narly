@@ -48,7 +48,7 @@ module TagBuddy
 
       # Add TAG to USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_item(data[:item])
+      tag_array = data[:user].tags_via(data[:item])
       tag_array.push(data[:tag].scoped_field).uniq!
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
 
@@ -102,7 +102,7 @@ module TagBuddy
     
       # REMOVE TAG from USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_item(data[:item])
+      tag_array = data[:user].tags_via(data[:item])
       tag_array.delete(data[:tag].scoped_field)
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
     end
@@ -174,9 +174,9 @@ module TagBuddy
         if via_type.nil?
           TagBuddy::Query.tags(self, conditions[:limit])
         elsif via_type == :item
-          TagBuddy::Query.tags_on_item(self, via, conditions[:limit])
+          TagBuddy::Query.tags_via(self, via, conditions[:limit])
         elsif via_type == :user
-          TagBuddy::Query.tags_on_item(via, self, conditions[:limit])
+          TagBuddy::Query.tags_via(via, self, conditions[:limit])
         else
           raise "Invalid via condition."
         end

@@ -34,7 +34,7 @@ class User
   end  
 
   def tags_on_item(item)
-    self.tags_on_item(item).map do |name|
+    self.tags_via(item).map do |name|
       Tag.new(:name => name)
     end
   end
