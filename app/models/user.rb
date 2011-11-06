@@ -1,7 +1,7 @@
 class User
   include DataMapper::Resource
   include HubWire
-  include TagSystem::User
+  include TagBuddy::User
   
   githubify :type => "user"
   define_tag_strategy :namespace => "USER", :scope_by_field => :login

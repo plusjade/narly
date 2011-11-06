@@ -1,7 +1,7 @@
 class Repository
   include DataMapper::Resource
   include HubWire
-  include TagSystem::Item
+  include TagBuddy::Item
   
   githubify :type => "repo"
   define_tag_strategy :namespace => "REPO", :scope_by_field => :full_name

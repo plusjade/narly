@@ -1,5 +1,5 @@
 class Tag
-  include TagSystem::Tag
+  include TagBuddy::Tag
   attr_accessor :name, :total_count, :relative_count
 
   BlackList = /[^a-z 0-9 + # - .]/
