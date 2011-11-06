@@ -15,7 +15,7 @@ module TagBuddy
     def add_tag_association(*args)
       args << self
       data = {}
-      args.each { |o| data[o.class.tag_buddy_type] = o }
+      args.each { |o| data[o.class.namespace.downcase.to_sym] = o }
     
       # Add ITEM to the USER'S total ITEM data relative to TAG
       is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)
@@ -64,7 +64,7 @@ module TagBuddy
     def remove_tag_association(*args)
       args << self
       data = {}
-      args.each { |o| data[o.class.tag_buddy_type] = o }
+      args.each { |o| data[o.class.namespace.downcase.to_sym] = o }
     
       # Remove ITEM from the USER'S total ITEM data relative to TAG
       was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)

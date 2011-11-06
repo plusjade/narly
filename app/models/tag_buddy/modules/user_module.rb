@@ -34,7 +34,7 @@ module TagBuddy
     # Tag is a single Tag instance
     #
     def items_count(tag)
-      $redis.zscore self.storage_key(:tags), tag.scoped_field)
+      $redis.zscore self.storage_key(:tags), tag.scoped_field
     end
 
     def tags(limit=nil)
@@ -62,9 +62,6 @@ module TagBuddy
     
     module ClassMethods
 
-      def tag_buddy_type
-        :user
-      end
 
     end
     

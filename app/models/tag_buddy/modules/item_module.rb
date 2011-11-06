@@ -40,9 +40,6 @@ module TagBuddy
     
     module ClassMethods
       
-      def tag_buddy_type
-        :item
-      end
         
     end # ClassMethods
     

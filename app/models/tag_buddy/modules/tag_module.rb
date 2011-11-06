@@ -29,11 +29,7 @@ module TagBuddy
     end
     
     module ClassMethods
-      
-      def tag_buddy_type
-        :tag
-      end
-      
+
       # Get all Tags
       #
       def all(limit=nil)
