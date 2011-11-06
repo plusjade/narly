@@ -19,6 +19,20 @@ class User
   has n, :repositories, :child_key => [:user_ghid]
   
   
+  def repos_by_tags(tag, limit=100)
+    names = self.items_by_tags(tags, limit)
+    
+    # The default repo search should be via the "watched" tag.
+    # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
+    # So we load the user's watched repos from github but only in this default case.
+    #
+    if (names.blank? && tags.count == 1 && tags.first.name == "watched")
+      names = self.import_watched
+    end
+
+    Repository.all(:full_name => names, :order => [:full_name])
+  end  
+
   # Overwrite DM finder to try load_from_github on miss
   # This is so we can save this user behind the scenes.
   #

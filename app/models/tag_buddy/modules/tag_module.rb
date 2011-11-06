@@ -15,24 +15,17 @@ module TagBuddy
     # A user is attached to a tag when the user tags a repo with said tag.
     #
     def users(limit = nil)
-      ghids = Array($redis.smembers storage_key(:users))
-      ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
-
-      User.all(:ghid => ghids).sort! { |x,y| 
-        ghids.index(x.id) <=> ghids.index(y.id)
-      }
+      users = Array($redis.smembers storage_key(:users))
+      users = users[0, limit.to_i] unless limit.to_i.zero?
+      users
     end
         
-    # Get repos this tag is attached to.
+    # Get items this tag is attached to.
     #  
-    def repos(limit = nil)
-      names = Array($redis.smembers storage_key(:items))
-      # define sorting in redis.
-      names = ghids[0, limit.to_i] unless limit.to_i.zero?
-
-      Repository.all(:full_name => names).sort! { |x,y|
-        names.index(x.id) <=> names.index(y.id)
-      }
+    def items(limit = nil)
+      items = Array($redis.smembers storage_key(:items))
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+      items
     end
     
     module ClassMethods
@@ -66,10 +59,10 @@ module TagBuddy
         end
       end
 
-      # Return an Array of Repository instances associated with the provided tags.
+      # Return an Array of items associated with the provided tags.
       # tags can be one or an Array of Tag instances or a tag_string
       #
-      def repos(tags, limit = nil)
+      def items(tags, limit = nil)
         tags = case tags
         when String
           new_from_tag_string(tags)
@@ -78,12 +71,9 @@ module TagBuddy
         end
 
         keys = tags.map { |tag| tag.storage_key(:items) }
-        ghids = $redis.send(:sinter, *keys)
-        ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
-
-        Repository.all(:ghid => ghids).sort! { |x,y| 
-          ghids.index(x.id) <=> ghids.index(y.id)
-        }
+        items = $redis.send(:sinter, *keys)
+        items = items[0, limit.to_i] unless limit.to_i.zero?
+        items
       end
 
       # tags_data format: 
@@ -104,7 +94,7 @@ module TagBuddy
       # the equivalent tag_string
       #
       def to_tag_string(tags)
-        Array(tags).map! { |tag| tag.name }.join(":")
+        Array(tags).map! { |tag| tag.scoped_field }.join(":")
       end
         
         

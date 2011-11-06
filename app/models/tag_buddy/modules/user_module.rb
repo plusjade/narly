@@ -10,51 +10,52 @@ module TagBuddy
       model.namespace = "USER"
     end
     
-    # Get repos tagged by this user.
+    # Get items tagged by this user.
+    #
+    def items(limit = nil)
+      items = $redis.smembers(self.storage_key(:items))
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+      items
+    end
+    
+    # Get items tagged by this user with a particular tag or set of tags.
     # tags is a single or an array of Tag instances
-    def repos_by_tags(tags, limit = nil)
+    #
+    def items_by_tags(tags, limit = nil)
       tags = Array(tags)
-      keys = tags.map { |tag| self.storage_key_for_tag_repos(tag.name) }
-      ghids = $redis.send(:sinter, *keys)
+      keys = tags.map { |tag| self.storage_key_for_tag_items(tag.scoped_field) }
 
-      # The default repo search should be via the "watched" tag.
-      # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
-      # So we load the user's watched repos from github but only in this default case.
-      #
-      if (ghids.blank? && tags.count == 1 && tags.first.name == "watched")
-        ghids = self.import_watched
-      end
-
-      ghids = ghids[0, limit.to_i] unless limit.to_i.zero?
-
-      Repository.all(:full_name => ghids, :order => [:full_name])
+      items = $redis.send(:sinter, *keys)
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+      items
     end
 
-    # Get a count of repos tagged with given tag by the given user
+    # Get a count of items tagged with given tag by the given user
     # Tag is a single Tag instance
     #
-    def repos_count(tag)
-      (tag.is_a?(Tag) ? ($redis.zscore self.storage_key(:tags), tag.name) : 0).to_i
+    def items_count(tag)
+      $redis.zscore self.storage_key(:tags), tag.scoped_field)
     end
 
     def tags(limit=nil)
-      self.new_from_tags_data(tags_data(limit))
+      self.tags_data(limit)
     end
 
-    def tags_on_repo(repo)
-      tags_on_repo_as_array(repo).map do |name|
-        self.new(:name => name)
-      end
-    end
+    # broken
+    #def tags_on_item(item)
+    #  tags_on_item_as_array(item).map do |name|
+    #    self.new(:name => name)
+    #  end
+    #end
 
-    def tags_on_repo_as_array(repo)
-      tag_array = $redis.hget self.storage_key(:items, :tags), repo.ghid
+    def tags_on_item_as_array(item)
+      tag_array = $redis.hget self.storage_key(:items, :tags), item.scoped_field
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
 
       tag_array.sort!
     end
 
-    def storage_key_for_tag_repos(tag)
+    def storage_key_for_tag_items(tag)
       storage_key(:tag, tag, :items)
     end
     

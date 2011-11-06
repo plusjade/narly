@@ -18,7 +18,7 @@ module TagBuddy
       args.each { |o| data[o.class.tag_buddy_type] = o }
     
       # Add ITEM to the USER'S total ITEM data relative to TAG
-      is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
+      is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)
 
       $redis.multi do
         # Add ITEM to the USERS's total ITEM data.
@@ -48,7 +48,7 @@ module TagBuddy
 
       # Add TAG to USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_repo_as_array(data[:item])
+      tag_array = data[:user].tags_on_item_as_array(data[:item])
       tag_array.push(data[:tag].scoped_field).uniq!
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
 
@@ -67,7 +67,7 @@ module TagBuddy
       args.each { |o| data[o.class.tag_buddy_type] = o }
     
       # Remove ITEM from the USER'S total ITEM data relative to TAG
-      was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_repos(data[:tag].scoped_field), data[:item].scoped_field)
+      was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)
 
       $redis.multi do
         # Remove ITEM from the USERS's total ITEM data.
@@ -102,7 +102,7 @@ module TagBuddy
     
       # REMOVE TAG from USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tag_array = data[:user].tags_on_repo_as_array(data[:item])
+      tag_array = data[:user].tags_on_item_as_array(data[:item])
       tag_array.delete(data[:tag].scoped_field)
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
     end
