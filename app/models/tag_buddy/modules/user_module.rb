@@ -15,13 +15,6 @@ module TagBuddy
     def items_by_tags(tags, limit = nil)
       TagBuddy::Query.items_by_tags(self, tags, limit)
     end
-    
-    # Get a count of items tagged with given tag by the given user
-    # Tag is a single Tag instance
-    #
-    def items_count(tag)
-      $redis.zscore self.storage_key(:tags), tag.scoped_field
-    end
 
     def tags_on_item(item)
       TagBuddy::Query.tags_on_item(self, tags, limit)
