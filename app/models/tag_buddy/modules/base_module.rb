@@ -132,7 +132,16 @@ module TagBuddy
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
     end
   
-  
+    #
+    #
+    def buddy_get(type, limit = nil)    
+      if type == :tags
+        TagBuddy::Query.tags(self, limit)
+      else
+        TagBuddy::Query.collection(self, type, limit)
+      end
+    end
+    
     # Create and return the storage key for the calling resource.
     # Namespace and scoping field is applied.
     #
@@ -141,19 +150,6 @@ module TagBuddy
       self.class.storage_key(*args)
     end
 
-  
-    # returns array with tag_name, score.
-    # ex: ["ruby", "1", "git", "1"] 
-    #
-    def tags_data(limit=nil)
-      $redis.zrevrange( 
-        self.storage_key(:tags),
-        0, 
-        (limit.to_i.nil? ? -1 : limit.to_i - 1),
-        :with_scores => true
-      )
-    end
-  
     # Return the field we are scoping on for this model instance.
     #
     def scoped_field

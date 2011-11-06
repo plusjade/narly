@@ -10,15 +10,6 @@ module TagBuddy
       model.namespace = "ITEM"
     end
     
-    def users(limit=nil)
-      TagBuddy::Query.collection(self, :users, limit)
-    end
-    
-    def tags(limit=nil)
-      TagBuddy::Query.tags(self, limit)
-    end
-
-
     # Return items that share this item's top 3 tags.  
     # Ideally we want what items share the top 3 tags in *their* top n tags
     # but that's kind of hard right now.

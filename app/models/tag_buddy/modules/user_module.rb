@@ -10,12 +10,6 @@ module TagBuddy
       model.namespace = "USER"
     end
         
-    # Get items tagged by this user.
-    #
-    def items(limit = nil)
-      TagBuddy::Query.collection(self, :items, limit)
-    end
-    
     # Get items tagged by this user with a particular tag or set of tags.
     # tags is a single or an array of Tag instances
     #
@@ -33,10 +27,6 @@ module TagBuddy
     #
     def items_count(tag)
       $redis.zscore self.storage_key(:tags), tag.scoped_field
-    end
-
-    def tags(limit=nil)
-      TagBuddy::Query.tags(self, limit)
     end
 
     def tags_on_item_as_array(item)

@@ -10,15 +10,8 @@ module TagBuddy
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "TAG"
     end
-    
-    def users(limit = nil)
-      TagBuddy::Query.collection(self, :users, limit)
-    end
+
         
-    def items(limit = nil)
-      TagBuddy::Query.collection(self, :items, limit)
-    end
-    
     module ClassMethods
 
       # Get all Tags
