@@ -5,7 +5,6 @@ module TagBuddy
     
     def self.included(model)
       model.extend(TagBuddy::Base::ClassMethods)
-      model.extend(ClassMethods)
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "ITEM"
     end
@@ -20,12 +19,6 @@ module TagBuddy
       items.delete(self.items.to_s)
       items = items[0, limit.to_i] unless limit.to_i.zero?
     end
-    
-    
-    module ClassMethods
-      
-        
-    end # ClassMethods
     
   end # User
   

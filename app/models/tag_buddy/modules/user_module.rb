@@ -5,7 +5,6 @@ module TagBuddy
     
     def self.included(model)
       model.extend(TagBuddy::Base::ClassMethods)
-      model.extend(ClassMethods)
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "USER"
     end
@@ -39,14 +38,7 @@ module TagBuddy
     def storage_key_for_tag_items(tag)
       storage_key(:tag, tag, :items)
     end
-    
-    
-    module ClassMethods
-
-
-    end
-    
-    
+        
   end
   
   

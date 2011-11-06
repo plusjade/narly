@@ -11,7 +11,6 @@ module TagBuddy
       model.namespace = "TAG"
     end
 
-        
     module ClassMethods
 
       # Get all Tags
@@ -70,7 +69,7 @@ module TagBuddy
       end
         
         
-    end # TagClassMethods
+    end # ClassMethods
       
     
   end # Tag
