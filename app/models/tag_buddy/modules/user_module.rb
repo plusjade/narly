@@ -39,13 +39,6 @@ module TagBuddy
       TagBuddy::Query.tags(self, limit)
     end
 
-    # broken
-    #def tags_on_item(item)
-    #  tags_on_item_as_array(item).map do |name|
-    #    self.new(:name => name)
-    #  end
-    #end
-
     def tags_on_item_as_array(item)
       tag_array = $redis.hget self.storage_key(:items, :tags), item.scoped_field
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []

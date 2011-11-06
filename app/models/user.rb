@@ -33,6 +33,12 @@ class User
     Repository.all(:full_name => names, :order => [:full_name])
   end  
 
+  def tags_on_item(item)
+    self.tags_on_item_as_array(item).map do |name|
+      Tag.new(:name => name)
+    end
+  end
+  
   # Overwrite DM finder to try load_from_github on miss
   # This is so we can save this user behind the scenes.
   #
