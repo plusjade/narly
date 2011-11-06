@@ -20,7 +20,7 @@ class User
   
   
   def repos_by_tags(tag, limit=100)
-    names = self.items_by_tags(tags, limit)
+    names = self.items_via(tags, limit)
     
     # The default repo search should be via the "watched" tag.
     # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.

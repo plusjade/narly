@@ -186,9 +186,9 @@ module TagBuddy
         if via_type.nil?
           TagBuddy::Query.collection(self, type, conditions[:limit])
         elsif via_type == :tag
-          TagBuddy::Query.items_by_tags(self, via, conditions[:limit])
+          TagBuddy::Query.items_via(self, via, conditions[:limit])
         elsif via_type == :user
-          TagBuddy::Query.items_by_tags(via, self, conditions[:limit])
+          TagBuddy::Query.items_via(via, self, conditions[:limit])
         else
           raise "Invalid via condition."
         end

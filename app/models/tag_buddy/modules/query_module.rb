@@ -26,7 +26,7 @@ module TagBuddy
     # Get items tagged by this user with a particular tag or set of tags.
     # tags is a single or an array of Tag instances
     #
-    def self.items_by_tags(class_or_instance, tags, limit = nil)
+    def self.items_via(class_or_instance, tags, limit = nil)
       tags = Array(tags)
       
       # users have different storage_keys, how to merge?
