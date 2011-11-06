@@ -1,6 +1,31 @@
 module TagBuddy
   StorageDeliminator = ":"
 
+  module Query
+    
+    # A collection query simply returns members from a given set
+    #
+    #
+    def self.collection(instance, type, limit)
+      items = $redis.smembers(instance.storage_key(type))
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+      items
+    end
+    
+    # returns array with tag_name, score.
+    # ex: ["ruby", "1", "git", "1"] 
+    #
+    def self.tags_data(intance, limit=nil)
+      $redis.zrevrange( 
+        self.storage_key(:tags),
+        0, 
+        (limit.to_i.nil? ? -1 : limit.to_i - 1),
+        :with_scores => true
+      )
+    end
+    
+  end
+  
   # These are instance methods that get included on all 3 models.
   #
   module Base
@@ -112,12 +137,8 @@ module TagBuddy
     # Namespace and scoping field is applied.
     #
     def storage_key(*args)
-      args.unshift(
-        self.class.namespace,
-        self.send(self.class.scope_by_field)
-      ).map! { |v| 
-        v.to_s.gsub(StorageDeliminator, "") 
-      }.join(StorageDeliminator)
+      args = args.unshift(self.send(self.class.scope_by_field))
+      self.class.storage_key(*args)
     end
 
   
@@ -147,6 +168,18 @@ module TagBuddy
         self.scope_by_field = opts[:scope_by_field].to_s
       end
 
+      # Create and return the storage for the calling class.
+      # Note the keys are namepsaced the calling class.
+      #
+      def storage_key(*args)
+        args.unshift(
+          self.namespace,
+        ).map! { |v| 
+          v.to_s.gsub(StorageDeliminator, "") 
+        }.join(StorageDeliminator)
+      end
+      
+      
     end # ClassMethods
       
   
