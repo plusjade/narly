@@ -41,17 +41,6 @@ module TagBuddy
       self.new_from_tags_data(tags_data(limit))
     end
 
-    # Tag a repo with the given tag
-    # tag is a Tag instance.
-    #
-    def tag_repo(repo, tag)
-      add_tag_associations(self, repo, tag)
-    end
-
-    def untag_repo(repo, tag)
-      remove_tag_associations(self, repo, tag)
-    end
-
     def tags_on_repo(repo)
       tags_on_repo_as_array(repo).map do |name|
         self.new(:name => name)

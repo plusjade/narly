@@ -10,14 +10,6 @@ module TagBuddy
       class << model; attr_accessor :namespace, :scope_by_field end
       model.namespace = "TAG"
     end
-
-    def tag_by_user_repo(user, repo)
-      add_tag_associations(user, repo, self)
-    end
-
-    def untag_by_user_repo(user, repo)
-      remove_tag_associations(user, repo, self)
-    end
     
     # Return an Array of User instances this tag is associated with.
     # A user is attached to a tag when the user tags a repo with said tag.

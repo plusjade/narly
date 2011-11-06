@@ -10,15 +10,6 @@ module TagBuddy
       model.namespace = "ITEM"
     end
     
-    
-    def tag_by_user(user, tag)
-      add_tag_associations(user, self, tag)
-    end
-
-    def untag_by_user(user, tag)
-      remove_tag_associations(user, self, tag)
-    end  
-
     # Return an Array of Tag instances associated with this Repo.
     # Tags become associated with a repo when a user tags said repo.
     #
