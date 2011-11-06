@@ -228,14 +228,65 @@ module TagBuddy
         self.scope_by_field = opts[:scope_by_field].to_s
       end
 
-      def buddy_get(limit = nil)  
-        # TODO: take out rails dependency (pluralize)  
-        type = self.namespace.downcase.pluralize.to_sym
-        if type == :tags
-          TagBuddy::Query.tags(self, limit)
-        else
-          TagBuddy::Query.collection(self, type, limit)
+      # Get resources from the total collection pool for this class.
+      # i.e. Tag.buddy_get would return all tags
+      # i.e. User.buddy_get would return all users
+      #
+      # passing conditions will filter based on those conditions
+      #
+      def buddy_get(conditions={})
+        type = "#{self.namespace.downcase}s".to_sym
+        via = conditions[:via]
+        via_type = nil
+        if via.is_a?(Array)
+          via_type = via.first.class.namespace.downcase.to_sym
+        elsif via
+          via_type = via.class.namespace.downcase.to_sym
         end
+        puts "via_type: #{via_type}"
+        
+        if type == :tags
+
+          if via_type.nil?
+            TagBuddy::Query.tags(self, conditions[:limit])
+          elsif via_type == :item
+            #TagBuddy::Query.tags_on_item(self, via, conditions[:limit])
+            TagBuddy::Query.tags(via, conditions[:limit])
+          elsif via_type == :user
+            TagBuddy::Query.tags(via, conditions[:limit])
+          else
+            raise "Invalid via condition."
+          end
+
+        elsif type == :items
+
+          if via_type.nil?
+            TagBuddy::Query.collection(self, type, conditions[:limit])
+          elsif via_type == :tag
+            TagBuddy::Query.items_by_tags(self, via, conditions[:limit])
+          elsif via_type == :user
+
+          else
+            raise "Invalid via condition."
+          end
+
+        elsif type == :users
+
+          if via_type.nil?
+            TagBuddy::Query.collection(self, type, conditions[:limit])
+          elsif via_type == :item
+
+          elsif via_type == :tag
+
+          else
+            raise "Invalid via condition."
+          end
+
+        else   
+          raise "Invalid type"
+        end
+
+
       end
       
       # Create and return the storage for the calling class.
