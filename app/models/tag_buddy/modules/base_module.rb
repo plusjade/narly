@@ -163,7 +163,12 @@ module TagBuddy
       elsif via
         via_type = via.class.namespace.downcase.to_sym
       end
-      
+
+      # type is the type of resource we expect to return
+      # self is the resource we are scoping to.
+      # via is the resource(s) we are filtering by.
+      # via_type is the type of resource we are filtering by.
+
       if type == :tags
         
         if via_type.nil?
@@ -171,7 +176,7 @@ module TagBuddy
         elsif via_type == :item
           TagBuddy::Query.tags_on_item(self, via, conditions[:limit])
         elsif via_type == :user
-          
+          TagBuddy::Query.tags_on_item(via, self, conditions[:limit])
         else
           raise "Invalid via condition."
         end
@@ -183,7 +188,7 @@ module TagBuddy
         elsif via_type == :tag
           TagBuddy::Query.items_by_tags(self, via, conditions[:limit])
         elsif via_type == :user
-          
+          TagBuddy::Query.items_by_tags(via, self, conditions[:limit])
         else
           raise "Invalid via condition."
         end
@@ -193,9 +198,9 @@ module TagBuddy
         if via_type.nil?
           TagBuddy::Query.collection(self, type, conditions[:limit])
         elsif via_type == :item
-
+          TagBuddy::Query.users_via(via, self, conditions[:limit])
         elsif via_type == :tag
-          
+          TagBuddy::Query.users_via(self, via, conditions[:limit])
         else
           raise "Invalid via condition."
         end
@@ -243,14 +248,18 @@ module TagBuddy
         elsif via
           via_type = via.class.namespace.downcase.to_sym
         end
-        puts "via_type: #{via_type}"
+        
+        # type is the type of resource we expect to return
+        # self is not set here so we aren't scoping to anything.
+        # via is the resource(s) we are filtering by.
+        # via_type is the type of resource we are filtering by.
+        
         
         if type == :tags
 
           if via_type.nil?
             TagBuddy::Query.tags(self, conditions[:limit])
           elsif via_type == :item
-            #TagBuddy::Query.tags_on_item(self, via, conditions[:limit])
             TagBuddy::Query.tags(via, conditions[:limit])
           elsif via_type == :user
             TagBuddy::Query.tags(via, conditions[:limit])
@@ -263,9 +272,9 @@ module TagBuddy
           if via_type.nil?
             TagBuddy::Query.collection(self, type, conditions[:limit])
           elsif via_type == :tag
-            TagBuddy::Query.items_by_tags(self, via, conditions[:limit])
+            TagBuddy::Query.collection(via, type, conditions[:limit])
           elsif via_type == :user
-
+            TagBuddy::Query.collection(via, type, conditions[:limit])
           else
             raise "Invalid via condition."
           end
@@ -275,9 +284,9 @@ module TagBuddy
           if via_type.nil?
             TagBuddy::Query.collection(self, type, conditions[:limit])
           elsif via_type == :item
-
+            TagBuddy::Query.collection(via, type, conditions[:limit])
           elsif via_type == :tag
-
+            TagBuddy::Query.collection(via, type, conditions[:limit])
           else
             raise "Invalid via condition."
           end

@@ -40,6 +40,23 @@ module TagBuddy
       items = items[0, limit.to_i] unless limit.to_i.zero?
       items
     end
+    
+    
+    # get all users using tags on items
+    # TAG:mysql:users (set)
+    # ITEM:1:users (set)
+    
+    #tag.storage_key(:users)
+    #item.storage_key(:users)
+    #
+    def self.users_via(items, tags, limit = nil)
+      keys = Array(tags).map { |tag| tag.storage_key(:users) }
+      Array(items).each { |item| keys << item.storage_key(:users) }
+        
+      users = $redis.send(:sinter, *keys)
+      users = users[0, limit.to_i] unless limit.to_i.zero?
+      users
+    end
         
   
     def self.tags_on_item(user, item, limit = nil)
