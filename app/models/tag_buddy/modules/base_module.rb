@@ -107,16 +107,105 @@ module TagBuddy
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].scoped_field, ActiveSupport::JSON.encode(tag_array)
     end
   
+    # This is the main query interface for getting objects via TagBuddy.
+    # type = (Symbol) in the set [:users, :items, :tags]
+    # conditions = (Hash) 
+    #   :via = Object or Array of objects 
+    #     Specifies the object or Array of objects you want to query on.
+    #     "Query on" is somewhat vague. 
+    #     But I trust you can infer from the relationships how a :via condition will work.
+    #     Example: @user.buddy_get(:tags, :via => @item)
+    #     We expect tags to be returned since our type is :tags
+    #     since we are calling buddy_get on @user 
+    #     you can infer that we are trying to get "tags from @user via @item"
+    #     Or put more accurately : "tags from @user on @item"
     #
+    #  :limit = (Integer)
+    #    Specifies the limit of objects to return
     #
-    def buddy_get(type, limit = nil)    
-      if type == :tags
-        TagBuddy::Query.tags(self, limit)
-      else
-        TagBuddy::Query.collection(self, type, limit)
+    # API:
+    # -----------------------------------------------------------
+    # User instance
+    #
+    #   @user.buddy_get(:users)  # invalid
+    #   @user.buddy_get(:items)  # get all items tagged by @user
+    #   @user.buddy_get(:tags)   # get all tags used by @user
+    # 
+    #   @user.buddy_get(:users, :via => @tags) # invalid
+    #   @user.buddy_get(:items, :via => @tags) # get all items tagged by @user with @tags
+    #   @user.buddy_get(:tags, :via => @item) # get all tags made by @user on @item
+    # 
+    # Item instance 
+    #
+    #   @item.buddy_get(:users)  # all users that have tagged this item.
+    #   @item.buddy_get(:items)  # invalid
+    #   @item.buddy_get(:tags)   # all tags on this item.
+    # 
+    #   @item.buddy_get(:users, :via => @tags) # all users that have tagged this item with @tags.
+    #   @item.buddy_get(:items, :via => @tags) # invalid
+    #   @item.buddy_get(:tags, :via => @user) # all tags on @item by @user
+    #
+    # Tag instance
+    #
+    #   @tag.buddy_get(:users)  # all users that have used @tag.
+    #   @tag.buddy_get(:items)  # all items tagged by @tag
+    #   @tag.buddy_get(:tags)   # invalid
+    # 
+    #   @tag.buddy_get(:users, :via => @item) # all users that have tagged @item with @tag
+    #   @tag.buddy_get(:items, :via => @user) # all items tagged @tag by @user
+    #   @tag.buddy_get(:tags, :via => @user) # invalid
+    #
+    def buddy_get(type, conditions={})
+      via = conditions[:via]
+      via_type = nil
+      if via.is_a?(Array)
+        via_type = via.first.class.namespace.downcase.to_sym
+      elsif via
+        via_type = via.class.namespace.downcase.to_sym
       end
-    end
+      
+      if type == :tags
         
+        if via_type.nil?
+          TagBuddy::Query.tags(self, conditions[:limit])
+        elsif via_type == :item
+          TagBuddy::Query.tags_on_item(self, via, conditions[:limit])
+        elsif via_type == :user
+          
+        else
+          raise "Invalid via condition."
+        end
+        
+      elsif type == :items
+        
+        if via_type.nil?
+          TagBuddy::Query.collection(self, type, conditions[:limit])
+        elsif via_type == :tag
+          TagBuddy::Query.items_by_tags(self, via, conditions[:limit])
+        elsif via_type == :user
+          
+        else
+          raise "Invalid via condition."
+        end
+      
+      elsif type == :users
+        
+        if via_type.nil?
+          TagBuddy::Query.collection(self, type, conditions[:limit])
+        elsif via_type == :item
+
+        elsif via_type == :tag
+          
+        else
+          raise "Invalid via condition."
+        end
+        
+      else   
+        raise "Invalid type"
+      end
+      
+    end
+     
     # Create and return the storage key for the calling resource.
     # Namespace and scoping field is applied.
     #
