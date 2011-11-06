@@ -23,17 +23,9 @@ module TagBuddy
 
       # Get all Tags
       #
-      def all(limit=nil)
-        self.new_from_tags_data(
-          $redis.zrevrange( 
-            self.namespace,
-            0, 
-            (limit.to_i.nil? ? -1 : limit.to_i - 1),
-            :with_scores => true
-          )
-        )
+      def tags(limit=nil)
+        TagBuddy::Query.tags(self, limit)
       end
-        
       
       # Spawn Tag instances from the given tag_string
       # where tag_string is a String of the format:

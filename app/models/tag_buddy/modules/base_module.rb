@@ -15,9 +15,9 @@ module TagBuddy
     # returns array with tag_name, score.
     # ex: ["ruby", "1", "git", "1"] 
     #
-    def self.tags_data(intance, limit=nil)
+    def self.tags(class_or_instance, limit=nil)
       $redis.zrevrange( 
-        self.storage_key(:tags),
+        class_or_instance.storage_key(:tags),
         0, 
         (limit.to_i.nil? ? -1 : limit.to_i - 1),
         :with_scores => true
@@ -67,7 +67,7 @@ module TagBuddy
         end
       
         # Add TAG to total TAG data
-        $redis.zincrby data[:tag].class.namespace , 1, data[:tag].scoped_field
+        $redis.zincrby data[:tag].class.storage_key(:tags) , 1, data[:tag].scoped_field
 
       end
 
@@ -121,8 +121,8 @@ module TagBuddy
       end
       
       # Decrement TAG count in TAG data
-      if ($redis.zincrby data[:tag].class.namespace, -1, data[:tag].scoped_field).to_i <= 0
-        $redis.zrem data[:tag].class.namespace, data[:tag].scoped_field
+      if ($redis.zincrby data[:tag].class.storage_key(:tags), -1, data[:tag].scoped_field).to_i <= 0
+        $redis.zrem data[:tag].class.storage_key(:tags), data[:tag].scoped_field
       end
     
       # REMOVE TAG from USER's tag data relative to ITEM

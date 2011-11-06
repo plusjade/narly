@@ -15,7 +15,7 @@ module TagBuddy
     end
     
     def tags(limit=nil)
-      self.tags_data(limit)
+      TagBuddy::Query.tags(self, limit)
     end
 
 
