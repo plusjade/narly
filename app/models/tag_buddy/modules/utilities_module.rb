@@ -15,10 +15,10 @@ module TagBuddy
         type = nil  
       elsif TagBuddy.resource_models.has_value?(sample_resource)
         type = TagBuddy.resource_models.key(sample_resource)
-        "#{type}s".to_sym
+        type = "#{type}s".to_sym
       elsif TagBuddy.resource_models.has_value?(sample_resource.class)
         type = TagBuddy.resource_models.key(sample_resource.class)
-        "#{type}s".to_sym
+        type = "#{type}s".to_sym
       else
         raise "Invalid via type: #{type}"
       end
