@@ -6,7 +6,8 @@ module TagBuddy
     #
     #
     def self.collection(type, conditions)
-      items = $redis.smembers(conditions[:via].storage_key(type))
+      via = conditions[:via].is_a?(Array) ? conditions[:via].first : conditions[:via]
+      items = $redis.smembers(via.storage_key(type))
       items = items[0, conditions[:limit].to_i] unless conditions[:limit].to_i.zero?
       items
     end
