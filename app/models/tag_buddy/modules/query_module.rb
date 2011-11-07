@@ -22,7 +22,7 @@ module TagBuddy
         scope.storage_key(:tags),
         0, 
         (conditions[:limit].to_i.nil? ? -1 : conditions[:limit].to_i - 1),
-        :with_scores => true
+        :with_scores => (conditions[:with_scores] == false) ? false : true
       )
     end
     
