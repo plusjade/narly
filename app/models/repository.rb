@@ -1,10 +1,10 @@
 class Repository
   include DataMapper::Resource
   include HubWire
-  include TagBuddy::Item
+  include TagBuddy::Base
   
   githubify :type => "repo"
-  define_tag_strategy :scope_by_field => :full_name
+  define_tag_strategy :resource => :item, :scope_by_field => :full_name
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true

@@ -1,10 +1,10 @@
 class User
   include DataMapper::Resource
   include HubWire
-  include TagBuddy::User
+  include TagBuddy::Base
   
   githubify :type => "user"
-  define_tag_strategy :scope_by_field => :login
+  define_tag_strategy :resource => :user, :scope_by_field => :login
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true

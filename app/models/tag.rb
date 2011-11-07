@@ -1,10 +1,10 @@
 class Tag
-  include TagBuddy::Tag
+  include TagBuddy::Base
   attr_accessor :name, :total_count, :relative_count
 
   BlackList = /[^a-z 0-9 + # - .]/
 
-  define_tag_strategy :scope_by_field => :name
+  define_tag_strategy :resource => :tag, :scope_by_field => :name
 
   def initialize(attrs={})
     attrs[:name] = attrs[:name].to_s.downcase.gsub(BlackList, "")

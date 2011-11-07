@@ -1,11 +1,17 @@
 module TagBuddy
+
   StorageDeliminator = ":"
   ValidTypes = [:items, :tags, :users]
 
   # These are instance methods that get included on all 3 models.
   #
   module Base
-  
+    
+    def self.included(model)
+      model.extend(TagBuddy::Base::ClassMethods)
+      class << model; attr_accessor :scope_by_field end
+    end
+
     # Record everything needed to make user<->rep tag associations.
     # We use redis to store associations and counts relative to those associations.
     #
@@ -16,7 +22,8 @@ module TagBuddy
     def add_tag_association(*args)
       args << self
       data = {}
-      args.each { |o| data[o.class.namespace.downcase.to_sym] = o }
+      
+      args.each { |o| data[TagBuddy.resource_models.key(o.class)] = o }
     
       # Add ITEM to the USER'S total ITEM data relative to TAG
       is_new_tag_on_item_for_user = ($redis.sadd data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)
@@ -65,7 +72,7 @@ module TagBuddy
     def remove_tag_association(*args)
       args << self
       data = {}
-      args.each { |o| data[o.class.namespace.downcase.to_sym] = o }
+      args.each { |o| data[TagBuddy.resource_models.key(o.class)] = o }
     
       # Remove ITEM from the USER'S total ITEM data relative to TAG
       was_removed_tag_on_item_for_user = ($redis.srem data[:user].storage_key_for_tag_items(data[:tag].scoped_field), data[:item].scoped_field)
@@ -254,6 +261,13 @@ module TagBuddy
       def define_tag_strategy(opts={})
         opts[:scope_by_field] ||= ""
         self.scope_by_field = opts[:scope_by_field].to_s
+        resource_type = opts[:resource].to_s.downcase.to_sym
+
+        if ValidTypes.include?("#{resource_type}s".to_sym)
+          TagBuddy.resource_models[resource_type] = self
+        else
+          raise "Invalid Resource type"
+        end
       end
 
       # Get resources from the total collection pool for this class.
@@ -287,7 +301,7 @@ module TagBuddy
       #
       def storage_key(*args)
         args.unshift(
-          self.namespace,
+          TagBuddy.resource_models.key(self),
         ).map! { |v| 
           v.to_s.gsub(StorageDeliminator, "") 
         }.join(StorageDeliminator)
