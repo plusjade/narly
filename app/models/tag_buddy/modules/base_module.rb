@@ -262,62 +262,23 @@ module TagBuddy
       #
       # passing conditions will filter based on those conditions
       #
+      # [response_type] is the type of resource we expect to return
+      # [via_type] is the type of resource we are filtering by.
+      # [self] is the class level resource we are scoping to.
+      #
       def buddy_get(conditions={})
-        type = "#{self.namespace.downcase}s".to_sym
-        via = conditions[:via]
-        via_type = nil
-        if via.is_a?(Array)
-          via_type = via.first.class.namespace.downcase.to_sym
-        elsif via
-          via_type = via.class.namespace.downcase.to_sym
-        end
+        response_type = TagBuddy::Utilities.get_type(self)
+        via_type = TagBuddy::Utilities.get_type(conditions[:via])
         
-        # type is the type of resource we expect to return
-        # self is not set here so we aren't scoping to anything.
-        # via is the resource(s) we are filtering by.
-        # via_type is the type of resource we are filtering by.
-        
-        
-        if type == :tags
-
-          if via_type.nil?
-            TagBuddy::Query.tags(self, conditions[:limit])
-          elsif via_type == :item
-            TagBuddy::Query.tags(via, conditions[:limit])
-          elsif via_type == :user
-            TagBuddy::Query.tags(via, conditions[:limit])
-          else
-            raise "Invalid via condition."
-          end
-
-        elsif type == :items
-
-          if via_type.nil?
-            TagBuddy::Query.collection(self, type, conditions[:limit])
-          elsif via_type == :tag
-            TagBuddy::Query.collection(via, type, conditions[:limit])
-          elsif via_type == :user
-            TagBuddy::Query.collection(via, type, conditions[:limit])
-          else
-            raise "Invalid via condition."
-          end
-
-        elsif type == :users
-
-          if via_type.nil?
-            TagBuddy::Query.collection(self, type, conditions[:limit])
-          elsif via_type == :item
-            TagBuddy::Query.collection(via, type, conditions[:limit])
-          elsif via_type == :tag
-            TagBuddy::Query.collection(via, type, conditions[:limit])
-          else
-            raise "Invalid via condition."
-          end
-
+        if response_type == :tags
+          TagBuddy::Query.tags({
+            :users => self, 
+            :limit => conditions[:limit]
+          })
         else   
-          raise "Invalid type"
+          conditions[:via] = self if via_type.nil?
+          TagBuddy::Query.collection(response_type, conditions)
         end
-
 
       end
       
