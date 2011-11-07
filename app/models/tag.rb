@@ -4,7 +4,7 @@ class Tag
 
   BlackList = /[^a-z 0-9 + # - .]/
 
-  define_tag_strategy :resource => :tag, :scope_by_field => :name
+  define_tag_strategy :resource => :tag, :named_scope => :name
 
   def initialize(attrs={})
     attrs[:name] = attrs[:name].to_s.downcase.gsub(BlackList, "")
@@ -47,7 +47,7 @@ class Tag
   # the equivalent tag_string
   #
   def to_tag_string(tags)
-    Array(tags).map! { |tag| tag.scoped_field }.join(":")
+    Array(tags).map! { |tag| tag.buddy_named_scope }.join(":")
   end
   
 end

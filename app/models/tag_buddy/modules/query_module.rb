@@ -34,7 +34,7 @@ module TagBuddy
       
       # users have different storage_keys, how to merge?
       if users.first.is_a?(User)
-        keys = tags.map { |tag| users.first.storage_key(:tag, tag.scoped_field, :items) }
+        keys = tags.map { |tag| users.first.storage_key(:tag, tag.buddy_named_scope, :items) }
       else
         keys = tags.map { |tag| tag.storage_key(:items) }
       end
@@ -64,7 +64,7 @@ module TagBuddy
         
   
     def self.tags_via(conditions)
-      tag_array = $redis.hget conditions[:users].storage_key(:items, :tags), conditions[:items].scoped_field
+      tag_array = $redis.hget conditions[:users].storage_key(:items, :tags), conditions[:items].buddy_named_scope
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
 
       tag_array.sort!

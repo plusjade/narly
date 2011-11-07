@@ -4,7 +4,7 @@ class Repository
   include TagBuddy::Base
   
   githubify :type => "repo"
-  define_tag_strategy :resource => :item, :scope_by_field => :full_name
+  define_tag_strategy :resource => :item, :named_scope => :full_name
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true

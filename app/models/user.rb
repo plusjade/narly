@@ -4,7 +4,7 @@ class User
   include TagBuddy::Base
   
   githubify :type => "user"
-  define_tag_strategy :resource => :user, :scope_by_field => :login
+  define_tag_strategy :resource => :user, :named_scope => :login
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
