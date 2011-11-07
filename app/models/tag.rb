@@ -22,7 +22,7 @@ class Tag
   #   ["ruby", "1", "git", "1"] 
   #   where scores represent tag count and come directly after their tag.
   #
-  def new_from_tags_data(tags_data)
+  def self.new_from_tags_data(tags_data)
     tags = []
     tags_data.each_with_index do |name, i|
 			next if (i > 0 && i.odd?)
@@ -37,7 +37,7 @@ class Tag
   #   tag1:tag2:tag3:tagN:...
   # This format is used in the url as paramater
   #
-  def new_from_tag_string(tag_string)
+  def self.new_from_tag_string(tag_string)
     tag_string.to_s.split(":").map do |name|
       new(:name => name)
     end
@@ -46,7 +46,7 @@ class Tag
   # Takes one or more Tag instances (via array) and provides
   # the equivalent tag_string
   #
-  def to_tag_string(tags)
+  def self.to_tag_string(tags)
     Array(tags).map! { |tag| tag.buddy_named_scope }.join(":")
   end
   

@@ -19,8 +19,9 @@ class User
   has n, :repositories, :child_key => [:user_ghid]
   
   
-  def repos_by_tags(tag, limit=100)
-    names = self.items_via(tags, limit)
+  def repos_by_tags(tags, limit=100)
+    tags = Array(tags)
+    names = self.buddy_get(:items , :via => tags, :limit => limit)
     
     # The default repo search should be via the "watched" tag.
     # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
@@ -33,8 +34,14 @@ class User
     Repository.all(:full_name => names, :order => [:full_name])
   end  
 
+  def tags
+    self.buddy_get(:tags).map do |name|
+      Tag.new(:name => name)
+    end
+  end
+  
   def tags_on_item(item)
-    self.tags_via(item).map do |name|
+    self.buddy_get(:tags, :via => item).map do |name|
       Tag.new(:name => name)
     end
   end
@@ -75,10 +82,11 @@ class User
   # Import watched repos from github.
   # Returns an array of ghids for the imported repos.
   def import_watched
+    puts 'import'
     HubWire::DSL.watched(self.login).map do |repo|
       r = Repository.new_from_github_hash(repo)
       r.save
-      self.tag_repo(r, Tag.new(:name => "watched"))
+      self.buddy_tag(r, Tag.new(:name => "watched"))
     end
   end
 

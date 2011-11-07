@@ -44,6 +44,19 @@ class Repository
     first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
   end
       
+  def tags(limit = nil)
+    results = []
+    self.buddy_get(:tags, :limit => limit).each_with_index.each { |tag, i|
+      next if (i > 0 && i.odd?) ;
+      results << Tag.new(:name => tag )
+    }
+    results
+  end
+
+  def users
+    login = self.buddy_get(:users).map { |login| login }
+    User.all(:login => login)
+  end
   
   def html_url
     "http://github.com/#{self.full_name}"
