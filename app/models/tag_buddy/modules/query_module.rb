@@ -70,6 +70,19 @@ module TagBuddy
       tag_array.sort!
     end
     
+    
+    # Return items that share this item's top 3 tags.  
+    # Ideally we want what items share the top 3 tags in *their* top n tags
+    # but that's kind of hard right now.
+    #
+    # This doesn't work
+    def self.similar_items(limit=nil)
+      keys = tags(3).map {|tag| tag.storage_key(:items) }
+      items = $redis.send(:sinter, *keys)
+      items.delete(self.items.to_s)
+      items = items[0, limit.to_i] unless limit.to_i.zero?
+    end
+    
   end # Query
   
 end # TagBuddy
