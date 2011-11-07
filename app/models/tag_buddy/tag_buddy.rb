@@ -60,10 +60,7 @@ module TagBuddy
 
       # Add TAG to USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tags = data[:user].buddy_get(:tags, :via => data[:item])
-      tags_array = []
-      tags.each_with_index.each { |tag, i| next if (i > 0 && i.odd?) ; tags_array << tag }
-      
+      tags_array = data[:user].buddy_get(:tags, :via => data[:item], :with_scores => false)
       tags_array.push(data[:tag].buddy_named_scope).uniq!
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].buddy_named_scope, ActiveSupport::JSON.encode(tags_array)
 
@@ -117,10 +114,7 @@ module TagBuddy
 
       # REMOVE TAG from USER's tag data relative to ITEM
       # (this is kept in a dictionary to save memory)
-      tags = data[:user].buddy_get(:tags, :via => data[:item])
-      tags_array = []
-      tags.each_with_index.each { |tag, i| next if (i > 0 && i.odd?) ; tags_array << tag }
-      
+      tags_array = data[:user].buddy_get(:tags, :via => data[:item], :with_scores => false)
       tags_array.delete(data[:tag].buddy_named_scope)
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].buddy_named_scope, ActiveSupport::JSON.encode(tags_array)
     end
@@ -181,15 +175,12 @@ module TagBuddy
     def buddy_get(response_type, conditions={})
       raise "Invalid type" unless ValidTypes.include?(response_type)
       via_type = TagBuddy::Utilities.get_type(conditions[:via])
-      via_type = "#{via_type}s".to_sym unless via_type.nil?
       
       if response_type == :tags
 
         if via_type.nil?
-          TagBuddy::Query.tags({
-            :users => self, 
-            :limit => conditions[:limit]
-          })
+          conditions[:users] = self
+          TagBuddy::Query.tags(conditions)
         elsif via_type == :items
           TagBuddy::Query.tags_via({
             :users => self, 
@@ -294,13 +285,10 @@ module TagBuddy
       def buddy_get(conditions={})
         response_type = TagBuddy::Utilities.get_type(self)
         via_type = TagBuddy::Utilities.get_type(conditions[:via])
-        via_type = "#{via_type}s".to_sym unless via_type.nil?
         
         if response_type == :tags
-          TagBuddy::Query.tags({
-            :users => self, 
-            :limit => conditions[:limit]
-          })
+          conditions[:users] = self
+          TagBuddy::Query.tags(conditions)
         else   
           conditions[:via] = self if via_type.nil?
           TagBuddy::Query.collection(response_type, conditions)
