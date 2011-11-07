@@ -16,7 +16,7 @@ module TagBuddy
     #   $redis.sadd returns bool for singular value additions.
     #   Bool value reflects whether the insertion was newly added.
     #
-    def add_tag_association(*args)
+    def buddy_tag(*args)
       args << self
       data = {}
       
@@ -66,7 +66,7 @@ module TagBuddy
     #   $redis.srem returns bool for singular value additions.
     #   Bool value reflects whether the the key exist before it was removed.
     #
-    def remove_tag_association(*args)
+    def buddy_untag(*args)
       args << self
       data = {}
       args.each { |o| data[TagBuddy.resource_models.key(o.class)] = o }
