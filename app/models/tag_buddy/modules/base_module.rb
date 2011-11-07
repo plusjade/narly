@@ -245,7 +245,7 @@ module TagBuddy
     # Namespace and scoping field is applied.
     #
     def storage_key(*args)
-      args = args.unshift(self.send(self.class.scope_by_field))
+      args = args.unshift(self.scoped_field)
       self.class.storage_key(*args)
     end
 
@@ -297,7 +297,7 @@ module TagBuddy
       end
       
       # Create and return the storage for the calling class.
-      # Note the keys are namepsaced the calling class.
+      # Note the keys are namepsaced with the calling class resource_type.
       #
       def storage_key(*args)
         args.unshift(
@@ -311,7 +311,5 @@ module TagBuddy
       
   
   end # Base
-  
-  
   
 end
