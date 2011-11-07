@@ -1,6 +1,9 @@
 module TagBuddy
   class << self; attr_accessor :resource_models end
   
+  StorageDeliminator = ":"
+  ValidTypes = [:items, :tags, :users]
+  
   def self.init
     Dir[File.join(File.dirname(__FILE__), %W(modules ** *.rb))].each do |f|
       require f

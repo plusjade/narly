@@ -1,8 +1,5 @@
 module TagBuddy
 
-  StorageDeliminator = ":"
-  ValidTypes = [:items, :tags, :users]
-
   # These are instance methods that get included on all 3 models.
   #
   module Base
