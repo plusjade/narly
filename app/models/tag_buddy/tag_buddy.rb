@@ -182,17 +182,13 @@ module TagBuddy
           conditions[:users] = self
           TagBuddy::Query.tags(conditions)
         elsif via_type == :items
-          TagBuddy::Query.tags_via({
-            :users => self, 
-            :items => conditions[:via], 
-            :limit => conditions[:limit]
-          })
+          conditions[:users] = self
+          conditions[:items] = conditions[:via]
+          TagBuddy::Query.tags_via(conditions)
         elsif via_type == :users
-          TagBuddy::Query.tags_via({
-            :users => conditions[:via],
-            :items => self, 
-            :limit => conditions[:limit]
-          })
+          conditions[:users] = conditions[:via]
+          conditions[:items] = self
+          TagBuddy::Query.tags_via(conditions)
         else
           raise "Invalid via condition."
         end
@@ -203,17 +199,13 @@ module TagBuddy
           conditions[:via] = self
           TagBuddy::Query.collection(response_type, conditions)
         elsif via_type == :tags
-          TagBuddy::Query.items_via({
-            :users => self,
-            :tags => conditions[:via],
-            :limit => conditions[:limit],
-          })
+          conditions[:users] = self
+          conditions[:tags] = conditions[:via]
+          TagBuddy::Query.items_via(conditions)
         elsif via_type == :users
-          TagBuddy::Query.items_via({
-            :users => conditions[:via],
-            :tags => self,
-            :limit => conditions[:limit],
-          })
+          conditions[:users] = conditions[:via]
+          conditions[:tags] = self
+          TagBuddy::Query.items_via(conditions)
         else
           raise "Invalid via condition."
         end
@@ -224,17 +216,13 @@ module TagBuddy
           conditions[:via] = self
           TagBuddy::Query.collection(response_type, conditions)
         elsif via_type == :items
-          TagBuddy::Query.users_via({
-            :items => conditions[:via],
-            :tags => self,
-            :limit => conditions[:limit],
-          })
+          conditions[:items] = conditions[:via]
+          conditions[:tags] = self
+          TagBuddy::Query.users_via(conditions)
         elsif via_type == :tags
-          TagBuddy::Query.users_via({
-            :items => self,
-            :tags => conditions[:via],
-            :limit => conditions[:limit],
-          })
+          conditions[:items] = self
+          conditions[:tags] = conditions[:via]
+          TagBuddy::Query.users_via(conditions)
         else
           raise "Invalid via condition."
         end
