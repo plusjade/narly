@@ -1,6 +1,7 @@
 module TagBuddy
   StorageDeliminator = ":"
-  
+  ValidTypes = [:items, :tags, :users]
+
   # These are instance methods that get included on all 3 models.
   #
   module Base
@@ -155,58 +156,80 @@ module TagBuddy
     #   @tag.buddy_get(:items, :via => @user) # all items tagged @tag by @user
     #   @tag.buddy_get(:tags, :via => @user) # invalid
     #
-    def buddy_get(type, conditions={})
-      via = conditions[:via]
-      via_type = nil
-      if via.is_a?(Array)
-        via_type = via.first.class.namespace.downcase.to_sym
-      elsif via
-        via_type = via.class.namespace.downcase.to_sym
-      end
+    # [response_type] is the type of resource we expect to return
+    # [self] is the resource we are scoping to.
+    # [via] is the resource(s) we are filtering by.
+    # [via_type] is the type of resource we are filtering by.
+    #
+    def buddy_get(response_type, conditions={})
+      raise "Invalid type" unless ValidTypes.include?(response_type)
+      via_type = TagBuddy::Utilities.get_type(conditions[:via])
 
-      # type is the type of resource we expect to return
-      # self is the resource we are scoping to.
-      # via is the resource(s) we are filtering by.
-      # via_type is the type of resource we are filtering by.
-
-      if type == :tags
+      if response_type == :tags
         
         if via_type.nil?
-          TagBuddy::Query.tags(self, conditions[:limit])
-        elsif via_type == :item
-          TagBuddy::Query.tags_via(self, via, conditions[:limit])
-        elsif via_type == :user
-          TagBuddy::Query.tags_via(via, self, conditions[:limit])
+          TagBuddy::Query.tags({
+            :users => self, 
+            :limit => conditions[:limit]
+          })
+        elsif via_type == :items
+          TagBuddy::Query.tags_via({
+            :users => self, 
+            :items => conditions[:via], 
+            :limit => conditions[:limit]
+          })
+        elsif via_type == :users
+          TagBuddy::Query.tags_via({
+            :users => conditions[:via],
+            :items => self, 
+            :limit => conditions[:limit]
+          })
         else
           raise "Invalid via condition."
         end
         
-      elsif type == :items
+      elsif response_type == :items
         
         if via_type.nil?
-          TagBuddy::Query.collection(self, type, conditions[:limit])
-        elsif via_type == :tag
-          TagBuddy::Query.items_via(self, via, conditions[:limit])
-        elsif via_type == :user
-          TagBuddy::Query.items_via(via, self, conditions[:limit])
+          conditions[:via] = self
+          TagBuddy::Query.collection(response_type, conditions)
+        elsif via_type == :tags
+          TagBuddy::Query.items_via({
+            :users => self,
+            :tags => conditions[:via],
+            :limit => conditions[:limit],
+          })
+        elsif via_type == :users
+          TagBuddy::Query.items_via({
+            :users => conditions[:via],
+            :tags => self,
+            :limit => conditions[:limit],
+          })
         else
           raise "Invalid via condition."
         end
       
-      elsif type == :users
+      elsif response_type == :users
         
         if via_type.nil?
-          TagBuddy::Query.collection(self, type, conditions[:limit])
-        elsif via_type == :item
-          TagBuddy::Query.users_via(via, self, conditions[:limit])
-        elsif via_type == :tag
-          TagBuddy::Query.users_via(self, via, conditions[:limit])
+          conditions[:via] = self
+          TagBuddy::Query.collection(response_type, conditions)
+        elsif via_type == :items
+          TagBuddy::Query.users_via({
+            :items => conditions[:via],
+            :tags => self,
+            :limit => conditions[:limit],
+          })
+        elsif via_type == :tags
+          TagBuddy::Query.users_via({
+            :items => self,
+            :tags => conditions[:via],
+            :limit => conditions[:limit],
+          })
         else
           raise "Invalid via condition."
         end
         
-      else   
-        raise "Invalid type"
       end
       
     end
