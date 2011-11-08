@@ -107,8 +107,8 @@ module TagBuddy
     def self.users_via(conditions)
       data = self.sort_resources(conditions)
       
-      keys = data[:tags].map { |tag| tag.storage_key(:users) }
-      data[:items].each { |item| keys << item.storage_key(:users) }
+      keys  = data[:tags].map { |tag| tag.storage_key(:users) }
+      keys += data[:items].map { |item| item.storage_key(:users) }
         
       users = $redis.send(:sinter, *keys)
       users = users[0, conditions[:limit].to_i] unless conditions[:limit].to_i.zero?
