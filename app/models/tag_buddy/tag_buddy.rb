@@ -2,10 +2,26 @@ require "modules/query_module.rb"
 require "modules/utilities_module.rb"
 
 module TagBuddy
-  class << self; attr_accessor :resource_models end
-  
+  class << self; attr_accessor :resource_models ; end
+
   StorageDeliminator = ":"
   ValidTypes = [:items, :tags, :users]
+  
+  @@resource_namespaces = {
+    :items => "ITEMS", 
+    :tags => "TAGS", 
+    :users => "USERS"
+  }
+
+  def self.resource_namespaces
+    @@resource_namespaces
+  end
+  
+  def self.resource_namespaces=(sides) 
+    @@resource_namespaces = resource_namespaces
+  end
+    
+
   
   # These are instance methods that get included on all 3 models.
   #
@@ -150,7 +166,10 @@ module TagBuddy
     # Namespace and scoping field is applied.
     #
     def storage_key(*args)
-      args = args.unshift(self.buddy_named_scope)
+      args.map! { |v|
+        TagBuddy.resource_namespaces[v] || v
+      }.unshift(self.buddy_named_scope)
+      
       self.class.storage_key(*args)
     end
 
@@ -207,7 +226,7 @@ module TagBuddy
       #
       def storage_key(*args)
         args.unshift(
-          TagBuddy.resource_models.key(self),
+        TagBuddy.resource_namespaces[TagBuddy::Utilities.get_type(self)],
         ).map! { |v| 
           v.to_s.gsub(StorageDeliminator, "") 
         }.join(StorageDeliminator)
