@@ -2,12 +2,64 @@ module TagBuddy
 
   module Query
     
+    # The dispatcher makes sense of the incoming query and sends
+    # it to the appropriate methods for retrieving results.
+    #
+    # @param [:users, :items, :tags] response_type
+    #   Type of resource we expect to return.
+    # @param [Hash] conditions 
+    #   Optional hash of conditions for filtering, limits, etc.
+    #     :via = [Resource, [Resource, Resource, ...]]
+    #       Specifies the object or Array of objects you want to query on.
+    #       "Query on" is somewhat vague. 
+    #       But I trust you can infer from the relationships how a :via condition will work.
+    #       Example: @user.buddy_get(:tags, :via => @item)
+    #       We expect tags to be returned since our type is :tags
+    #       since we are calling buddy_get on @user 
+    #       you can infer that we are trying to get "tags from @user via @item"
+    #       Or put more accurately : "tags from @user on @item"
+    #
+    #    :limit = [Integer]
+    #      Specifies the limit of objects to return
+    #
+    def self.dispatch(response_type, conditions)
+      raise "Invalid type" unless ValidTypes.include?(response_type)
+      via_type = TagBuddy::Utilities.get_type(conditions[:via])
+      
+      if response_type == :tags
+        if via_type
+          TagBuddy::Query.tags_via(conditions)
+        else
+          TagBuddy::Query.tags(conditions)
+        end
+      elsif response_type == :items
+        if via_type
+          TagBuddy::Query.items_via(conditions)
+        else
+          TagBuddy::Query.collection(response_type, conditions)
+        end
+      elsif response_type == :users
+        if via_type
+          TagBuddy::Query.users_via(conditions)
+        else
+          TagBuddy::Query.collection(response_type, conditions)
+        end
+      end
+      
+    end
+    
+    def self.sort_resources(conditions)
+      data = {:users => [], :items => [], :tags => []}
+      data[TagBuddy::Utilities.get_type(conditions[:scope])] = Array(conditions[:scope])
+      data[TagBuddy::Utilities.get_type(conditions[:via])] = Array(conditions[:via])
+      data
+    end
+    
     # A collection query simply returns members from a given set
     #
-    #
     def self.collection(type, conditions)
-      via = conditions[:via].is_a?(Array) ? conditions[:via].first : conditions[:via]
-      items = $redis.smembers(via.storage_key(type))
+      scope = conditions[:scope] || conditions[:via]
+      items = $redis.smembers(scope.storage_key(type))
       items = items[0, conditions[:limit].to_i] unless conditions[:limit].to_i.zero?
       items
     end
@@ -16,8 +68,8 @@ module TagBuddy
     # ex: ["ruby", "1", "git", "1"] 
     #
     def self.tags(conditions)
-      scope = conditions[:users] || conditions[:items]
-      
+      scope = conditions[:scope] || conditions[:via]
+
       $redis.zrevrange( 
         scope.storage_key(:tags),
         0, 
@@ -30,22 +82,21 @@ module TagBuddy
     # tags is a single or an array of Tag instances
     #
     def self.items_via(conditions)
-      tags = Array(conditions[:tags])
-      users = Array(conditions[:users])
+      data = self.sort_resources(conditions)
       
       # users have different storage_keys, how to merge?
-      if users.first.is_a?(User)
-        keys = tags.map { |tag| users.first.storage_key(:tag, tag.buddy_named_scope, :items) }
+      if data[:users].first.is_a?(TagBuddy.resource_models[:user])
+        keys = data[:tags].map { |tag| data[:users].first.storage_key(:tag, tag.buddy_named_scope, :items) }
       else
-        keys = tags.map { |tag| tag.storage_key(:items) }
+        keys = data[:tags].map { |tag| tag.storage_key(:items) }
       end
         
       items = $redis.send(:sinter, *keys)
       items = items[0, conditions[:limit].to_i] unless conditions[:limit].to_i.zero?
       items
     end
-    
-    
+
+     
     # get all users using tags on items
     # TAG:mysql:users (set)
     # ITEM:1:users (set)
@@ -54,9 +105,10 @@ module TagBuddy
     #item.storage_key(:users)
     #
     def self.users_via(conditions)
+      data = self.sort_resources(conditions)
       
-      keys = Array(conditions[:tags]).map { |tag| tag.storage_key(:users) }
-      Array(conditions[:items]).each { |item| keys << item.storage_key(:users) }
+      keys = data[:tags].map { |tag| tag.storage_key(:users) }
+      data[:items].each { |item| keys << item.storage_key(:users) }
         
       users = $redis.send(:sinter, *keys)
       users = users[0, conditions[:limit].to_i] unless conditions[:limit].to_i.zero?
@@ -65,7 +117,9 @@ module TagBuddy
         
   
     def self.tags_via(conditions)
-      tag_array = $redis.hget conditions[:users].storage_key(:items, :tags), conditions[:items].buddy_named_scope
+      data = self.sort_resources(conditions)
+      
+      tag_array = $redis.hget data[:users].first.storage_key(:items, :tags), data[:items].first.buddy_named_scope
       tag_array = tag_array ? ActiveSupport::JSON.decode(tag_array) : []
 
       tag_array.sort!

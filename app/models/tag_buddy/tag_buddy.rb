@@ -119,116 +119,31 @@ module TagBuddy
       $redis.hset data[:user].storage_key(:items, :tags), data[:item].buddy_named_scope, ActiveSupport::JSON.encode(tags_array)
     end
 
-    # This is the main query interface for getting objects via TagBuddy.
-    # type = (Symbol) in the set [:users, :items, :tags]
-    # conditions = (Hash) 
-    #   :via = Object or Array of objects 
-    #     Specifies the object or Array of objects you want to query on.
-    #     "Query on" is somewhat vague. 
-    #     But I trust you can infer from the relationships how a :via condition will work.
-    #     Example: @user.buddy_get(:tags, :via => @item)
-    #     We expect tags to be returned since our type is :tags
-    #     since we are calling buddy_get on @user 
-    #     you can infer that we are trying to get "tags from @user via @item"
-    #     Or put more accurately : "tags from @user on @item"
+    # This is the main and recommended public interface for querying resources. 
+    # Note:
+    #   This method's Instance type determines the implied *scope* for this query.
     #
-    #  :limit = (Integer)
-    #    Specifies the limit of objects to return
+    # @param [:users, :items, :tags] response_type
+    #   Type of resource we expect to return.
+    # @param [Hash] conditions 
+    #   Optional hash of conditions for filtering, limits, etc.
     #
-    # API:
-    # -----------------------------------------------------------
-    # User instance
+    # @return [Array]
+    # Returns and array of named_scopes of the type "response_type"
     #
-    #   @user.buddy_get(:users)  # invalid
-    #   @user.buddy_get(:items)  # get all items tagged by @user
-    #   @user.buddy_get(:tags)   # get all tags used by @user
-    # 
-    #   @user.buddy_get(:users, :via => @tags) # invalid
-    #   @user.buddy_get(:items, :via => @tags) # get all items tagged by @user with @tags
-    #   @user.buddy_get(:tags, :via => @item) # get all tags made by @user on @item
-    # 
-    # Item instance 
+    # @example
     #
-    #   @item.buddy_get(:users)  # all users that have tagged this item.
-    #   @item.buddy_get(:items)  # invalid
-    #   @item.buddy_get(:tags)   # all tags on this item.
-    # 
-    #   @item.buddy_get(:users, :via => @tags) # all users that have tagged this item with @tags.
-    #   @item.buddy_get(:items, :via => @tags) # invalid
-    #   @item.buddy_get(:tags, :via => @user) # all tags on @item by @user
+    #   This will get all tags made by @user.
+    #     @user.buddy_get(:tags)
+    #    
+    #   This will get the top 10 tags made by user on @item
+    #     @user.buddy_get(:tags, :via => @item, :limit => 10) 
     #
-    # Tag instance
-    #
-    #   @tag.buddy_get(:users)  # all users that have used @tag.
-    #   @tag.buddy_get(:items)  # all items tagged by @tag
-    #   @tag.buddy_get(:tags)   # invalid
-    # 
-    #   @tag.buddy_get(:users, :via => @item) # all users that have tagged @item with @tag
-    #   @tag.buddy_get(:items, :via => @user) # all items tagged @tag by @user
-    #   @tag.buddy_get(:tags, :via => @user) # invalid
-    #
-    # [response_type] is the type of resource we expect to return
-    # [self] is the resource we are scoping to.
-    # [via] is the resource(s) we are filtering by.
-    # [via_type] is the type of resource we are filtering by.
+    # Please see TagBuddy::Query.dispatch for further documentation.
     #
     def buddy_get(response_type, conditions={})
-      raise "Invalid type" unless ValidTypes.include?(response_type)
-      via_type = TagBuddy::Utilities.get_type(conditions[:via])
-      
-      if response_type == :tags
-
-        if via_type.nil?
-          conditions[:users] = self
-          TagBuddy::Query.tags(conditions)
-        elsif via_type == :items
-          conditions[:users] = self
-          conditions[:items] = conditions[:via]
-          TagBuddy::Query.tags_via(conditions)
-        elsif via_type == :users
-          conditions[:users] = conditions[:via]
-          conditions[:items] = self
-          TagBuddy::Query.tags_via(conditions)
-        else
-          raise "Invalid via condition."
-        end
-
-      elsif response_type == :items
-
-        if via_type.nil?
-          conditions[:via] = self
-          TagBuddy::Query.collection(response_type, conditions)
-        elsif via_type == :tags
-          conditions[:users] = self
-          conditions[:tags] = conditions[:via]
-          TagBuddy::Query.items_via(conditions)
-        elsif via_type == :users
-          conditions[:users] = conditions[:via]
-          conditions[:tags] = self
-          TagBuddy::Query.items_via(conditions)
-        else
-          raise "Invalid via condition."
-        end
-
-      elsif response_type == :users
-
-        if via_type.nil?
-          conditions[:via] = self
-          TagBuddy::Query.collection(response_type, conditions)
-        elsif via_type == :items
-          conditions[:items] = conditions[:via]
-          conditions[:tags] = self
-          TagBuddy::Query.users_via(conditions)
-        elsif via_type == :tags
-          conditions[:items] = self
-          conditions[:tags] = conditions[:via]
-          TagBuddy::Query.users_via(conditions)
-        else
-          raise "Invalid via condition."
-        end
-
-      end
-
+      conditions[:scope] = self
+      TagBuddy::Query.dispatch(response_type, conditions)
     end
 
     # Create and return the storage key for the calling resource.
@@ -260,28 +175,31 @@ module TagBuddy
         end
       end
 
-      # Get resources from the total collection pool for this class.
-      # i.e. Tag.buddy_get would return all tags
-      # i.e. User.buddy_get would return all users
+      # This is the class-level public interface for querying resources.
+      # Note: 
+      #   This method's Class determines the implied *response_type* for this query.
       #
-      # passing conditions will filter based on those conditions
+      # @param [:users, :items, :tags] response_type
+      #   Type of resource we expect to return.
+      # @param [Hash] conditions 
+      #   Optional hash of conditions for filtering, limits, etc.
       #
-      # [response_type] is the type of resource we expect to return
-      # [via_type] is the type of resource we are filtering by.
-      # [self] is the class level resource we are scoping to.
+      # @return [Array]
+      # Returns an array of named_scopes of the type *response_type*
+      #
+      # @example
+      #
+      #   This will get all tags.
+      #     Tag.buddy_get
+      #    
+      #   This will get the top 10 tags on this @item
+      #     Tag.buddy_get(:via => @item, :limit => 10) 
+      #
+      # Please see TagBuddy::Query.dispatch for further documentation.
       #
       def buddy_get(conditions={})
-        response_type = TagBuddy::Utilities.get_type(self)
-        via_type = TagBuddy::Utilities.get_type(conditions[:via])
-        
-        if response_type == :tags
-          conditions[:users] = self
-          TagBuddy::Query.tags(conditions)
-        else   
-          conditions[:via] = self if via_type.nil?
-          TagBuddy::Query.collection(response_type, conditions)
-        end
-
+        conditions[:scope] = self
+        TagBuddy::Query.dispatch(TagBuddy::Utilities.get_type(self), conditions)
       end
 
       # Create and return the storage for the calling class.
