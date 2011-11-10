@@ -52,7 +52,7 @@
 				<span id="current_user_data" style="display:none"><%= current_user.login %></span>
 				
 				<%= form_tag tag_path, :method => :get, :id => "tag_panel" do %>
-					<input class="ghid" type="hidden" name="repo[ghid]" value="" />
+					<input class="full_name" type="hidden" name="repo[full_name]" value="" />
 					Tag <a class="btn repo_name"> </a> with <input id="tagging_input" type="text" name="tag" size="100" maxlength="100" /> 
 					<button type ="submit" class="btn success">submit</button>
 					<a href="#" class="btn danger tag_panel_close">x</a>

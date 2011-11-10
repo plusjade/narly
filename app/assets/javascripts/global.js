@@ -17,24 +17,25 @@ $(function(){
 		return false;
 	})
 	
+	/* open tag panel to add a tag */
 	$("a.add_tag").click(function(e){
-		var ghid = $(this).attr("rel");
+		var full_name = $(this).attr("rel");
 
 		$("#filters_container").hide();
 		$("#tag_panel_container").slideDown("fast")
 			.find("a.repo_name").text($(this).attr("title"));
 		$("#tag_panel_container")
-			.find("input.ghid").val(ghid);
+			.find("input.full_name").val(full_name);
 		
 		if (currentUserLogin !== ""){
 			$.ajax({
 				dataType: "json",
-			  url: "/users/"+currentUserLogin+"/repos/"+ ghid +"/tags",
+			  url: "/users/"+currentUserLogin+"/repos/"+ full_name +"/tags",
 			  success: addMyTags
 			});
 			$.ajax({
 			  dataType: "json",
-			  url: "/repos/"+ ghid +"/tags",
+			  url: "/repos/"+ full_name +"/tags",
 			  success: addTopTags
 			});
 		}
@@ -57,10 +58,10 @@ $(function(){
 		var tag = $tag.attr("title");
 		if(confirm("Remove tag:'" +tag+ "' from this repo?")){
 			showStatus.submitting();
-			var ghid = $("#tag_panel").find("input.ghid").val();
+			var full_name = $("#tag_panel").find("input.full_name").val();
 			$.ajax({
 			    dataType: "json",
-			    url: "/untag?repo[ghid]="+ghid+"&tag="+tag+"",
+			    url: "/untag?repo[full_name]="+full_name+"&tag="+tag+"",
 			    success: function(rsp){
 						showStatus.respond(rsp);
 						$tag.remove();
