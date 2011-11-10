@@ -1,10 +1,10 @@
 class Repository
   include DataMapper::Resource
   include HubWire
-  include TagBuddy::Base
+  include TaylorSwift::Base
   
   githubify :type => "repo"
-  define_tag_strategy :resource => :item, :named_scope => :full_name
+  tell_taylor_swift :items, :identifier => :full_name
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
@@ -43,23 +43,30 @@ class Repository
   def self.first!(*args)
     first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
   end
-      
-  def tags(limit = nil)
-    results = []
-    self.buddy_get(:tags, :limit => limit).each_with_index.each { |tag, i|
-      next if (i > 0 && i.odd?) ;
-      results << Tag.new(:name => tag )
-    }
-    results
+  
+  def tags(conditions = {})
+    Tag.spawn_from_taylor_swift_data(self.taylor_get(:tags, conditions))
   end
-
-  def users
-    login = self.buddy_get(:users).map { |login| login }
-    User.all(:login => login)
+      
+  def users(conditions = {})
+    User.spawn_from_taylor_swift_data(self.taylor_get(:users, conditions))
+  end
+  
+  def similar(conditions = {})
+    conditions.merge!({:similar => true})
+    Repository.spawn_from_taylor_swift_data(self.taylor_get(:items, conditions))
   end
   
   def html_url
     "http://github.com/#{self.full_name}"
+  end
+  
+  def self.taylor_get_as_resource(conditions)
+    self.spawn_from_taylor_swift_data(self.taylor_get(conditions))
+  end
+  
+  def self.spawn_from_taylor_swift_data(data)
+    self.all(:full_name => data, :order => [:full_name])
   end
   
 end

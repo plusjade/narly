@@ -1,10 +1,10 @@
 class Tag
-  include TagBuddy::Base
+  include TaylorSwift::Base
   attr_accessor :name, :total_count, :relative_count
 
   BlackList = /[^a-z 0-9 + # - .]/
 
-  define_tag_strategy :resource => :tag, :named_scope => :name
+  tell_taylor_swift :tags, :identifier => :name
 
   def initialize(attrs={})
     attrs[:name] = attrs[:name].to_s.downcase.gsub(BlackList, "")
@@ -18,15 +18,23 @@ class Tag
     raise "tag cant be blank" if self.name.blank?
   end
   
+  def users(conditions = {})
+    User.spawn_from_taylor_swift_data(self.taylor_get(:users, conditions))
+  end
+  
+  def repos(conditions = {})
+    Repository.spawn_from_taylor_swift_data(self.taylor_get(:items, conditions))
+  end
+  
   # tags_data format: 
   #   ["ruby", "1", "git", "1"] 
   #   where scores represent tag count and come directly after their tag.
   #
-  def self.new_from_tags_data(tags_data)
+  def self.spawn_from_taylor_swift_data(data)
     tags = []
-    tags_data.each_with_index do |name, i|
+    data.each_with_index do |name, i|
 			next if (i > 0 && i.odd?)
-      tags << new(:name => name, :relative_count => tags_data[i+1])
+      tags << new(:name => name, :relative_count => data[i+1])
     end
 
     tags
@@ -47,7 +55,7 @@ class Tag
   # the equivalent tag_string
   #
   def self.to_tag_string(tags)
-    Array(tags).map! { |tag| tag.buddy_named_scope }.join(":")
+    Array(tags).map! { |tag| tag.taylor_resource_identifier }.join(":")
   end
   
 end

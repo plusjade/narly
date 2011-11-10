@@ -1,10 +1,10 @@
 class User
   include DataMapper::Resource
   include HubWire
-  include TagBuddy::Base
+  include TaylorSwift::Base
   
   githubify :type => "user"
-  define_tag_strategy :resource => :user, :named_scope => :login
+  tell_taylor_swift :users, :identifier => :login
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
@@ -18,32 +18,22 @@ class User
   
   has n, :repositories, :child_key => [:user_ghid]
   
-  
-  def repos_by_tags(tags, limit=100)
-    tags = Array(tags)
-    names = self.buddy_get(:items , :via => tags, :limit => limit)
-    
+  def repos(conditions = {})
+    names = self.taylor_get(:items , conditions)
+    conditions[:via] = Array(conditions[:via])
     # The default repo search should be via the "watched" tag.
     # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
     # So we load the user's watched repos from github but only in this default case.
     #
-    if (names.blank? && tags.count == 1 && tags.first.name == "watched")
+    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == "watched")
       names = self.import_watched
     end
 
-    Repository.all(:full_name => names, :order => [:full_name])
-  end  
-
-  def tags
-    self.buddy_get(:tags).map do |name|
-      Tag.new(:name => name)
-    end
+    Repository.spawn_from_taylor_swift_data(names)
   end
-  
-  def tags_on_item(item)
-    self.buddy_get(:tags, :via => item).map do |name|
-      Tag.new(:name => name)
-    end
+    
+  def tags(conditions = {})
+    Tag.spawn_from_taylor_swift_data(self.taylor_get(:tags, conditions))
   end
   
   # Overwrite DM finder to try load_from_github on miss
@@ -75,18 +65,22 @@ class User
     end
   end
   
+  def self.spawn_from_taylor_swift_data(data)
+    self.all(:login => data)
+  end
+  
   def github_url
     "http://github.com/#{self.login}"
   end
   
   # Import watched repos from github.
-  # Returns an array of ghids for the imported repos.
+  # Returns an array of resource_identifiers for the imported repos.
   def import_watched
-    puts 'import'
     HubWire::DSL.watched(self.login).map do |repo|
       r = Repository.new_from_github_hash(repo)
       r.save
-      self.buddy_tag(r, Tag.new(:name => "watched"))
+      self.taylor_tag(r, Tag.new(:name => "watched"))
+      r.full_name
     end
   end
 
