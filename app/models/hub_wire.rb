@@ -57,15 +57,14 @@ module HubWire
 
         # Todo: a better way?
         # Make sure we have the owner
-        if User.first(:ghid => hash["owner"]["id"]).nil?
+        if User.first(:login => hash["owner"]["login"]).nil?
           User.new_from_github_hash(hash["owner"]).save
         end
 
         instance = new({
           :ghid => hash["id"], 
-          :user_ghid => hash["owner"]["id"],
-          :full_name => "#{hash["owner"]["login"]}/#{hash["name"]}",
-          :login => hash["owner"]["login"]
+          :login => hash["owner"]["login"],
+          :full_name => "#{hash["owner"]["login"]}/#{hash["name"]}"
         })
         
         hash.delete("owner")

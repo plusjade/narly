@@ -8,7 +8,6 @@ class Repository
   
   property :id, Serial
   property :ghid, Integer, :unique => true, :required => true
-  property :user_ghid, Integer, :index => true, :required => true
   property :full_name, String, :unique => true, :required => true, :length => 256
   property :login, String, :required => true
   property :name, String, :required => true
@@ -22,8 +21,8 @@ class Repository
   property :updated_at, DateTime
   
   belongs_to :owner, :model => User, 
-    :parent_key => [:ghid],
-    :child_key => [:user_ghid]
+    :parent_key => [:login],
+    :child_key => [:login]
 
 
   # Overwrite DM finder to try load_from_github on miss

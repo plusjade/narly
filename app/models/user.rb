@@ -10,13 +10,13 @@ class User
   property :ghid, Integer, :unique => true, :required => true
   property :provider, String, :default => "github"
   property :name, String
-  property :login, String, :required => true
+  property :login, String, :unique => true, :required => true
   property :email, String
   property :avatar_url, String, :length => 256
   property :created_at, DateTime
   property :updated_at, DateTime
   
-  has n, :repositories, :child_key => [:user_ghid]
+  has n, :repositories, :child_key => [:login]
   
   def repos(conditions = {})
     names = self.taylor_get(:items , conditions)
@@ -59,7 +59,7 @@ class User
       user.provider = auth["provider"]
       user.ghid = auth["uid"]
       user.name = auth["user_info"]["name"]
-      user.username = auth["user_info"]["nickname"]
+      user.login = auth["user_info"]["nickname"]
       user.email = auth["user_info"]["email"]
       user.avatar_url = auth["extra"]["user_hash"]["avatar_url"]
     end
