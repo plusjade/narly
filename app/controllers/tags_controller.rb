@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
 
   def index
-    @tags = Tag.all(100)
+    @tags = Tag.taylor_get(:limit => 100)
   end
   
   def show

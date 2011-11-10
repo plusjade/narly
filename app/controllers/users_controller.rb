@@ -5,17 +5,16 @@ class UsersController < ApplicationController
     
     @tag_filters = Tag.new_from_tag_string(params[:tags])
     @tag_filters = [Tag.new(:name => "watched")] if @tag_filters.blank?
-    @repos = @owner.repos_by_tags(@tag_filters, 100)
 
-    # get these last in case the owner.repos call spawns defaults
-    @tags = @owner.tags
+    @repos = @owner.repos(:via => @tag_filters)
+    @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
   end
 
   def tag
     if current_user
-      @repo = Repository.first!(:ghid => params[:repo][:ghid])
+      @repo = Repository.first!(:full_name => params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
-        current_user.tag_repo(@repo, tag)
+        current_user.taylor_tag(@repo, tag)
       end
       
       render :json => {
@@ -32,8 +31,9 @@ class UsersController < ApplicationController
 
   def untag
     if current_user
+      repo = Repository.new(:full_name => params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
-        current_user.untag_repo(params[:repo][:ghid], tag)
+        current_user.taylor_untag(repo, tag)
       end
       
       render :json => {
@@ -52,9 +52,10 @@ class UsersController < ApplicationController
   #
   def repo_tags
     @owner = User.first!(:login => params[:login])
-    @repo = Repository.first!(:ghid => params[:ghid])
-    @tags = @owner.tags_on_repo(@repo)
-    render :json => @tags
+    full_name = "#{params[:repo_login]}/#{params[:repo_name]}"
+    @repo = Repository.first!(:full_name => full_name)
+
+    render :json => @owner.tags(:via => @repo)
   end
   
 end
