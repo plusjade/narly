@@ -6,6 +6,7 @@ DM_VERSION    = '~> 1.2.0'
 gem 'rails', RAILS_VERSION
 gem 'mysql'
 gem 'redis', '2.1.1'
+gem 'taylor-swift', '0.1.0', :path => "~/Dropbox/gems/taylor-swift"
 
 gem 'activesupport',      RAILS_VERSION, :require => 'active_support'
 gem 'actionpack',         RAILS_VERSION, :require => 'action_pack'
