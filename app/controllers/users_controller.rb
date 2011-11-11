@@ -4,7 +4,7 @@ class UsersController < ApplicationController
     @owner = User.first!(:login => params[:login])
     
     @tag_filters = Tag.new_from_tag_string(params[:tags])
-    @tag_filters = [Tag.new(:name => "#{Tag::PersonalNamespace}watched")] if @tag_filters.blank?
+    @tag_filters = [Tag.new(:name => "watching")] if @tag_filters.blank?
 
     @repos = @owner.repos(:via => @tag_filters)
     @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
@@ -58,7 +58,7 @@ class UsersController < ApplicationController
   def repo_tags
     @owner = User.first!(:login => params[:login])
     @repo = Repository.first!(:full_name => "#{params[:repo_login]}/#{params[:repo_name]}")
-    render :json => @owner.tags(:via => @repo)
+    render :json => @owner.taylor_get(:tags, :via => @repo).map {|name| Tag.new(:name => name) }
   end
   
 end

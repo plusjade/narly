@@ -16,7 +16,7 @@ class ReposController < ApplicationController
   
   def tags
     @repo = Repository.first!(:full_name => "#{params[:repo_login]}/#{params[:repo_name]}")
-    render :json => @repo.tags(:limit => 10).delete_if { |tag| tag.scope == "personal" }
+    render :json => @repo.tags(:limit => 10)
   end
   
 end

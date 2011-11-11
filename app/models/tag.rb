@@ -1,9 +1,8 @@
 class Tag
   include TaylorSwift::Base
-  attr_accessor :name, :scope, :total_count, :relative_count
+  attr_accessor :name, :total_count, :relative_count
 
   BlackList = /[^a-z 0-9 + # - .]/
-  PersonalNamespace = "me."
 
   tell_taylor_swift :tags, :identifier => :name
 
@@ -35,11 +34,7 @@ class Tag
     tags = []
     data.each_with_index do |name, i|
 			next if (i > 0 && i.odd?)
-      tags << new({
-        :name => name, 
-        :relative_count => data[i+1].to_i,
-        :scope => (name[0,3] == Tag::PersonalNamespace ? "personal" : "public")
-      })
+      tags << new(:name => name, :relative_count => data[i+1].to_i)
     end
 
     tags
