@@ -2,7 +2,7 @@ class Tag
   include TaylorSwift::Base
   attr_accessor :name, :total_count, :relative_count
 
-  BlackList = /[^a-z 0-9 + # - .]/
+  BlackList = /[^a-z0-9\+\#\-\.]/
 
   tell_taylor_swift :tags, :identifier => :name
 
