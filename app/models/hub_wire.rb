@@ -102,12 +102,12 @@ module HubWire
       json("/users/#{login}/followers")
     end
 
-    def self.repositories(login)
-      json("/users/#{login}/repos")
+    def self.repositories(login, page = 1)
+      json("/users/#{login}/repos?page=#{page.to_i}&per_page=100")
     end
 
-    def self.watched(login)
-      json("/users/#{login}/watched?per_page=100")
+    def self.watched(login, page = 1)
+      json("/users/#{login}/watched?page=#{page.to_i}&per_page=100")
     end
 
     def self.repository(login, repository_name)
