@@ -1,7 +1,7 @@
 Superwatch::Application.routes.draw do
   root  :to => "home#index"
 
-  scope "/", :constraints => {:name => /[\w\.-]+/, :repo_name => /[\w\.-]+/ } do
+  scope "/", :constraints => {:name => /[\w\.-]+/, :repo_name => /[\w\.-]+/, :tags => /[\w:\+#-\.]+/ } do
 
     get "/users/:login/repos/tagged/:tags" => "users#show", :as => :user_tagged
     get "/users/:login/repos/:repo_login/:repo_name/tags" => "users#repo_tags", :as => :user_repo_tags
