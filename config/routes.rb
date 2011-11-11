@@ -5,6 +5,7 @@ Superwatch::Application.routes.draw do
 
     get "/users/:login/repos/tagged/:tags" => "users#show", :as => :user_tagged
     get "/users/:login/repos/:repo_login/:repo_name/tags" => "users#repo_tags", :as => :user_repo_tags
+    get "/users/:login/tags" => "users#tags", :as => :user_tags
     get "/users/:login/tag" => "users#tag", :as => :user_tag
     get "/users/:login" => "users#show", :as => :user
     get "/users/" => "users#show"
