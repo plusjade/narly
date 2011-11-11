@@ -25,7 +25,7 @@ class User
     # If there are no repos tagged "watched" for this user it means we haven't loaded this user yet.
     # So we load the user's watched repos from github but only in this default case.
     #
-    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == "watched")
+    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == "#{Tag::PersonalNamespace}watched")
       names = self.import_watched
     end
 
@@ -79,7 +79,7 @@ class User
     HubWire::DSL.watched(self.login).map do |repo|
       r = Repository.new_from_github_hash(repo)
       r.save
-      self.taylor_tag(r, Tag.new(:name => "watched"))
+      self.taylor_tag(r, Tag.new(:name => "#{Tag::PersonalNamespace}watched"))
       r.full_name
     end
   end
