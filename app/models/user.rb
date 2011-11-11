@@ -24,9 +24,10 @@ class User
     # The default repo search should be via the "watching" tag.
     # If there are no repos tagged "watching" for this user it means we haven't loaded this user yet.
     # So we load the user's watched repos from github but only in this default case.
-    #
-    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == "watching")
-      names = self.import_watched
+    # FIXME. This will loop itself if a user has  0 owned repos.
+    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == self.login)
+      names = self.import_mine
+      self.import_watched(1)
     end
 
     Repository.spawn_from_taylor_swift_data(names)
@@ -73,15 +74,27 @@ class User
     "http://github.com/#{self.login}"
   end
   
+  
+  # Import owned repos from github.
+  # Returns an array of resource_identifiers for the imported repos.
+  def import_mine
+    HubWire::DSL.repositories(self.login).map do |repo|
+      r = Repository.new_from_github_hash(repo)
+      r.save
+      self.taylor_tag(r, Tag.new(:name => self.login))
+      r.full_name
+    end
+  end
+  
   # Import watched repos from github.
   # Returns an array of resource_identifiers for the imported repos.
-  def import_watched
-    HubWire::DSL.watched(self.login).map do |repo|
+  def import_watched(page)
+    HubWire::DSL.watched(self.login, page).map do |repo|
       r = Repository.new_from_github_hash(repo)
       r.save
       self.taylor_tag(r, Tag.new(:name => "watching"))
       r.full_name
     end
   end
-
+  
 end
