@@ -166,13 +166,29 @@ html, body {
 	border-radius:0 0 5px 5px;
 	box-shadow:1px 1px 1px #ccc;
 }
+#tag_panel_extended h5 {
+	clear:both;
+}	
+#tag_panel_extended ul{
+	overflow:visible;
+}
+#tag_panel_extended ul li{
+	position:relative;
+}
 #tag_panel_extended a {
 	font-size:12px;
 }
-#my_tags_on_repo a:hover {
-	background:#C43C35;
-	color:#FFF;
+span.options {
+	display:none;
+	padding:0 5px;
+	position:absolute;
+	top:-28px;
+	right:0;
+	z-index:100;
+	background:#FFF;
+	border-radius:3px;
 }
+
 
 /* TAG HEADER ======================================================== */
 
