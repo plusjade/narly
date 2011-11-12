@@ -9,6 +9,9 @@
 	<% else %>
 		<%= stylesheet_link_tag "application" %>
 		<%= javascript_include_tag "application" %>
+		<%= javascript_include_tag "http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js" %>
+		<%= javascript_include_tag "backbone-0.5.3.js" %>
+		<%= javascript_include_tag "jquery.mustache.js" %>
 	<% end %>
   <%= csrf_meta_tags %>
 </head>
@@ -57,21 +60,16 @@
 					<button type ="submit" class="btn success">submit</button>
 					<a href="#" class="btn danger tag_panel_close">x</a>
 				<% end %>
-				
 				<div id="tag_panel_extended">
-					
-					<h4>Your Tags</h4>
-					<p>Click tags to remove them from this repo.</p>
-					<ul id="my_tags_on_repo" class="tag_box inline">
-						
-					</ul>
-					
-					<h4>Top Tags</h4>
-					<p>Click tags to add/remove them from the input box</p>
+					<h5>Current Top Tags</h5>
 					<ul id="add_tag_container" class="tag_box inline">
 
 					</ul>
-					
+					<h5>Your Tags</h5>
+					<ul id="my_tags_on_repo" class="tag_box inline">
+						
+					</ul>
+					<div style="clear:both">&#160;</div>
 				</div>
 				
 			<% else %>
@@ -82,7 +80,6 @@
 					</p>
 				</div>
 			<% end %>
-			
 			</div>
 			
 			<div class="tag_header">
@@ -115,9 +112,23 @@
 		</ul>
 	</div>
 	
-	<script id="tagTemplate" type="text/x-jquery-tmpl">
-		<li><a href="#" class="tag" title="${name}">${name}</a></li>
+	<script id="tagTemplateRemove" type="text/x-jquery-tmpl">
+		<li>
+			<span class="options">
+				<a href="#" class="up btn danger" title="{[name]}">x</a>
+			</span>
+			<a href="#" class="tag" title="{{name}}">${name}</a>
+		</li>
 	</script>
 
+	<script id="tagTemplateAdd" type="text/x-jquery-tmpl">
+		<li>
+			<span class="options">
+				<a href="#" class="up btn success" title="{{name}}">+1</a>
+			</span>
+			<a href="#" class="tag" title="{{name}}">{{name}}</a>
+		</li>
+	</script>
+	
 </body>
 </html>
