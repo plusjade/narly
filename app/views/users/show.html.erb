@@ -11,11 +11,13 @@
 <% end %>
 
 <% content_for :side_content do %>
+	<h4>Tags</h4>
 	<ul class="tag_box">
 	<% @tags.each do |tag| %>
 		<li><%= link_to_tag(tag, user_tagged_path(@owner.login, tag.name) )%></li>
 	<% end %>
 	</ul>
+	
 <% end %>
 
 <% @repos.each do |repo| %>

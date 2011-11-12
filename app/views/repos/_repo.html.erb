@@ -1,5 +1,5 @@
 <div class="repo">
-	<%= link_to "+/- tags", "#", :class => "add_tag btn", :rel => repo.full_name, :title => repo.full_name  %>
+	<%= link_to "+/- tags", "#", :class => "add_tag btn", :title => repo.full_name  %>
 	<%= link_to (image_tag repo.owner.avatar_url, :class => "thumb"), user_path(repo.login) %>
 	<span class="name">
 		<%= link_to repo.full_name, repo_path(repo.login, repo.name), :title => repo.full_name %>
