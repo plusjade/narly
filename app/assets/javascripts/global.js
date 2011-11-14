@@ -1,38 +1,38 @@
 
 $(function(){
-	var currentUserLogin = $("#current_user_data").text();
-	
+
 // MODELS
-	var User = Backbone.Model.extend({
+// ==================================================================
+
+	User = Backbone.Model.extend({
 		
-	})
+	});
 
-	var Repo = Backbone.Model.extend({
-		defaults : {
-			"full_name" : "plusjade/plusjade",
-			"name" : "name",
-			"login" : "login",
-		},
+	//  Models a basic repo object
+  //
+	Repo = Backbone.Model.extend({
+		
 		initialize : function(){
-			console.log("repo initialized");
-			
 			this.tags = new RepoTagCollection;
+			this.tags.setUrl(this);
+			
 			this.userTags = new UserRepoTagCollection;
-
+			this.userTags.setUrl(CurrentUser, this);
+			
 			this.bind("change", function(){
 				this.tags.setUrl(this);
-				this.userTags.setUrl("plusjade", this);
-				this.refresh();
+				this.userTags.setUrl(CurrentUser, this);
 			})
 		},
+
 		refresh : function(){
 			this.tags.fetch();
 			this.userTags.fetch();
 		}
-		
-	})
+	});
 	
-  var Tag = Backbone.Model.extend({
+
+	Tag = Backbone.Model.extend({
     defaults: {
       name: 'a tag',
 			relative_count : "a",
@@ -70,37 +70,35 @@ $(function(){
 		
   });
 	
+	
 // COLLECTIONS	
+// ==================================================================
 
-	var RepoTagCollection = Backbone.Collection.extend({
+	// A base collection for a Repo's tags.
+	RepoTagCollection = Backbone.Collection.extend({
 		model : Tag,
-		initialize : function(){
-
-		},
-		
 		setUrl : function(repo){
 			this.url = "/repos/"+repo.get("full_name")+"/tags";
 		}
 	});
 	
-	var UserRepoTagCollection = Backbone.Collection.extend({
+	// A collection for a Repo's tags made by User.
+	//
+	UserRepoTagCollection = Backbone.Collection.extend({
 		model : Tag,
-		initialize : function(){
-	
-		},
-
 		setUrl : function(user, repo){
-			this.url = "/users/"+user+"/repos/"+repo.get("full_name")+"/tags";
+			this.url = "/users/"+user.get("login")+"/repos/"+repo.get("full_name")+"/tags";
 		}
 	});
 	
-	
-	
+
 // VIEWS	
+// ==================================================================
+
 
 	// This tag view holds all tag templates.
 	//
-	var TagView = Backbone.View.extend({
+	TagView = Backbone.View.extend({
 		tagName : "li",
 		communityTmpl : $("#tagTemplateAdd").html(),
 		personalTmpl : $("#tagTemplateRemove").html(),
@@ -111,10 +109,10 @@ $(function(){
 		},
 		
 		add : function(){
-			this.model.add(tagPanelRepo, currentUser);
+			this.model.add(MainTagPanelView.model, CurrentUser);
 		},
 		remove : function(){
-			this.model.remove(tagPanelRepo, currentUser);
+			this.model.remove(MainTagPanelView.model, CurrentUser);
 		},
 		
 		renderCommunity : function(){
@@ -127,35 +125,56 @@ $(function(){
 	});
 	
 	
-	// TagPanelRepoView has two child views for public and personal tag lists.
-	//
 	RepoView = Backbone.View.extend({
+		model : Repo,
+		events : {
+			"click .add_tag" : "showPanel"
+		},
+
+		// Show this repo in the singular MainTagPanelView window
+		showPanel : function(){
+			MainTagPanelView.render(this.model);
+		}
+		
+	})
+	
+	
+	// TagPanel has two child views for public and personal tag lists.
+	//
+	TagPanelView = Backbone.View.extend({
 		el : "#tag_panel_container",
 		model : Repo,
-		tagsView : "",
-		usertagsView : "",
-		
 		events : {
 			"submit form" : "saveTags"
 		},
-		
-		initialize : function(){
+		render : function(repo){
+			console.log("Render TagPanelView");
+			
+			// reset the repo
+			this.model = repo;
+			
+			// build the UserTag view
 			this.tagsView = new RepoTagCollectionView({
 				collection : this.model.tags, 
 				type : "public", 
 				el : "#add_tag_container"
 			});
-			this.usertagsView = new RepoTagCollectionView({
+			this.tagsView.render();
+
+			// build the UserTag view
+			this.userTagsView = new RepoTagCollectionView({
 				collection : this.model.userTags,
 				type : "personal",
 				el : "#my_tags_on_repo"
 			});
+			// only fetch this when the tagPanel opens (which is now).
+			this.model.userTags.fetch();
 			
-			this.model.bind("change", function(){
-				this.$("a.repo_name").text(this.model.get("full_name"))
-				this.$("input.full_name").val(this.model.get("full_name"));
-			}, this)
-			
+			this.$("a.repo_name").text(this.model.get("full_name"))
+			this.$("input.full_name").val(this.model.get("full_name"));
+
+			$("#filters_container").hide();
+			$("#tag_panel_container").slideDown("fast")
 		},
 		
 		saveTags : function(){
@@ -175,13 +194,17 @@ $(function(){
 		
 	});
 	
-	// View for showing tag lists on repos
-	var RepoTagCollectionView = Backbone.View.extend({
+	// View for showing tag lists on repos. This should be present in two places.
+	// When the collection changes the views should update right!?
+	//
+	RepoTagCollectionView = Backbone.View.extend({
 		initialize : function(){
+			console.log("RepoTagCollectionView initialized");
 			this.collection.bind("reset", this.render, this);
 		},
 		
 		render : function(){
+			console.log("collection rendered");
 			var type = this.options.type;
 			var cache = [];
 			_(this.collection.models).each(function(tag){
@@ -210,22 +233,8 @@ $(function(){
 
 
 
-	var currentUser = new User({"login" : currentUserLogin})
-
-	// set the common tag panel repo and tagpanelrepo tags collection variables and just keep rewriting them.
-	tagPanelRepo = new Repo();
-	// ok show the repo View which is the tagPanel (one view);
-	var repoView = new RepoView({model : tagPanelRepo});
-
-	/* open tag panel to add a tag */
-	$("a.add_tag").click(function(e){
-		tagPanelRepo.set({"full_name" : $(this).attr("title")});
-
-		$("#filters_container").hide();
-		$("#tag_panel_container").slideDown("fast")	
-		e.preventDefault();
-		return false;
-	});
+	MainTagPanelView = new TagPanelView;
+	CurrentUser = new User({"login" : "plusjade"});
 
 
 	$("a.tag_panel_close").click(function(e){
