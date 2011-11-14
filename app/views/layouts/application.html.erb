@@ -52,8 +52,6 @@
 			<div id="tag_panel_container" style="display:none">
 				
 			<% if current_user %>
-				<span id="current_user_data" style="display:none"><%= current_user.login %></span>
-				
 				<%= form_tag tag_path, :method => :get, :id => "tag_panel" do %>
 					<input class="full_name" type="hidden" name="repo[full_name]" value="" />
 					Tag <a class="btn repo_name"> </a> with <input id="tagging_input" type="text" name="tag" size="100" maxlength="100" /> 
@@ -67,7 +65,7 @@
 					</ul>
 					<h5>Your Tags</h5>
 					<ul id="my_tags_on_repo" class="tag_box inline">
-						
+
 					</ul>
 					<div style="clear:both">&#160;</div>
 				</div>
@@ -113,21 +111,17 @@
 	</div>
 	
 	<script id="tagTemplateRemove" type="text/x-jquery-tmpl">
-		<li>
 			<span class="options">
-				<a href="#" class="up btn danger" title="{[name]}">x</a>
+				<a href="#" class="up btn danger" title="{{name}}">x</a>
 			</span>
-			<a href="#" class="tag" title="{{name}}">${name}</a>
-		</li>
+			<a href="#" class="tag" title="{{name}}">{{name}}</a>
 	</script>
 
 	<script id="tagTemplateAdd" type="text/x-jquery-tmpl">
-		<li>
 			<span class="options">
 				<a href="#" class="up btn success" title="{{name}}">+1</a>
 			</span>
 			<a href="#" class="tag" title="{{name}}">{{name}}</a>
-		</li>
 	</script>
 	
 </body>
