@@ -1,7 +1,12 @@
 
 $(function(){
 	var currentUserLogin = $("#current_user_data").text();
+	
 // MODELS
+	var User = Backbone.Model.extend({
+		
+	})
+
 	var Repo = Backbone.Model.extend({
 		defaults : {
 			"full_name" : "plusjade/plusjade",
@@ -11,19 +16,18 @@ $(function(){
 		initialize : function(){
 			console.log("repo initialized");
 			
-			this.tags = new TagCollection;
-	    this.tags.url = '/repos/' + this.get("full_name") + '/tags';
-
-			this.userTags = new TagCollection;
-			this.userTags.url = "/users/"+currentUserLogin+"/repos/"+ this.get("full_name") +"/tags";
+			this.tags = new RepoTagCollection;
+			this.userTags = new UserRepoTagCollection;
 
 			this.bind("change", function(){
 				this.tags.setUrl(this);
-				this.tags.fetch();
-				
-				this.userTags.setUrl(this);
-				this.userTags.fetch();
+				this.userTags.setUrl("plusjade", this);
+				this.refresh();
 			})
+		},
+		refresh : function(){
+			this.tags.fetch();
+			this.userTags.fetch();
 		}
 		
 	})
@@ -33,137 +37,196 @@ $(function(){
       name: 'a tag',
 			relative_count : "a",
       total: '=)'
-    }
+    },
+		
+		// add tag for user on repo
+		//
+		add : function(repo, user){
+			showStatus.submitting();
+			$.ajax({
+			    dataType: "json",
+			    url: "/tag?repo[full_name]="+repo.get("full_name")+"&tag="+this.get("name"),
+			    success: function(rsp){
+						showStatus.respond(rsp);
+						repo.refresh();
+					}
+			});
+		},
+		
+		// remove a tag from repo with respect to user
+		//
+		remove : function(repo, user){
+			showStatus.submitting();
+			$.ajax({
+			    dataType: "json",
+			    url: "/untag?repo[full_name]="+repo.get("full_name")+"&tag="+this.get("name")+"",
+			    success: function(rsp){
+						showStatus.respond(rsp);
+						repo.refresh();
+					}
+			});
+		}
+		
+		
   });
 	
 // COLLECTIONS	
-	var TagCollection = Backbone.Collection.extend({
+
+	var RepoTagCollection = Backbone.Collection.extend({
 		model : Tag,
 		initialize : function(){
-			console.log("tagcollection initialized");
-		},
 
+		},
+		
 		setUrl : function(repo){
 			this.url = "/repos/"+repo.get("full_name")+"/tags";
 		}
-		
 	});
 	
-// VIEWS	
-	RepoView = Backbone.View.extend({
-		model : Repo,
-		
+	var UserRepoTagCollection = Backbone.Collection.extend({
+		model : Tag,
 		initialize : function(){
-			
-			this.model.bind("change", function(){
-				$("#tag_panel_container")
-					.find("a.repo_name")
-					.text(this.get("full_name"))
-					.find("input.full_name")
-					.val(this.get("full_name"));
-			})
+	
+		},
+
+		setUrl : function(user, repo){
+			this.url = "/users/"+user+"/repos/"+repo.get("full_name")+"/tags";
 		}
 	});
 	
+	
+	
+// VIEWS	
+
+	// This tag view holds all tag templates.
+	//
 	var TagView = Backbone.View.extend({
-		el : "li",
+		tagName : "li",
 		communityTmpl : $("#tagTemplateAdd").html(),
 		personalTmpl : $("#tagTemplateRemove").html(),
-
-		initialize : function(){
-			console.log("new tagview");
+		
+		events : {
+			"click .success" : "add",
+			"click .danger" : "remove",
+		},
+		
+		add : function(){
+			this.model.add(tagPanelRepo, currentUser);
+		},
+		remove : function(){
+			this.model.remove(tagPanelRepo, currentUser);
 		},
 		
 		renderCommunity : function(){
-			return $.mustache(this.communityTmpl, this.model.attributes);
+			return $(this.el).html($.mustache(this.communityTmpl, this.model.attributes));
 		},
 		
 		renderPersonal: function(){
-			return $.mustache(this.personalTmpl, this.model.attributes);
+			return $(this.el).html($.mustache(this.personalTmpl, this.model.attributes));
     }
 	});
-
-
-	var TagCollectionView = Backbone.View.extend({
-		el: '#add_tag_container', 
-		initialize : function(){
-			this.collection.bind("reset", this.render)
+	
+	
+	// TagPanelRepoView has two child views for public and personal tag lists.
+	//
+	RepoView = Backbone.View.extend({
+		el : "#tag_panel_container",
+		model : Repo,
+		tagsView : "",
+		usertagsView : "",
+		
+		events : {
+			"submit form" : "saveTags"
 		},
+		
+		initialize : function(){
+			this.tagsView = new RepoTagCollectionView({
+				collection : this.model.tags, 
+				type : "public", 
+				el : "#add_tag_container"
+			});
+			this.usertagsView = new RepoTagCollectionView({
+				collection : this.model.userTags,
+				type : "personal",
+				el : "#my_tags_on_repo"
+			});
+			
+			this.model.bind("change", function(){
+				this.$("a.repo_name").text(this.model.get("full_name"))
+				this.$("input.full_name").val(this.model.get("full_name"));
+			}, this)
+			
+		},
+		
+		saveTags : function(){
+			showStatus.submitting();
+			var repo = this.model;
+			$.ajax({
+			    dataType: "json",
+			    url: this.$("form").attr("action"),
+					data : this.$("form").serialize(),
+			    success: function(rsp){
+						showStatus.respond(rsp);
+						repo.refresh();
+					}
+			});
+			return false;
+		}
+		
+	});
+	
+	// View for showing tag lists on repos
+	var RepoTagCollectionView = Backbone.View.extend({
+		initialize : function(){
+			this.collection.bind("reset", this.render, this);
+		},
+		
 		render : function(){
-			console.log("re-render tag collection");
-			var cache = "";
-			_(this.models).each(function(tag){
-				cache += new TagView({model : tag}).renderCommunity();
+			var type = this.options.type;
+			var cache = [];
+			_(this.collection.models).each(function(tag){
+				if(type === "public"){
+					cache.push(new TagView({model : tag}).renderCommunity());
+				}
+				else{
+					cache.push(new TagView({model : tag}).renderPersonal());
+				}
 			})
 			
-			$("#add_tag_container")
-				.html(cache)
-				.find("li").hover(function(){
+			$.fn.append.apply($(this.el).empty(), cache);
+			
+			$(this.el).find("li").hover(function(){
 						$(this).find("span.options").show();
 					}, function(){
 						$(this).find("span.options").hide();
 					}
 				);
-				
-		},
+		}
+		
 	})
 
 
-	
+
+
+
+
+	var currentUser = new User({"login" : currentUserLogin})
+
 	// set the common tag panel repo and tagpanelrepo tags collection variables and just keep rewriting them.
 	tagPanelRepo = new Repo();
 	// ok show the repo View which is the tagPanel (one view);
 	var repoView = new RepoView({model : tagPanelRepo});
-	var tagsView = new TagCollectionView({collection :tagPanelRepo.tags});
-
 
 	/* open tag panel to add a tag */
 	$("a.add_tag").click(function(e){
-		var full_name = $(this).attr("title");
-
-		// event listeniers on "change" 
-		tagPanelRepo.set({"full_name" : full_name});
+		tagPanelRepo.set({"full_name" : $(this).attr("title")});
 
 		$("#filters_container").hide();
-		$("#tag_panel_container").slideDown("fast")
-		
-		/*
-		if (currentUserLogin !== ""){
-			$.ajax({
-				dataType: "json",
-			  url: "/users/"+currentUserLogin+"/repos/"+ full_name +"/tags",
-			  success: function ( data ) {
-					var $container = $("#my_tags_on_repo").empty();
-					$("#tagTemplateRemove").tmpl(data).appendTo($container);
-					$container.find("li").hover(function(){
-							$(this).find("span.options").show();
-						}, function(){
-							$(this).find("span.options").hide();
-						}
-					)
-				}
-			});
-		}
-		*/	
+		$("#tag_panel_container").slideDown("fast")	
 		e.preventDefault();
 		return false;
 	});
 
-
-	$("#tag_panel").submit(function(e){
-		var $form = $(this);
-		showStatus.submitting();
-		$.ajax({
-		    dataType: "json",
-		    url: $form.attr("action"),
-				data : $form.serialize(),
-		    success: function(rsp){
-					showStatus.respond(rsp);
-				}
-		});
-		e.preventDefault();
-		return false;
-	})
 
 	$("a.tag_panel_close").click(function(e){
 		$("#tag_panel_container").hide();
@@ -172,42 +235,5 @@ $(function(){
 		return false;
 	})
 	
-	/* Remove tag from a repo */
-	$("#my_tags_on_repo").find("span.options").find("a.danger").live("click", function(e){
-		var $tag = $(this);
-		var tag = $tag.attr("title");
-		if(confirm("Remove tag:'" +tag+ "' from this repo?")){
-			showStatus.submitting();
-			var full_name = $("#tag_panel").find("input.full_name").val();
-			$.ajax({
-			    dataType: "json",
-			    url: "/untag?repo[full_name]="+full_name+"&tag="+tag+"",
-			    success: function(rsp){
-						showStatus.respond(rsp);
-					}
-			});
-		}
-
-		e.preventDefault();
-		return false;
-	})
-	
-	$("#add_tag_container").find("a").live("click", function(e){
-		$(this).toggleClass("active");
-		formatTags();
-		e.preventDefault();
-		return false;
-	})
-	
-	
-	function formatTags(){
-		var activeTags = [];
-		
-		$("#add_tag_container").find("a.active").each(function(){
-			activeTags.push($(this).attr("title"));
-		});
-
-		$("#tagging_input").val(activeTags.join(":"));
-	}
 
 })
