@@ -4,7 +4,7 @@ Shameless port of a shameless port
  
 See http://github.com/defunkt/mustache for more info.
 */
- 
+define(['jquery'], function($){ 
 ;(function($) {
 
 /*
@@ -435,3 +435,5 @@ var Mustache = function() {
   };
 
 })(jQuery);
+
+});
