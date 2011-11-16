@@ -6,15 +6,9 @@ define([
 ], function($, _, Backbone){
 
 	Tag = Backbone.Model.extend({
-	   defaults: {
-	     name: 'a tag',
-			relative_count : "a",
-	     total: '=)'
-	   },
-	
 		// add tag for user on repo
 		//
-		add : function(repo, user){
+		add : function(repo){
 			$.showStatus('submitting');
 			$.ajax({
 			    dataType: "json",
@@ -28,7 +22,7 @@ define([
 	
 		// remove a tag from repo with respect to user
 		//
-		remove : function(repo, user){
+		remove : function(repo){
 			$.showStatus('submitting');
 			$.ajax({
 			    dataType: "json",

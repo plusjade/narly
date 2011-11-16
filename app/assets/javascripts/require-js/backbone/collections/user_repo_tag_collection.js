@@ -2,7 +2,8 @@ define([
   'jquery',
   'Underscore',
   'Backbone',
-], function($, _, Backbone){
+  'backbone/models/tag'
+], function($, _, Backbone, Tag){
 	
 	// A collection for a Repo's tags made by User.
 	//

@@ -2,10 +2,12 @@ define([
   'jquery',
   'Underscore',
   'Backbone',
+	'backbone/models/repo',
 	'jquery/showStatus',
-	'jquery/mustache'
-], function($, _, Backbone){
-	
+	'jquery/mustache',
+	'backbone/views/repo_tag_collection_view'
+], function($, _, Backbone, Repo, z,z, RepoTagCollectionView){
+
 	// TagPanel has two child views for public and personal tag lists.
 	//
 	TagPanelView = Backbone.View.extend({
@@ -15,8 +17,6 @@ define([
 			"submit form" : "saveTags"
 		},
 		render : function(repo){
-			console.log("Render TagPanelView");
-		
 			// reset the repo
 			this.model = repo;
 

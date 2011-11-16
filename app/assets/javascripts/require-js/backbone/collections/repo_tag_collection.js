@@ -2,7 +2,8 @@ define([
   'jquery',
   'Underscore',
   'Backbone',
-], function($, _, Backbone){
+	'backbone/models/tag'
+], function($, _, Backbone, Tag){
 	
 	// A base collection for a Repo's tags.
 	RepoTagCollection = Backbone.Collection.extend({

@@ -3,8 +3,9 @@ define([
   'Underscore',
   'Backbone',
 	'jquery/showStatus',
-	'jquery/mustache'
-], function($, _, Backbone){
+	'jquery/mustache',
+	'app'
+], function($, _, Backbone, z,z, App){
 	
 	// This tag view holds all tag templates.
 	//
@@ -19,10 +20,10 @@ define([
 		},
 	
 		add : function(){
-			this.model.add(MainTagPanelView.model, CurrentUser);
+			this.model.add(App.mainTagPanelView.model);
 		},
 		remove : function(){
-			this.model.remove(MainTagPanelView.model, CurrentUser);
+			this.model.remove(App.mainTagPanelView.model);
 		},
 	
 		renderCommunity : function(){
