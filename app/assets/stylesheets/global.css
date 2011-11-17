@@ -169,13 +169,13 @@ html, body {
 #tag_panel_extended h5 {
 	clear:both;
 }	
-#tag_panel_extended ul{
+#tag_panel_extended ul, #base_tag_list{
 	overflow:visible;
 }
-#tag_panel_extended ul li{
+#tag_panel_extended ul li, #base_tag_list li{
 	position:relative;
 }
-#tag_panel_extended a {
+#tag_panel_extended a, #base_tag_list a {
 	font-size:12px;
 }
 span.options {
@@ -297,7 +297,7 @@ div.tag_header h4 {
 .repo {
 	position:relative;
 	float:left;
-	height:130px;
+	height:135px;
 	width:400px;
 	overflow:visible;
 	padding:5px;
@@ -329,31 +329,18 @@ div.tag_header h4 {
 	padding-bottom:0;
 }
 
-.repo .tags {
-	background:#FFF;
-	height:25px;
+.repo ul.tag_box {
+	height:26px;
 	overflow:hidden;
+	background:#FFF;
 }
-.repo.hover .tags {
-	position:absolute;
-	top:55px;
-	left:0;
-	padding:10px 10px 0 10px;
-	display:block;
-	height:70px;
-	z-index:50;
-}
-.repo .tags a{
-	float:left;
-	font-size:12px;
-	margin-right:4px;
-	margin-bottom:4px;
-	padding:2px 5px;
+.repo ul.tag_box a{
 	background:#eee;
-	border:1px solid #ddd;
-	border-radius:2px;
-	text-decoration:none;
-}
+	color:#4A86FF;
+	border:1px solid #ccc;
+	font-size:12px;
+}	
+
 
 /* image thumb ======================================================== */
 
