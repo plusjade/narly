@@ -18,12 +18,12 @@ define([
 		render : function(){
 			var type = this.options.type;
 			var cache = [];
-			_(this.collection.models).each(function(tag){
+			$.each(this.collection.models, function(){
 				if(type === "personal"){
-					cache.push(new TagView({model : tag}).renderPersonal());
+					cache.push(new TagView({model : this}).renderPersonal());
 				}
 				else{
-					cache.push(new TagView({model : tag}).renderCommunity());
+					cache.push(new TagView({model : this}).renderCommunity());
 				}
 			})
 		
