@@ -25,6 +25,9 @@ define([
 		refresh : function(){
 			this.tags.fetch();
 			this.userTags.fetch();
+		},
+		css_id : function(){
+			return "#repo-" + this.get("full_name").replace("/", "-");
 		}
 	});
 

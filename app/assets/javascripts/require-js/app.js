@@ -9,17 +9,19 @@ define([
 	'backbone/models/user',
 	'backbone/models/tag',
 
+	'backbone/collections/repo_collection',
 	'backbone/collections/repo_tag_collection',
 	'backbone/collections/user_repo_tag_collection',
 	
+	'backbone/views/repo_collection_view',
 	'backbone/views/repo_tag_collection_view',
 	'backbone/views/repo_view',
 	'backbone/views/tag_panel_view',
 	'backbone/views/tag_view'
 ], function($, _, Backbone, z,z, 
 	Repo, User, Tag,
-	RepoTagCollection, UserRepoTagCollection, 
-	RepoTagCollectionView, RepoView, TagPanelView, TagView
+	RepoCollection, RepoTagCollection, UserRepoTagCollection, 
+	RepoCollectionView, RepoTagCollectionView, RepoView, TagPanelView, TagView
 	){
 		
 	var App = {
@@ -29,10 +31,12 @@ define([
 			tag : Tag
 		},
 		collections : {
+			repoCollection : RepoCollection,
 			repoTagCollection : RepoTagCollection,
 			userRepoTagCollection : UserRepoTagCollection
 		},
 		views : {
+			repoCollectionView : RepoCollectionView,
 			repoTagCollectionView : RepoTagCollectionView,
 			repoView : RepoView,
 			tagPanelView : TagPanelView,
@@ -40,21 +44,14 @@ define([
 		},
 		
 		initialize : function(boot){
-			//App.currentUser = new User({"login" : $("head").attr("rel")});
-			console.log("app initialized");
+			console.log("app.js initialized");
+			App.currentUser = new User({login : $("head").attr("rel")});
 			console.log(App);
-
-			App.currentUser = new User({login : "plusjade"});
+			
 			boot();
 			
 			$(function(){
 				console.log("DOM ready");
-				$("a.tag_panel_close").click(function(e){
-					$("#tag_panel_container").hide();
-					$("#filters_container").slideDown("fast");
-					e.preventDefault();
-					return false;
-				})
 			})
 		}
 	}

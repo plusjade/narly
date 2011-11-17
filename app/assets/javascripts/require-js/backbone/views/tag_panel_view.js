@@ -14,13 +14,19 @@ define([
 		el : "#tag_panel_container",
 		model : Repo,
 		events : {
-			"submit form" : "saveTags"
+			"submit form" : "saveTags",
+			"click a.tag_panel_close" : "close"
 		},
+		initialize : function(){
+			// listen to the show panel event which fires from individual
+			// repos but bubbles up to their parent collections.
+			this.collection.bind("showPanel", this.render, this);
+		},
+		
 		render : function(repo){
-			// reset the repo
 			this.model = repo;
 
-			// build the UserTag view
+			// build a fresh repoTagcollection view
 			this.tagsView = new RepoTagCollectionView({
 				collection : this.model.tags, 
 				type : "public", 
@@ -28,8 +34,7 @@ define([
 			});
 			this.tagsView.render();
 
-
-			// build the UserTag view
+			// build a fresh userRepoTagCollection view
 			this.userTagsView = new RepoTagCollectionView({
 				collection : this.model.userTags,
 				type : "personal",
@@ -46,6 +51,7 @@ define([
 		},
 	
 		saveTags : function(){
+			console.log("savetags");
 			$.showStatus('submitting');
 			var repo = this.model;
 			$.ajax({
@@ -57,6 +63,12 @@ define([
 						repo.refresh();
 					}
 			});
+			return false;
+		},
+		
+		close : function(){
+			$("#tag_panel_container").hide();
+			$("#filters_container").slideDown("fast");
 			return false;
 		}
 	
