@@ -5,82 +5,68 @@
 	</div>
 <% end %>
 
+<div id="<%= repo_css_id(@repo) %>" >
 
-<h2 class="title">
-	<a href="#" class="add_tag btn success" style="float:right" rel="<%=@repo.full_name %>" title="<%= @repo.full_name %>">+/- tags</a>
-	<%= @repo.full_name %>
-</h2>
+	<h2 class="title">
+		<a href="#" class="add_tag btn success" style="float:right" rel="<%=@repo.full_name %>" title="<%= @repo.full_name %>">+/- tags</a>
+		<%= @repo.full_name %>
+	</h2>
 
-<div class="repo_outline boxy">
+	<div class="repo_outline boxy">
 
-	<p style="font-weight:bold">
-		<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
-	</p>
-	<p><%= @repo.description %></p>
-	<ul>
-		<li><strong>is fork?</strong>: <%= @repo.fork ? "yes" : "no" %></li>
-		<li><strong>Language</strong>: <%= @repo.language %></li>
-		<li><strong>Forks</strong>: <%= @repo.forks %></li>
-	</ul>
-</div>
-
-<h2>Tags</h2>
-
-<ul class="tag_box inline">
-<% @repo.tags.each do |tag| %>
-	<li><%= link_to_tag(tag, repos_tagged_path(tag.name))%></li>
-<% end %>
-</ul>
+		<p style="font-weight:bold">
+			<%= link_to @repo.html_url, @repo.html_url, :target => "_blank" %>
+		</p>
+		<p><%= @repo.description %></p>
+		<ul>
+			<li><strong>is fork?</strong>: <%= @repo.fork ? "yes" : "no" %></li>
+			<li><strong>Language</strong>: <%= @repo.language %></li>
+			<li><strong>Forks</strong>: <%= @repo.forks %></li>
+		</ul>
+	</div>
 
 
-<h2>Similar Repos</h2>
-<div id="similar_repos_container">
-<% if @similar_repos.blank? %>
-	None yet =(
-	<br/>Please tag some more repos!
-<% else %>
-	<% @similar_repos.each do |repo| %>
-		<%= render :partial => "repos/repo", :object => repo %>
-	<% end %>
-<% end %>
-</div>
+	<h2>Tags</h2>
 
-<h2>Tagged By</h2>
+	<ul id="base_tag_list" class="tag_box inline">
+	<% @repo.tags.each do |tag| %>
+			<li><%= link_to_tag(tag, repos_tagged_path(tag.name))%></li>
+		<% end %>
+		</ul>
 
-<div id="users_container">
-	<% @repo.users.each do |user| %>
-		<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
-	<% end %>
-</div>	
+		<br style="clear:both" />
 
+		<h2>Similar Repos</h2>
+		<div id="similar_repos_container">
+		<% if @similar_repos.blank? %>
+			None yet =(
+			<br/>Please tag some more repos!
+		<% else %>
+			<% @similar_repos.each do |repo| %>
+				<%= render :partial => "repos/repo", :object => repo %>
+			<% end %>
+		<% end %>
+		</div>
 
+		<h2>Tagged By</h2>
 
-<style type="text/css">
-	#repository_container {
-		padding:20px;
-	}
-	#repository_container li {
-		color:inherit;
-	}
-	#repository_container h2.title {
-		position:relative;
-		line-height:50px;
-	}
-	#repository_container h2.title img {
-		position:absolute;
-		top:0;
-	}
-	#repository_container h2.title span {
-		position:relative;
-		left:55px;
-	}
+		<div id="users_container">
+			<% @repo.users.each do |user| %>
+				<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
+			<% end %>
+		</div>	
+
+	</div>
+
+<% content_for :scripts do %>
+	var rc = new RepoCollection;
+	var view = new App.views.repoCollectionView({collection : rc});
+	var repo = new App.models.repo(<%= raw @repo.to_json %>);
+
+	repo.tags.reset(<%= raw @repo.tags.to_json %>);
+	repo.setUser(App.currentUser);
 	
-	.repo_outline , #side_content, #similar_repos_container,  #users_container {
-		padding:10px 20px;
-		overflow:hidden;
-	}
-	
-	.boxy {
-		margin-bottom:20px;
-	}
-</style>
+	rc.setUser(App.currentUser);
+	rc.add(repo);
+	view.render();
+<% end %>

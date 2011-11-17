@@ -8,3 +8,7 @@
 <% @repos.each do |repo| %>
 	<%= render :partial => "repos/repo", :object => repo %>
 <% end %>
+
+<% content_for :scripts do %>
+	<%= render :partial => "repos/repos_for_backbone", :locals => {:repos => @repos } %>
+<% end %>

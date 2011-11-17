@@ -1,4 +1,4 @@
-<div class="repo">
+<div id="<%= repo_css_id(repo) %>" class="repo">
 	<%= link_to "+/- tags", "#", :class => "add_tag btn", :title => repo.full_name  %>
 	<%= link_to (image_tag repo.owner.avatar_url, :class => "thumb"), user_path(repo.login) %>
 	<span class="name">
@@ -14,10 +14,12 @@
 			<%= repo.description %>
 		</p>
 		
-		<p class="tags">
+		<ul class="tag_box inline">
 		<% repo.tags(:limit => 5).each do |tag| %>
-			<%= link_to_tag(tag, repos_tagged_path(tag.name) )%>
+			<li><%= link_to_tag(tag, repos_tagged_path(tag.name) )%></li>
 		<% end %>				
-		</p>
+		</ul>
+		
 	</div>
 </div>
+

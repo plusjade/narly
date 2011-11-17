@@ -31,5 +31,13 @@
 			<input type="text" name="login" /> <button class="btn success">Show My Page</button>
 		<% end %>
 	</p>
-	
 </div>
+
+<% content_for :side_content do %>
+	<h4>Top Tags</h4>
+	<ul class="tag_box">
+		<% @tags.each do |tag| %>
+			<li><%= link_to_tag(tag, repos_tagged_path(tag.name))%></li>
+		<% end %>
+	</ul>
+<% end %>	
