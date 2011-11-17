@@ -1,22 +1,22 @@
 define([
-	'app',
   'jquery',
   'Underscore',
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/models/repo'
+	'backbone/models/repo',
+	'backbone/views/tag_panel_view'
 
-], function(App, $, _, Backbone, z,z, Repo){
+], function($, _, Backbone, z,z, Repo, TagPanelView){
 	RepoView = Backbone.View.extend({
 		model : Repo,
 		events : {
 			"click .add_tag" : "showPanel"
 		},
 
-		// Show this repo in the singular mainTagPanelView window
 		showPanel : function(){
-			App.mainTagPanelView.render(this.model);
+			var view = new TagPanelView;
+			view.render(this.model);
 			return false;
 		}
 	

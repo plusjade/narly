@@ -4,8 +4,7 @@ define([
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'app'
-], function($, _, Backbone, z,z, App){
+], function($, _, Backbone, z,z){
 	
 	// This tag view holds all tag templates.
 	//
@@ -20,10 +19,10 @@ define([
 		},
 	
 		add : function(){
-			this.model.add(App.mainTagPanelView.model);
+			this.model.add();
 		},
 		remove : function(){
-			this.model.remove(App.mainTagPanelView.model);
+			this.model.remove();
 		},
 	
 		renderCommunity : function(){

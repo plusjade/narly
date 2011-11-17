@@ -5,25 +5,47 @@ define([
 	'jquery/showStatus',
 	'jquery/mustache',
 
-	//'backbone/models/repo',
+	'backbone/models/repo',
 	'backbone/models/user',
-	//'backbone/models/tag',
+	'backbone/models/tag',
 
-	//'backbone/collections/repo_tag_collection',
-	//'backbone/collections/user_repo_tag_collection',
+	'backbone/collections/repo_tag_collection',
+	'backbone/collections/user_repo_tag_collection',
 	
-	//'backbone/views/repo_tag_collection_view',
-	//'backbone/views/repo_view',
-	'backbone/views/tag_panel_view'
-	//'backbone/views/tag_view'
+	'backbone/views/repo_tag_collection_view',
+	'backbone/views/repo_view',
+	'backbone/views/tag_panel_view',
+	'backbone/views/tag_view'
 ], function($, _, Backbone, z,z, 
-	User, TagPanelView
+	Repo, User, Tag,
+	RepoTagCollection, UserRepoTagCollection, 
+	RepoTagCollectionView, RepoView, TagPanelView, TagView
 	){
 		
 	var App = {
-		initialize : function(){
-			App.currentUser = new User({"login" : $("head").attr("rel")});
-			App.mainTagPanelView = new TagPanelView;
+		models : {
+			repo : Repo,
+			user : User,
+			tag : Tag
+		},
+		collections : {
+			repoTagCollection : RepoTagCollection,
+			userRepoTagCollection : UserRepoTagCollection
+		},
+		views : {
+			repoTagCollectionView : RepoTagCollectionView,
+			repoView : RepoView,
+			tagPanelView : TagPanelView,
+			tagView : TagView
+		},
+		
+		initialize : function(boot){
+			//App.currentUser = new User({"login" : $("head").attr("rel")});
+			console.log("app initialized");
+			console.log(App);
+
+			App.currentUser = new User({login : "plusjade"});
+			boot();
 			
 			$(function(){
 				console.log("DOM ready");

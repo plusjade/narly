@@ -8,8 +8,12 @@ define([
 	// A base collection for a Repo's tags.
 	RepoTagCollection = Backbone.Collection.extend({
 		model : Tag,
-		setUrl : function(repo){
-			this.url = "/repos/"+repo.get("full_name")+"/tags";
+		repo : null,
+		url : function(){
+			return "/repos/"+this.repo.get("full_name")+"/tags";
+		},
+		setRepo : function(repo){
+			this.repo = repo;
 		}
 	});
 

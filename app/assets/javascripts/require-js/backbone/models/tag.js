@@ -8,7 +8,10 @@ define([
 	Tag = Backbone.Model.extend({
 		// add tag for user on repo
 		//
-		add : function(repo){
+		add : function(){
+			console.log("tag add: "+this.get("name"));
+			var repo = this.collection.repo;
+			
 			$.showStatus('submitting');
 			$.ajax({
 			    dataType: "json",
@@ -22,7 +25,10 @@ define([
 	
 		// remove a tag from repo with respect to user
 		//
-		remove : function(repo){
+		remove : function(){
+			console.log("tag remove: "+this.get("name"));
+			var repo = this.collection.repo;
+			
 			$.showStatus('submitting');
 			$.ajax({
 			    dataType: "json",

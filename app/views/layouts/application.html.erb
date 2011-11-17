@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head rel="<%= current_user.login if current_user %>">
   <title>narly.us</title>
 	<% if Rails.env.production? %>
 		<%= stylesheet_link_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.css" %>
-		<%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" %>
-		<%= javascript_include_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.js" %>
 	<% else %>
 		<%= stylesheet_link_tag "application" %>
-		<%= javascript_include_tag "application" %>
-		<%= javascript_include_tag "http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js" %>
-		<%= javascript_include_tag "backbone-0.5.3.js" %>
-		<%= javascript_include_tag "jquery.mustache.js" %>
 	<% end %>
+		<script blah-data-main="/assets/require-js/main.js" src="/assets/require-js/require-jquery.js"></script>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -27,7 +22,7 @@
 				
 				<ul class="left">
 					<li><a href="/" class="logo">narly.us | alpha</a></li>
-					<li><span>"it's like [old] delicious for GitHub projects."</span></li>
+					<li><span>"[old] delicious for GitHub projects."</span></li>
 				</ul>
 
 				<ul class="right">
@@ -123,6 +118,32 @@
 			</span>
 			<a href="#" class="tag" title="{{name}}">{{name}}</a>
 	</script>
+
+<script>
+	require.config({
+		baseUrl: "/assets/require-js",
+	  paths: {
+	    Underscore: 'libs/underscore/underscore',
+	    Backbone: 'libs/backbone/backbone'
+	  }
+
+	});
+
+	require([
+		'jquery',
+	  'order!libs/underscore/underscore-min',
+	  'order!libs/backbone/backbone-0.5.3',
+		"jquery/showStatus",
+		"jquery/mustache",
+		'app',
+	], function($,_,Backbone,z,z, App){
+		console.log("Start");
+	  App.initialize(function(){
+			<%= yield :scripts %>
+		});
+	});
 	
+</script>
+
 </body>
 </html>
