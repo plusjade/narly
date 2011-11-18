@@ -51,7 +51,7 @@ define([
 		update : function(){
 			var data = "";
 			this.collection.each(function(tag){
-				data += " + <span>" + tag.get("name") + "</span>";
+				data += "<span>" + tag.get("name") + "</span> + ";
 			})
 			this.$("p").html(data);
 			this.$("input.tag").val("");
