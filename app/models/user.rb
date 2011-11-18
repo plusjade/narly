@@ -21,13 +21,9 @@ class User
   def repos(conditions = {})
     names = self.taylor_get(:items , conditions)
     conditions[:via] = Array(conditions[:via])
-    # The default repo search should be via the "watching" tag.
-    # If there are no repos tagged "watching" for this user it means we haven't loaded this user yet.
-    # So we load the user's watched repos from github but only in this default case.
-    # FIXME. This will loop itself if a user has  0 owned repos.
-    if (names.blank?  && conditions[:via].count == 1 && conditions[:via].first.name == self.login)
-      names = self.import_mine
-      self.import_watched(1)
+    # If there are no repos tagged by this user lets try to load them from the api.
+    if (names.blank?  && conditions[:via].count.zero?)
+      names = self.import_mine + self.import_watched(1)
     end
 
     Repository.spawn_from_taylor_swift_data(names)

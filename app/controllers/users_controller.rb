@@ -2,10 +2,7 @@ class UsersController < ApplicationController
 
   def show
     @owner = User.first!(:login => params[:login])
-    
     @tag_filters = Tag.new_from_tag_string(params[:tags])
-    @tag_filters = [Tag.new(:name => "watching")] if @tag_filters.blank?
-
     @repos = @owner.repos(:via => @tag_filters)
     @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
   end
