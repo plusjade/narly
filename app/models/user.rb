@@ -37,22 +37,26 @@ class User
     Tag.spawn_from_taylor_swift_data(self.taylor_get(:tags, conditions))
   end
   
-  # Overwrite DM finder to try load_from_github on miss
-  # This is so we can save this user behind the scenes.
+  # Find from our mysql cache or else try to fetch it from the api
+  # Notes:
+  #   I tried to overload the native self.first method with this check but
+  #   what happens is the self.first method is getting called 
+  #   when checking the object for validity i.e. user.valid? or user.save
+  #   so we get an infinite loop. Took me a while to figure that out.
   #
-  def self.first(*args)
-    user = super(*args)
+  def self.first_or_fetch(*args)
+    user = self.first(*args)
     if user.nil? && (login = args.first[:login])
-      puts "to network!"
+      puts "user to network!"
       user = new_from_github(login)
       user = nil unless user.save
-    end  
+    end
 
     user
   end
-
+  
   def self.first!(*args)
-    first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find user with conditions: #{args.first.inspect}") 
+    self.first_or_fetch(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find user with conditions: #{args.first.inspect}") 
   end
   
   def self.create_with_omniauth(auth)

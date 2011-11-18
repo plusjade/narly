@@ -25,13 +25,18 @@ class Repository
     :child_key => [:login]
 
 
-  # Overwrite DM finder to try load_from_github on miss
-  # This is so we can save this repo behind the scenes.
+  # Find from our mysql cache or else try to fetch it from the api
+  # Notes:
+  #   I tried to overload the native self.first method with this check but
+  #   what happens is the self.first method is getting called 
+  #   when checking the object for validity i.e. user.valid? or user.save
+  #   so we get an infinite loop. Took me a while to figure that out.
   #
-  def self.first(*args)
-    repo = super(*args)
+  def self.first_or_fetch(*args)
+    repo = self.first(*args)
+
     if repo.nil? && (login = args.first[:login]) && (name = args.first[:name])
-      puts "to network!"
+      puts "repo to network!"
       repo = new_from_github(login, name)
       repo = nil unless repo.save
     end  
@@ -40,7 +45,7 @@ class Repository
   end
   
   def self.first!(*args)
-    first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
+    self.first_or_fetch(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
   end
   
   def tags(conditions = {})
