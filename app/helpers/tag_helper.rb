@@ -40,7 +40,7 @@ module TagHelper
   end
   
   def format_tags(tags)
-    tags.map!{ |tag| "<span>#{tag.name}</span>" }.join(" + ").html_safe
+    tags.map{ |tag| "<span>#{tag.name}</span>" }.join(" + ").html_safe
   end
   
 end
