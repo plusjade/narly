@@ -9,6 +9,7 @@ define([
 	'backbone/models/user',
 	'backbone/models/tag',
 
+	'backbone/collections/tag_collection',
 	'backbone/collections/repo_collection',
 	'backbone/collections/repo_tag_collection',
 	'backbone/collections/user_repo_tag_collection',
@@ -17,11 +18,12 @@ define([
 	'backbone/views/repo_tag_collection_view',
 	'backbone/views/repo_view',
 	'backbone/views/tag_panel_view',
-	'backbone/views/tag_view'
+	'backbone/views/tag_view',
+	'backbone/views/filters_view'
 ], function($, _, Backbone, z,z, 
 	Repo, User, Tag,
-	RepoCollection, RepoTagCollection, UserRepoTagCollection, 
-	RepoCollectionView, RepoTagCollectionView, RepoView, TagPanelView, TagView
+	TagCollection, RepoCollection, RepoTagCollection, UserRepoTagCollection, 
+	RepoCollectionView, RepoTagCollectionView, RepoView, TagPanelView, TagView, FiltersView
 	){
 		
 	var App = {
@@ -31,6 +33,7 @@ define([
 			tag : Tag
 		},
 		collections : {
+			tagCollection : TagCollection,
 			repoCollection : RepoCollection,
 			repoTagCollection : RepoTagCollection,
 			userRepoTagCollection : UserRepoTagCollection
@@ -40,7 +43,8 @@ define([
 			repoTagCollectionView : RepoTagCollectionView,
 			repoView : RepoView,
 			tagPanelView : TagPanelView,
-			tagView : TagView
+			tagView : TagView,
+			filtersView : FiltersView
 		},
 		
 		initialize : function(boot){
