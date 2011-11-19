@@ -11,17 +11,27 @@ define([
 	// A collection for tags made by user
 	//
 	RepoCollectionView = Backbone.View.extend({
+		el : "#main_content",
 		model : Repo,
-		user : null,
 
 		initialize : function(){
 			this.tagPanelView = new TagPanelView({collection : this.collection});
+			this.collection.bind("reset", this.renderFresh, this);
 		},
 
 		render : function(){
-			$.each(this.collection.models, function(){
-				new RepoView({model : this, el : this.css_id() });
+			this.collection.each(function(repo){
+				new RepoView({model : repo, el : repo.css_id() });
 			})
+		},
+		
+		renderFresh : function(){
+			console.log("renderFresh");
+			var cache = [];
+			this.collection.each(function(repo){
+				cache.push(new RepoView({model : repo}).render());
+			})
+			$.fn.append.apply($(this.el).empty(), cache);
 		}
 	});
 
