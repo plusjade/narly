@@ -9,13 +9,9 @@ define([
 	//
 	UserRepoTagCollection = Backbone.Collection.extend({
 		model : Tag,
-		user : null,
 		repo : null,
 		url : function(){
-			return "/users/"+this.user.get("login")+"/repos/"+this.repo.get("full_name")+"/tags";
-		},
-		setUser : function(user){
-			this.user = user;
+			return "/users/"+this.repo.collection.currentUser.get("login")+"/repos/"+this.repo.get("full_name")+"/tags";
 		},
 		setRepo : function(repo){
 			this.repo = repo;
