@@ -10,6 +10,12 @@ define([
 ], function($, _, Backbone, z,z, Repo, RepoTagCollectionView){
 	RepoView = Backbone.View.extend({
 		model : Repo,
+		tagName : "div",
+		className : "repo",
+		
+		template : $("#repoTemplate").html(),
+		tagTemplate : $("#tagTemplateAdd").html(),
+		
 		events : {
 			"click .add_tag" : "showPanel"
 		},
@@ -22,6 +28,11 @@ define([
 			});
 		},
 
+		// Return the HTML template
+		render : function(){
+			return $(this.el).html($.mustache(this.template, this.model.attributes));
+		},
+		
 		showPanel : function(){
 			// showPanel bubbles up to the tagPanelView which is listening
 			// for this event through monitoring its collection.
