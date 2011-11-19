@@ -6,6 +6,15 @@ define([
 ], function($, _, Backbone){
 
 	Tag = Backbone.Model.extend({
+		
+		// Add validations so empty tags cannot be added to collections.
+		//
+		validate: function(attrs) {
+	    if ($.trim(attrs.name) === "") {
+	      return "name can't be blank";
+	    }
+		},
+		
 		// add tag for user on repo
 		//
 		add : function(){
