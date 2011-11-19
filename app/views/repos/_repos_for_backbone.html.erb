@@ -1,15 +1,9 @@
-var rc = new RepoCollection;
-var view = new App.views.repoCollectionView({collection : rc});
 var repos = [];
 
 <% repos.each do |repo| %>
-	var repo = new App.models.repo(<%= raw repo.to_json %>);
-	repo.setUser(App.currentUser);
-	repo.tags.reset(<%= raw repo.tags.to_json %>);
-	
+	var repo = new App.models.repo(<%= raw repo.to_json(:methods => [:tags]) %>);
 	repos.push(repo);
 <% end %>
 
-rc.setUser(App.currentUser);
-rc.add(repos);
-view.render();
+App.mainRepoCollection.add(repos);
+App.mainRepoCollectionView.render();

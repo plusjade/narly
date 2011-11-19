@@ -19,10 +19,8 @@
 	<div id="top">		
 		<div id="user_nav">
 			<div>
-				
 				<ul class="left">
 					<li><a href="/" class="logo">narly.us | alpha</a></li>
-					<li><span>"[old] delicious for GitHub projects."</span></li>
 				</ul>
 
 				<ul class="right">
@@ -40,7 +38,17 @@
 		<div id="headers">
 			<div id="filters_container">
 				<div id="filters">
-					<%= yield :filters %>
+					
+					<form action="/users" method="get">
+						Tagged by 
+						<%= (link_to (image_tag(@owner.avatar_url)), user_path(@owner.login)) if @owner %> 
+						<input class="login" type="text" name="login" value="<%= @owner ? @owner.login : "*" %>" /> with:
+						<p style="display:inline">
+							<%= raw "#{format_tags(@tag_filters)} +" if @tag_filters %>
+						</p>
+						<input class="tag" type="text" name="tag" value="" />
+						<button type="submit" style="visibility:hidden">&#160;</button>
+					</form>
 				</div>
 			</div>
 
@@ -119,6 +127,41 @@
 			<a href="#" class="tag" title="{{name}}">{{name}}</a>
 	</script>
 
+	<script id="repoTemplate" type="text/x-jquery-tmpl">
+			<a href="#" class="add_tag btn" title="{{full_name}}">+/- tags</a>
+			
+			<a href="/users/{{login}}">
+				<img src="{{owner.avatar_url}}" class="thumb" />
+			</a>
+
+			<span class="name">
+				<a href="/repos/{{full_name}}" title="{{full_name}}">{{full_name}}</a>
+			</span>
+
+			<div class="meta">
+				<span class="watchers-forks">watchers:  {{watchers}} </span> | <span class="language">{{language}}</span>
+			</div>
+
+			<div class="main">
+				<p class="description" title="{{description}}">
+					{{description}}
+				</p>
+
+				<ul class="tag_box inline">				
+
+				{{#tags}}
+					{{#name}}
+						<span class="options">
+							<a href="#" class="up btn success" title="{{name}}">+1</a>
+						</span>
+						<a href="#" class="tag" title="{{name}}">{{name}}</a>
+					{{/name}}
+				{{/tags}}
+				</ul>
+
+			</div>
+	</script>
+
 <script>
 	require.config({
 		baseUrl: "/assets/require-js",
@@ -136,6 +179,20 @@
 		'app',
 	], function($,_,Backbone, App){
 		console.log("Start");
+		
+		App.currentUser = new User({login : $("head").attr("rel")});
+		
+	// Setup Standard Views.
+		App.mainRepoCollection = new App.collections.repoCollection;
+		App.mainRepoCollection.currentUser = App.currentUser;
+		App.mainRepoCollectionView = new App.views.repoCollectionView({collection : App.mainRepoCollection});
+		
+		
+	// Setup the Tag Filters and the FilterView.
+		var tags = new App.collections.tagCollection(<%= raw @tag_filters.to_json %>);
+		tags.repos = App.mainRepoCollection;
+		var fview = new App.views.filtersView({collection : tags });
+					
 	  App.initialize(function(){
 			<%= yield :scripts %>
 		});

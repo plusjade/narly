@@ -49,7 +49,6 @@ define([
 		
 		initialize : function(boot){
 			console.log("app.js initialized");
-			App.currentUser = new User({login : $("head").attr("rel")});
 			console.log(App);
 			
 			boot();

@@ -4,25 +4,35 @@ define([
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/models/tag'
-], function($, _, Backbone, z,z, Tag){
+	'backbone/models/tag',
+	'backbone/models/user'
+], function($, _, Backbone, z,z, Tag, User){
 	
 	FiltersView = Backbone.View.extend({
 		model : Tag,
+		user : User,
 		el : "#filters",
 		
 		events : {
 			"submit form" : "parseInput",
 			"click span" : "remove",
-			"click button.query" : "query"
 		},
 		
 		initialize : function(){
+			console.log("filter init");
+			this.user = new User({login : this.getUser()});
+			// set the user on the repo collection since the collection
+			// is bootstrapped into place via serverside objects. 
+			this.collection.repos.user = this.user;
+			
+			this.user.bind("change", this.query, this);
 			this.collection.bind("add", this.update, this);
 			this.collection.bind("remove", this.update, this);
 		},
 
 		parseInput : function(){
+			this.user.set({login : this.getUser()});
+			
 			var name = this.$("input.tag").val().toLowerCase();
 			var exists = false;
 			this.collection.each(function(tag){
@@ -56,36 +66,21 @@ define([
 			this.$("p").html(data);
 			this.$("input.tag").val("");
 
-			//this.query();
+			this.query();
 		},
 		
-		// build the correct query Url based on the current filters.
-		//
-		url : function(){
-			var url = "/";
-			var login = this.$("input.login").val();
-			var tagNames = this.collection.pluck("name");
-			var userPath = "/users/" + login;
-			var tagsPath = "/repos/tagged/" + tagNames.join(":");
-			
-			if(tagNames.length > 0)
-				if(login === "") url = tagsPath;
-				else url = userPath + tagsPath;
-			else
-				if(login === "") url = "/repos";
-				else  url = userPath;
-			
-			console.log("url");	
-			console.log(url);	
-			return url;	
+		getUser : function(){
+			return this.$("input.login").val().replace(/[^\w\-]+/g, "");
 		},
 		
 		// Call the query.
 		//
 		query : function(e){
-			window.location.href = this.url();
-			e.preventDefault();
-			return false
+			console.log("fetching:");
+			this.collection.repos.user.set({login : this.getUser()})
+			this.collection.repos.tags = this.collection;
+			this.collection.repos.fetch();
+			return false;
 		}
 		
 		
