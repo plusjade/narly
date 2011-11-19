@@ -96,12 +96,17 @@ html, body {
 	font-weight:bold;
 	box-shadow:1px 1px 1px #ccc;
 }
+#filters button.query {
+	position:relative; 
+	float:right;
+	top:8px;
+	right:8px;
+}
+
 #filters img{
-	position:absolute;
-	top:0;
-	left:15px;
-	height:50px;
-	width:50px;
+	vertical-align:middle;
+	height:30px;
+	width:30px;
 	padding:1px;
 	border:1px solid #B2A37C;
 	background:#FDE8B0;
@@ -115,12 +120,13 @@ html, body {
 	width:50px;
 	color:#C70808;
 }
-#filters div {
+#filters form {
 	position:absolute;
 	top:0;
-	left:85px;
+	left:20px;
 	height:45px;
 	line-height:45px;
+	font-weight:bold;
 }
 /* these are tags */
 #filters span{
@@ -130,6 +136,24 @@ html, body {
 	border-radius:3px;
 	color:#FFF;
 	cursor:pointer;
+}
+#filters input.login {
+	background:#339BB9;
+	border:1px solid #22697D;
+	color:#FFF;
+	font-weight:bold;
+	width:110px;
+}
+#filters input.tag {
+	background:#D1EED1;
+	border:1px solid #BFE7BF;
+	color:#4C964D;
+	font-weight:bold;
+	width:110px;
+}
+#filters span:hover {
+	background:#C43C35;
+	border:1px solid #882A25;
 }
 
 /* TAG PANEL ======================================================== */
@@ -270,16 +294,15 @@ div.tag_header h4 {
 	overflow:hidden;
 }
 .tag_box li {
-	line-height:30px;
+	line-height:28px;
 }
 .tag_box.inline li {
 	float:left;
 }
 .tag_box a {
-	padding: 5px 10px;
+	padding: 3px 6px;
 	margin: 2px;
-	background: #555;
-	color: #EEE;
+	background: #eee;
 	border-radius: 3px;
 	text-decoration:none;
 }
@@ -335,9 +358,6 @@ div.tag_header h4 {
 	background:#FFF;
 }
 .repo ul.tag_box a{
-	background:#eee;
-	color:#4A86FF;
-	border:1px solid #ccc;
 	font-size:12px;
 }	
 
