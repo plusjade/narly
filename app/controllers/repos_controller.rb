@@ -3,6 +3,16 @@ class ReposController < ApplicationController
   def index
     @tag_filters = Tag.new_from_tag_string(params[:tags])
     @repos = Repository.taylor_get_as_resource(:via => @tag_filters, :limit => 25)
+    
+    respond_to do |format|
+      format.json do
+        render :json => @repos.to_json(:methods => [:tags, :owner])
+      end
+      
+      format.any do
+        
+      end
+    end
   end
   
   def show

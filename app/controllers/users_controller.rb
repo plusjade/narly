@@ -3,10 +3,40 @@ class UsersController < ApplicationController
   def show
     @owner = User.first!(:login => params[:login])
     @tag_filters = Tag.new_from_tag_string(params[:tags])
-    @repos = @owner.repos(:via => @tag_filters)
+    @repos = @owner.repos(:via => @tag_filters, :limit => 25)
     @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
+    
+    respond_to do |format|
+      format.json do
+        render :json => @repos.to_json(:methods => [:tags, :owner])
+      end
+      
+      
+      format.any do
+        
+      end
+      
+    end
+    
   end
 
+  def profile
+    @owner = User.first!(:login => params[:login])
+    
+    respond_to do |format|
+      format.json do
+        render :json => @owner
+      end
+      
+      
+      format.any do
+        
+      end
+      
+    end
+    
+  end
+  
   def tag
     if current_user
       @repo = Repository.first!(:full_name => params[:repo][:full_name])
