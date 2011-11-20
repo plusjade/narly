@@ -21,22 +21,32 @@ define([
 		},
 		
 		initialize : function(){
+			// The element.id will be blank for newly created views.
+			// However on bootstrapped elements (on page load) the id will be set.
+			if(this.el.id === "")
+				$(this.el).html($.mustache(this.template, this.model.attributes));
+
 			this.tagsView = new RepoTagCollectionView({
 				collection : this.model.tags, 
 				type : "public", 
 				el : this.$("ul.tag_box")
 			});
+			
+			if(this.el.id === "")
+				this.tagsView.render();
 		},
 
 		// Return the HTML template
 		render : function(){
-			return $(this.el).html($.mustache(this.template, this.model.attributes));
+			return $(this.el);
 		},
 		
-		showPanel : function(){
+		showPanel : function(e){
 			// showPanel bubbles up to the tagPanelView which is listening
 			// for this event through monitoring its collection.
 			this.model.trigger("showPanel", this.model);
+			
+			e.preventDefault();
 			return false;
 		}
 	
