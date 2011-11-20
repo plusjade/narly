@@ -74,10 +74,10 @@ define([
 		
 		updateUser : function(){
 			if(this.user.get("login") === "")
-				this.$("a").first().empty();
+				this.$("a").first().hide();
 			else{
-				var html = "<a href='/users/"+this.user.get("login")+"'><img src="+this.user.get("avatar_url")+" /></a>";
-				this.$("a").first().replaceWith(html);
+				this.$("a").first().show().attr("href", "/users/"+this.user.get("login"))
+					.find("img").attr("src", this.user.get("avatar_url"));
 			}
 		},
 		
