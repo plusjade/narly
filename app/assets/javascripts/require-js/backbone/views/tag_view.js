@@ -18,11 +18,17 @@ define([
 			"click .danger" : "remove",
 		},
 	
-		add : function(){
+		add : function(e){
 			this.model.add();
+			
+			e.preventDefault();
+			return false;
 		},
-		remove : function(){
+		remove : function(e){
 			this.model.remove();
+			
+			e.preventDefault();
+			return false;
 		},
 	
 		renderCommunity : function(){
