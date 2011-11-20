@@ -61,12 +61,8 @@
 <% content_for :scripts do %>
 	var rc = new RepoCollection;
 	var view = new App.views.repoCollectionView({collection : rc});
-	var repo = new App.models.repo(<%= raw @repo.to_json %>);
-
-	repo.tags.reset(<%= raw @repo.tags.to_json %>);
-	repo.setUser(App.currentUser);
+	var repo = new App.models.repo(<%= raw @repo.to_json(:methods => [:tags]) %>);
 	
-	rc.setUser(App.currentUser);
 	rc.add(repo);
 	view.render();
 <% end %>
