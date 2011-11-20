@@ -22,7 +22,7 @@ define([
 			this.userTags.fetch();
 		},
 		css_id : function(){
-			return "#repo-" + this.get("full_name").replace("/", "-");
+			return "#repo-" + this.get("full_name").replace(/[^\w]/g, "-");
 		}
 	});
 
