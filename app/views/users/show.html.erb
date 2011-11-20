@@ -1,10 +1,3 @@
-<% content_for :filters do %>
-	<%= link_to (image_tag(@owner.avatar_url)), user_path(@owner.login) %> 
-	<div>
-		<%= raw "user:#{@owner.login} + #{format_tags(@tag_filters)} &#9658;" if @tag_filters %>
-	</div>
-<% end %>
-
 <% content_for :tag_header do %>
 	<h4>Tags</h4> 
 	 <strong><%= link_to "user:#{@owner.login} &#9658;".html_safe, "#" %></strong>
