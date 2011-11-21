@@ -5,6 +5,8 @@ define([
 	'jquery/showStatus',
 	'jquery/mustache',
 
+	'backbone/router',
+
 	'backbone/models/repo',
 	'backbone/models/user',
 	'backbone/models/tag',
@@ -21,12 +23,14 @@ define([
 	'backbone/views/tag_view',
 	'backbone/views/filters_view'
 ], function($, _, Backbone, z,z, 
+	Router,
 	Repo, User, Tag,
 	TagCollection, RepoCollection, RepoTagCollection, UserRepoTagCollection, 
 	RepoCollectionView, RepoTagCollectionView, RepoView, TagPanelView, TagView, FiltersView
 	){
 		
 	var App = {
+		router : Router,
 		models : {
 			repo : Repo,
 			user : User,
@@ -48,6 +52,7 @@ define([
 		},
 		
 		initialize : function(boot){
+			Backbone.history.start({pushState: true})
 			console.log("app.js initialized");
 			console.log(App);
 			
