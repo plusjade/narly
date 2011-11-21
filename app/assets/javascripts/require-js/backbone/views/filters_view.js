@@ -4,12 +4,12 @@ define([
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/models/tag',
+	'backbone/models/repo',
 	'backbone/models/user'
-], function($, _, Backbone, z,z, Tag, User){
+], function($, _, Backbone, z,z, Repo, User){
 	
 	FiltersView = Backbone.View.extend({
-		model : Tag,
+		model : Repo,
 		user : User,
 		el : "#filters",
 		
@@ -19,21 +19,14 @@ define([
 		},
 		
 		initialize : function(){
-			this.user = new User({login : this.getUser()});
-
 			// Manually set the user on the repo collection since the collection
 			// is bootstrapped into place via serverside objects. 
-			this.collection.repos.user = this.user;
+			this.collection.user.set({login : this.getUser()}, {silent:true});
+			this.collection.user.bind("change", this.updateUser, this);
 			
-			this.user.bind("change:login", this.query, this);
-			this.user.bind("change:login", this.fetchUser, this);
-			this.user.bind("change", this.updateUser, this);
-			
-			this.collection.bind("add", this.query, this);
-			this.collection.bind("add", this.updateTags, this);
-
-			this.collection.bind("remove", this.query, this);
-			this.collection.bind("remove", this.updateTags, this);
+			// tags
+			this.collection.tags.bind("add", this.updateTags, this);
+			this.collection.tags.bind("remove", this.updateTags, this);
 		},
 		
 		getUser : function(){
@@ -41,43 +34,39 @@ define([
 		},
 		
 		parseForm : function(e){
-			this.user.set({login : this.getUser()});
+			this.collection.user.set({login : this.getUser()});
 			this.parseTags();
 
 			e.preventDefault();
 			return false;
 		},
-				
-		fetchUser : function(){
-			if(this.user.get("login") !== "") this.user.fetch();
-		},
 		
 		parseTags : function(){
 			var name = this.$("input.tag").val().toLowerCase();
 			var exists = false;
-			this.collection.each(function(tag){
+			this.collection.tags.each(function(tag){
 				if(tag.get("name") === name) exists = true;
 			})
 			if(!exists)
-				this.collection.add({name : name});
+				this.collection.tags.add({name : name});
 		},
 		
 		// Remove a tag from the collection.
 		remove : function(e){
 			var name = $(e.currentTarget).text();
 			var tagToRemove = null;
-			this.collection.each(function(tag){
+			this.collection.tags.each(function(tag){
 				if(tag.get("name").match(name)) tagToRemove = tag;
 			})
-			this.collection.remove(tagToRemove);
+			this.collection.tags.remove(tagToRemove);
 		},
 		
 		updateUser : function(){
-			if(this.user.get("login") === "")
+			if(this.collection.user.get("login") === "")
 				this.$("a").first().hide();
 			else{
-				this.$("a").first().show().attr("href", "/users/"+this.user.get("login"))
-					.find("img").attr("src", this.user.get("avatar_url"));
+				this.$("a").first().show().attr("href", "/users/"+this.collection.user.get("login"))
+					.find("img").attr("src", this.collection.user.get("avatar_url"));
 			}
 		},
 		
@@ -86,22 +75,12 @@ define([
 		//
 		updateTags : function(){
 			var data = "";
-			this.collection.each(function(tag){
+			this.collection.tags.each(function(tag){
 				data += "<span>" + tag.get("name") + "</span> + ";
 			})
 			this.$("p").html(data);
 			this.$("input.tag").val("");
-		},
-		
-		// Call the query.
-		//
-		query : function(){
-			this.collection.repos.user = this.user;
-			this.collection.repos.tags = this.collection;
-			this.collection.repos.fetch();
-			return false;
 		}
-		
 		
 	});
 

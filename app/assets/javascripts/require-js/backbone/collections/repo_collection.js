@@ -4,9 +4,10 @@ define([
   'Backbone',
   'backbone/models/tag',
   'backbone/models/user',
+  'backbone/collections/tag_collection',
   'backbone/views/repo_view',
   'backbone/views/repo_tag_collection_view'
-], function($, _, Backbone, Tag, User, RepoView, RepoTagCollectionView){
+], function($, _, Backbone, Tag, User, TagCollection, RepoView, RepoTagCollectionView){
 	
 	// A collection of Repos.
 	//
@@ -20,6 +21,25 @@ define([
 		//
 		currentUser : User,
 
+		initialize : function(){
+			this.tags = new TagCollection;
+			this.user = new User;
+			
+			this.tags.bind("add", this.update, this);
+			this.tags.bind("remove", this.update, this);
+			this.user.bind("change:login", this.update, this);
+			this.user.bind("change:login", this.updateUser, this);
+		},
+		
+		update : function(){
+			console.log("Updating repo collection");
+			this.fetch();
+		},
+
+		updateUser : function(){
+			if(this.user.get("login") !== "") this.user.fetch();
+		},
+		
 		// set this to be dynamic based on user/repo/tag filters.
 		url : function(){
 			var url = "/";
@@ -37,7 +57,9 @@ define([
 			return url+"/json";	
 		},
 		
-		
+		permalink : function(){
+			return this.url().replace(/(\/json)$/, "");
+		}
 		
 	});
 

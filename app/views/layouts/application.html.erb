@@ -178,11 +178,12 @@
 		App.mainRepoCollection.currentUser = App.currentUser;
 		App.mainRepoCollectionView = new App.views.repoCollectionView({collection : App.mainRepoCollection});
 		
-		
-	// Setup the Tag Filters and the FilterView.
-		var tags = new App.collections.tagCollection(<%= raw @tag_filters.to_json %>);
-		tags.repos = App.mainRepoCollection;
-		var fview = new App.views.filtersView({collection : tags });
+		// Add the Tag Filters if any.
+		App.mainRepoCollection.tags.reset(<%= raw @tag_filters.to_json %>);
+
+		// Setup the FilterView.
+		var fview = new App.views.filtersView({collection : App.mainRepoCollection });
+	
 					
 	  App.initialize(function(){
 			<%= yield :scripts %>
