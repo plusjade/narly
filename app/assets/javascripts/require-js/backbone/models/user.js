@@ -2,14 +2,16 @@ define([
   'jquery',
   'Underscore',
   'Backbone',
-  'backbone/collections/user_tag_collection',
-], function($, _, Backbone, UserTagCollection){
+  'backbone/collections/tag_collection'
+], function($, _, Backbone, TagCollection){
 	
 	User = Backbone.Model.extend({
+		tags : null,
 		
 		initialize : function(){
 			console.log("init User");
-			this.tags = new UserTagCollection;
+			this.tags = new TagCollection();
+			this.tags.type = "user";
 			this.tags.user = this;
 		},
 		
