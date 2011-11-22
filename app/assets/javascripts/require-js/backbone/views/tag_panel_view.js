@@ -9,7 +9,7 @@ define([
 	'backbone/views/user_repo_tags_view'
 ], function($, _, Backbone, Repo, z,z, RepoTagsPanelView, UserRepoTagsView){
 
-	// The TagPanelView.
+	// The TagPanelView is responsible for adding and deleting tags on a repo.
 	//
 	return Backbone.View.extend({
 		el : "#tag_panel_container",

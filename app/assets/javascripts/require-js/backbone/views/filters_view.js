@@ -8,7 +8,13 @@ define([
 	'backbone/models/user'
 ], function($, _, Backbone, z,z, Repo, User){
 	
-	 return Backbone.View.extend({
+  // The FiltersView is the main query interface in the UI.
+	// The collection on this view is the Repo Collection we are displaying.
+	// Here we monitor changes to the attached user model and tag collection.
+	// When a change occurs we trigger events that update the Repo Collection
+	// to reflect the user/tag-collection state.
+	//
+	return Backbone.View.extend({
 		model : Repo,
 		user : User,
 		el : "#filters",
