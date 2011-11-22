@@ -26,11 +26,16 @@ define([
 			this.user = new User;
 		},
 		
+		parse : function(response){
+			this.user.set({login : response.login, avatar_url : response.avatar_url})
+			return response.repos;
+		},
+		
 		// Called by the router to fetch the results but also
 		// make sure the URL and the UI is in sync with the call.
+		// The UI will be updated as a callback to fetch
 		route : function(login, tagString){
-			this.user.set({login: login}, {silent :true });
-			this.user.fetch();
+			this.user.set({login : login}, {silent : true})
 			this.tags.resetFromTagString(tagString);
 			this.fetch();
 		},
