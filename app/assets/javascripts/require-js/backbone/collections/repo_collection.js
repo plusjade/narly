@@ -24,6 +24,13 @@ define([
 		initialize : function(){
 			this.tags = new TagCollection;
 			this.user = new User;
+			
+			this.user.bind("change:avatar_url", this.renewUserTags, this);
+		},
+		
+		renewUserTags : function(){
+			console.log("===renewUserTags====");
+			this.user.tags.fetch();
 		},
 		
 		parse : function(response){

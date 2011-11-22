@@ -1,8 +1,3 @@
-<% content_for :tag_header do %>
-	<h4>Tags</h4> 
-	 <strong><%= link_to "user:#{@owner.login} &#9658;".html_safe, "#" %></strong>
-<% end %>
-
 <% content_for :side_content do %>
 	<strong><%= link_to "user:#{@owner.login} &#9658;".html_safe, "#" %></strong>
 	<ul id="user_tags" class="tag_box">
@@ -10,7 +5,6 @@
 		<li><%= link_to_tag(tag, user_tagged_path(@owner.login, tag.name) )%></li>
 	<% end %>
 	</ul>
-	
 <% end %>
 
 <% @repos.each do |repo| %>
