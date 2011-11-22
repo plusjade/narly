@@ -59,7 +59,7 @@
 	</div>
 
 <% content_for :scripts do %>
-	var rc = new RepoCollection;
+	var rc = new Repos;
 	var view = new App.views.reposView({collection : rc});
 	var repo = new App.models.repo(<%= raw @repo.to_json(:methods => [:tags]) %>);
 	

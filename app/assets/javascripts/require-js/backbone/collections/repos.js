@@ -11,7 +11,7 @@ define([
 	
 	// A collection of Repos.
 	//
-	RepoCollection = Backbone.Collection.extend({
+	Repos = Backbone.Collection.extend({
 		model : Repo,
 		
 		// This User should be the whatever this collection is scoped to if any.
@@ -70,5 +70,5 @@ define([
 		
 	});
 
-	return RepoCollection;
+	return Repos;
 });
