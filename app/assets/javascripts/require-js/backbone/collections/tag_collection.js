@@ -7,13 +7,20 @@ define([
 	
 	return Backbone.Collection.extend({
 		model : Tag,
-		initialize : function(){
-			console.log("tag collection");
-		},
+
 		url : function(){
 			return "blah";
-		}
+		},
 		
+		resetFromTagString : function(str){
+			var cache = [];
+			
+			$.each(str.split(":"), function(){
+				cache.push({name : this});
+			});
+			
+			this.reset(cache);
+		}
 	})
 
 });
