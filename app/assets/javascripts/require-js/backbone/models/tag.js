@@ -5,7 +5,7 @@ define([
 	'jquery/showStatus',
 ], function($, _, Backbone){
 
-	Tag = Backbone.Model.extend({
+	return Backbone.Model.extend({
 		
 		// Add validations so empty tags cannot be added to collections.
 		//
@@ -49,5 +49,4 @@ define([
 	
 	});
 
-	return Tag;
 });

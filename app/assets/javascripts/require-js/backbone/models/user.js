@@ -5,7 +5,7 @@ define([
   'backbone/collections/tags'
 ], function($, _, Backbone, Tags){
 	
-	User = Backbone.Model.extend({
+	return Backbone.Model.extend({
 		tags : null,
 		
 		initialize : function(){
@@ -21,5 +21,4 @@ define([
 	
 	});
 
-	return User;
 });

@@ -8,7 +8,8 @@ define([
 	'backbone/views/repo_tags_view'
 
 ], function($, _, Backbone, z,z, Repo, RepoTagsView){
-	RepoView = Backbone.View.extend({
+
+ 	return Backbone.View.extend({
 		model : Repo,
 		tagName : "div",
 		className : "repo",
@@ -52,5 +53,4 @@ define([
 	
 	})
 
-	return RepoView;
 })

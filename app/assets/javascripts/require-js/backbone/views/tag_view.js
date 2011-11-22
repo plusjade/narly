@@ -8,7 +8,7 @@ define([
 	
 	// This tag view holds all tag templates.
 	//
-	TagView = Backbone.View.extend({
+ 	return Backbone.View.extend({
 		tagName : "li",
 		communityTmpl : $("#tagTemplateAdd").html(),
 		personalTmpl : $("#tagTemplateRemove").html(),
@@ -40,7 +40,6 @@ define([
 	   }
 	});
 
-	return TagView;
 });
 	
 	

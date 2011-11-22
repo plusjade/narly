@@ -8,7 +8,7 @@ define([
 	'backbone/models/user'
 ], function($, _, Backbone, z,z, Repo, User){
 	
-	FiltersView = Backbone.View.extend({
+	 return Backbone.View.extend({
 		model : Repo,
 		user : User,
 		el : "#filters",
@@ -108,6 +108,5 @@ define([
 		
 	});
 
-	return FiltersView;
 });
 	

@@ -10,7 +10,7 @@ define([
 
 	// TagPanel has two child views for public and personal tag lists.
 	//
-	TagPanelView = Backbone.View.extend({
+	return Backbone.View.extend({
 		el : "#tag_panel_container",
 		model : Repo,
 		events : {
@@ -74,5 +74,4 @@ define([
 	
 	});
 
-	return TagPanelView;
 });

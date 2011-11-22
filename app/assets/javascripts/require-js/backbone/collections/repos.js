@@ -2,16 +2,17 @@ define([
   'jquery',
   'Underscore',
   'Backbone',
+  'backbone/models/repo',
   'backbone/models/tag',
   'backbone/models/user',
   'backbone/collections/tags',
   'backbone/views/repo_view',
   'backbone/views/repo_tags_view'
-], function($, _, Backbone, Tag, User, Tags, RepoView, RepoTagsView){
+], function($, _, Backbone, Repo, Tag, User, Tags, RepoView, RepoTagsView){
 	
 	// A collection of Repos.
 	//
-	Repos = Backbone.Collection.extend({
+	return Backbone.Collection.extend({
 		model : Repo,
 		
 		// This User should be the whatever this collection is scoped to if any.
@@ -70,5 +71,4 @@ define([
 		
 	});
 
-	return Repos;
 });

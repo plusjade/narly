@@ -5,7 +5,8 @@ define([
 	'jquery/showStatus',
 	'backbone/collections/tags'
 ], function($, _, Backbone, z, Tags){
-	Repo = Backbone.Model.extend({
+
+	return Backbone.Model.extend({
 		initialize : function(){
 			this.tags = new Tags(this.get("tags"));
 			this.tags.type = "repo";
@@ -27,5 +28,4 @@ define([
 		}
 	});
 
-	return Repo;
 });
