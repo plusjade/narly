@@ -19,13 +19,14 @@ define([
 	'backbone/views/repo_tags_view',
 	'backbone/views/repos_view',
 	'backbone/views/tag_panel_view',
-	'backbone/views/tag_view'
+	'backbone/views/tag_view',
+	'backbone/views/user_tags_view'
 	
 ], function($, _, Backbone, z,z, 
 	Router,
 	Repo, Tag, User,
 	Repos, Tags,
-	FiltersView, RepoView, RepoTagsView, ReposView, TagPanelView, TagView
+	FiltersView, RepoView, RepoTagsView, ReposView, TagPanelView, TagView, UserTagsView
 	){
 		
 	var App = {
@@ -45,7 +46,8 @@ define([
 			repoView : RepoView,
 			tagPanelView : TagPanelView,
 			tagView : TagView,
-			filtersView : FiltersView
+			filtersView : FiltersView,
+			userTagsView : UserTagsView
 		},
 		
 		initialize : function(boot){

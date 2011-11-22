@@ -18,7 +18,7 @@ define([
 		render : function(){
 			var cache = [];
 			$.each(this.collection.models, function(){
-				cache.push(new TagView({model : this}).renderRepoTag());
+					cache.push(new TagView({model : this}).renderUserRepoTag());
 			})
 		
 			$.fn.append.apply($(this.el).empty(), cache);

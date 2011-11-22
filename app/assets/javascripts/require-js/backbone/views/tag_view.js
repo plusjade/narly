@@ -10,8 +10,9 @@ define([
 	//
  	return Backbone.View.extend({
 		tagName : "li",
-		communityTmpl : $("#tagTemplateAdd").html(),
-		personalTmpl : $("#tagTemplateRemove").html(),
+		repoTagTmpl : $("#tagTemplateAdd").html(),
+		userRepoTagTmpl : $("#tagTemplateRemove").html(),
+		userTagTmpl : $("#tagTemplateRemove").html(),
 	
 		events : {
 			"click .success" : "add",
@@ -31,13 +32,18 @@ define([
 			return false;
 		},
 	
-		renderCommunity : function(){
-			return $(this.el).html($.mustache(this.communityTmpl, this.model.attributes));
+		renderRepoTag : function(){
+			return $(this.el).html($.mustache(this.repoTagTmpl, this.model.attributes));
 		},
 	
-		renderPersonal: function(){
-			return $(this.el).html($.mustache(this.personalTmpl, this.model.attributes));
-	   }
+		renderUserRepoTag: function(){
+			return $(this.el).html($.mustache(this.userRepoTagTmpl, this.model.attributes));
+	  },
+	
+		renderUserTag: function(){
+			return $(this.el).html($.mustache(this.userTagTmpl, this.model.attributes));
+	  }
+	
 	});
 
 });

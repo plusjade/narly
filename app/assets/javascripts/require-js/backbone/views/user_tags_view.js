@@ -8,7 +8,6 @@ define([
 ], function($, _, Backbone, z,z, TagView){
 	
 	// View for showing tag lists on repos. This should be present in two places.
-	// When the collection changes the views should update right!?
 	//
 	return Backbone.View.extend({
 		initialize : function(){
@@ -18,17 +17,10 @@ define([
 		render : function(){
 			var cache = [];
 			$.each(this.collection.models, function(){
-				cache.push(new TagView({model : this}).renderRepoTag());
+				cache.push(new TagView({model : this}).renderUserTag());
 			})
 		
 			$.fn.append.apply($(this.el).empty(), cache);
-		
-			$(this.el).find("li").hover(function(){
-						$(this).find("span.options").show();
-					}, function(){
-						$(this).find("span.options").hide();
-					}
-				);
 		}
 	
 	})
