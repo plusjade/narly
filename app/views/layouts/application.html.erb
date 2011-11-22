@@ -7,7 +7,7 @@
 	<% else %>
 		<%= stylesheet_link_tag "application" %>
 	<% end %>
-		<script blah-data-main="/assets/require-js/main.js" src="/assets/require-js/require-jquery.js"></script>
+		<script src="/assets/require-js/require.js"></script>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -152,8 +152,10 @@
 	</script>
 
 <script>
+// This is essently my main.js bootstrapping file.
 	require.config({
 		baseUrl: "/assets/require-js",
+		priority: ['jquery'],
 	  paths: {
 	    Underscore: 'libs/underscore/underscore',
 	    Backbone: 'libs/backbone/backbone'
