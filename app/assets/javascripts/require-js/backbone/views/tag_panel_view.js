@@ -34,7 +34,7 @@ define([
 			});
 			this.tagsView.render();
 
-			// build a fresh userRepoTagCollection view
+			// build a fresh userRepoTags view
 			this.userTagsView = new RepoTagsView({
 				collection : this.model.userTags,
 				type : "personal",

@@ -3,14 +3,14 @@ define([
   'Underscore',
   'Backbone',
 	'jquery/showStatus',
-	'backbone/collections/tag_collection'
-], function($, _, Backbone, z, TagCollection){
+	'backbone/collections/tags'
+], function($, _, Backbone, z, Tags){
 	Repo = Backbone.Model.extend({
 		initialize : function(){
-			this.tags = new TagCollection(this.get("tags"));
+			this.tags = new Tags(this.get("tags"));
 			this.tags.type = "repo";
 			this.tags.setRepo(this);
-			this.userTags = new TagCollection;
+			this.userTags = new Tags;
 			this.userTags.type = "userRepo";
 			this.userTags.setRepo(this);
 

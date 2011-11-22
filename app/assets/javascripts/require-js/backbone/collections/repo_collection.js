@@ -4,10 +4,10 @@ define([
   'Backbone',
   'backbone/models/tag',
   'backbone/models/user',
-  'backbone/collections/tag_collection',
+  'backbone/collections/tags',
   'backbone/views/repo_view',
   'backbone/views/repo_tags_view'
-], function($, _, Backbone, Tag, User, TagCollection, RepoView, RepoTagsView){
+], function($, _, Backbone, Tag, User, Tags, RepoView, RepoTagsView){
 	
 	// A collection of Repos.
 	//
@@ -22,7 +22,7 @@ define([
 		currentUser : User,
 
 		initialize : function(){
-			this.tags = new TagCollection;
+			this.tags = new Tags;
 			this.user = new User;
 			
 			this.user.bind("change:avatar_url", this.renewUserTags, this);

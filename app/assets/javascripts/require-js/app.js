@@ -11,7 +11,7 @@ define([
 	'backbone/models/user',
 	'backbone/models/tag',
 
-	'backbone/collections/tag_collection',
+	'backbone/collections/tags',
 	'backbone/collections/repo_collection',
 	
 	'backbone/views/repos_view',
@@ -23,7 +23,7 @@ define([
 ], function($, _, Backbone, z,z, 
 	Router,
 	Repo, User, Tag,
-	TagCollection, RepoCollection, 
+	Tags, RepoCollection, 
 	ReposView, RepoTagsView, RepoView, TagPanelView, TagView, FiltersView
 	){
 		
@@ -35,7 +35,7 @@ define([
 			tag : Tag
 		},
 		collections : {
-			tagCollection : TagCollection,
+			tags : Tags,
 			repoCollection : RepoCollection
 		},
 		views : {
