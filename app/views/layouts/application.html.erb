@@ -174,7 +174,7 @@
 	// Setup Standard Views.
 		App.mainRepoCollection = new App.collections.repoCollection;
 		App.mainRepoCollection.currentUser = App.currentUser;
-		App.mainRepoCollectionView = new App.views.repoCollectionView({collection : App.mainRepoCollection});
+		App.mainReposView = new App.views.reposView({collection : App.mainRepoCollection});
 		
 		// Add the Tag Filters if any.
 		App.mainRepoCollection.tags.reset(<%= raw @tag_filters.to_json %>, {silent : true});

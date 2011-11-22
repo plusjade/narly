@@ -6,7 +6,7 @@ var repos = [];
 <% end %>
 
 App.mainRepoCollection.reset(repos, {silent : true});
-App.mainRepoCollectionView.render();
+App.mainReposView.render();
 
 // User Tags shown on the right side panel.
 App.mainRepoCollection.user.tags.reset(<%= raw @tags.to_json %>);

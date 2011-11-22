@@ -10,7 +10,7 @@ define([
 	
 	// A collection for tags made by user
 	//
-	RepoCollectionView = Backbone.View.extend({
+	ReposView = Backbone.View.extend({
 		el : "#main_content",
 		model : Repo,
 
@@ -35,5 +35,5 @@ define([
 		}
 	});
 
-	return RepoCollectionView;
+	return ReposView;
 });
