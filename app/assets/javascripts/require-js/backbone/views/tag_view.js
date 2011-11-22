@@ -36,6 +36,10 @@ define([
 			return $(this.el).html($.mustache(this.repoTagTmpl, this.model.attributes));
 		},
 	
+		renderRepoTagPanel: function(){
+			return $(this.el).html($.mustache(this.repoTagTmpl, this.model.attributes));
+	  },
+	
 		renderUserRepoTag: function(){
 			return $(this.el).html($.mustache(this.userRepoTagTmpl, this.model.attributes));
 	  },

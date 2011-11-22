@@ -7,8 +7,8 @@ define([
   'backbone/views/repo_tags_view',
   'backbone/views/tag_panel_view'
 ], function($, _, Backbone, Repo, RepoView, RepoTagsView, TagPanelView){
-	
-	// A collection for tags made by user
+
+	// A view for a Repo Collection.
 	//
 	return Backbone.View.extend({
 		el : "#main_content",

@@ -5,11 +5,11 @@ define([
 	'backbone/models/repo',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/views/repo_tags_view',
+	'backbone/views/repo_tags_panel_view',
 	'backbone/views/user_repo_tags_view'
-], function($, _, Backbone, Repo, z,z, RepoTagsView, UserRepoTagsView){
+], function($, _, Backbone, Repo, z,z, RepoTagsPanelView, UserRepoTagsView){
 
-	// TagPanel has two child views for public and personal tag lists.
+	// The TagPanelView.
 	//
 	return Backbone.View.extend({
 		el : "#tag_panel_container",
@@ -28,7 +28,7 @@ define([
 			this.model = repo;
 
 			// build a fresh repoTagcollection view
-			this.tagsView = new RepoTagsView({collection : this.model.tags, el : "#add_tag_container"});
+			this.tagsView = new RepoTagsPanelView({collection : this.model.tags, el : "#add_tag_container"});
 			this.tagsView.render();
 
 			// build a fresh userRepoTags view

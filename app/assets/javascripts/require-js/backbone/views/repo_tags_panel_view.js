@@ -7,8 +7,7 @@ define([
 	'backbone/views/tag_view'
 ], function($, _, Backbone, z,z, TagView){
 	
-	// A view for the Tag Collection on a Repo relative to a given User.
-	// This view is shown in the TagPanelView.
+	// A view for the Tag Collection on a Repo in the TagPanelView.
 	//
 	return Backbone.View.extend({
 		initialize : function(){
@@ -18,7 +17,7 @@ define([
 		render : function(){
 			var cache = [];
 			$.each(this.collection.models, function(){
-					cache.push(new TagView({model : this}).renderUserRepoTag());
+				cache.push(new TagView({model : this}).renderRepoTagPanel());
 			})
 		
 			$.fn.append.apply($(this.el).empty(), cache);

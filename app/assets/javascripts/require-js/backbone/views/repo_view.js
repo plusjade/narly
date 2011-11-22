@@ -5,10 +5,13 @@ define([
 	'jquery/showStatus',
 	'jquery/mustache',
 	'backbone/models/repo',
+	'backbone/views/repo_tags_view',
 	'backbone/views/repo_tags_view'
 
 ], function($, _, Backbone, z,z, Repo, RepoTagsView){
 
+	// A view for a Repo.
+	//
  	return Backbone.View.extend({
 		model : Repo,
 		tagName : "div",

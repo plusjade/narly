@@ -7,7 +7,8 @@ define([
 	'backbone/views/tag_view'
 ], function($, _, Backbone, z,z, TagView){
 	
-	// View for showing tag lists on repos. This should be present in two places.
+	// A view for a Tag Collection for a User.
+	// This view is shown on the sidebar.
 	//
 	return Backbone.View.extend({
 		initialize : function(){
