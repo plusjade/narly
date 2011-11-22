@@ -179,15 +179,32 @@
 		App.mainRepoCollectionView = new App.views.repoCollectionView({collection : App.mainRepoCollection});
 		
 		// Add the Tag Filters if any.
-		App.mainRepoCollection.tags.reset(<%= raw @tag_filters.to_json %>);
+		App.mainRepoCollection.tags.reset(<%= raw @tag_filters.to_json %>, {silent : true});
 
 		// Setup the FilterView.
 		var fview = new App.views.filtersView({collection : App.mainRepoCollection });
-	
+
+	// Routing Stuff.
+		var Router = new App.router;
+		
+		App.mainRepoCollection.bind("filterChange", function(){
+			console.log("routing: " + this.permalink());
+			Router.navigate(this.permalink(), true);
+		});
+		
+		Router.bind("route:users", function(login) {
+			App.mainRepoCollection.route(login, "");
+		})
+		Router.bind("route:users_repos_tagged", function(login, tags) {
+			App.mainRepoCollection.route(login, tags);
+		});
+		
 					
 	  App.initialize(function(){
 			<%= yield :scripts %>
 		});
+		
+		
 	});
 	
 </script>

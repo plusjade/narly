@@ -24,20 +24,15 @@ define([
 		initialize : function(){
 			this.tags = new TagCollection;
 			this.user = new User;
-			
-			this.tags.bind("add", this.update, this);
-			this.tags.bind("remove", this.update, this);
-			this.user.bind("change:login", this.update, this);
-			this.user.bind("change:login", this.updateUser, this);
 		},
 		
-		update : function(){
-			console.log("Updating repo collection");
+		// Called by the router to fetch the results but also
+		// make sure the URL and the UI is in sync with the call.
+		route : function(login, tagString){
+			this.user.set({login: login}, {silent :true });
+			this.user.fetch();
+			this.tags.resetFromTagString(tagString);
 			this.fetch();
-		},
-
-		updateUser : function(){
-			if(this.user.get("login") !== "") this.user.fetch();
 		},
 		
 		// set this to be dynamic based on user/repo/tag filters.
