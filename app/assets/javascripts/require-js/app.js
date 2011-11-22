@@ -52,7 +52,7 @@ define([
 		},
 		
 		initialize : function(boot){
-			Backbone.history.start({pushState: true})
+			Backbone.history.start({pushState: true, silent: true})
 			console.log("app.js initialized");
 			console.log(App);
 			
