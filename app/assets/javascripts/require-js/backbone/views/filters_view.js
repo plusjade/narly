@@ -34,6 +34,10 @@ define([
 			return this.$("input.login").val().replace(/[^\w\-]+/g, "");
 		},
 		
+		getTag : function(){
+			return this.$("input.tag").val().replace(/[^\w\-\.]+/g, "").toLowerCase();
+		},
+		
 		// Parse the user submitted form for data.
 		// Only trigger a router update if something has changed.
 		parseForm : function(e){
@@ -56,16 +60,16 @@ define([
 		
 		parseTags : function(){
 			var changed = false;
-			var name = this.$("input.tag").val().toLowerCase();
-			var exists = false;
-			this.collection.tags.each(function(tag){
-				if(tag.get("name") === name) exists = true;
-			})
-			if(!exists){
-				this.collection.tags.add({name : name});
-				changed = true;
-			}
-				
+			var name = this.getTag();
+			
+			if(name !== ""){
+				var tags = this.collection.tags.pluck("name");
+				if($.inArray(name, tags) === -1){
+					this.collection.tags.add({name : name});
+					changed = true;
+				}
+			}	
+			
 			return changed;
 		},
 		
