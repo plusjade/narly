@@ -5,9 +5,9 @@ define([
 	'jquery/showStatus',
 	'jquery/mustache',
 	'backbone/models/repo',
-	'backbone/views/repo_tag_collection_view'
+	'backbone/views/repo_tags_view'
 
-], function($, _, Backbone, z,z, Repo, RepoTagCollectionView){
+], function($, _, Backbone, z,z, Repo, RepoTagsView){
 	RepoView = Backbone.View.extend({
 		model : Repo,
 		tagName : "div",
@@ -26,7 +26,7 @@ define([
 			if(this.el.id === "")
 				$(this.el).html($.mustache(this.template, this.model.attributes));
 
-			this.tagsView = new RepoTagCollectionView({
+			this.tagsView = new RepoTagsView({
 				collection : this.model.tags, 
 				type : "public", 
 				el : this.$("ul.tag_box")

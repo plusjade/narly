@@ -10,7 +10,7 @@ define([
 	// View for showing tag lists on repos. This should be present in two places.
 	// When the collection changes the views should update right!?
 	//
-	RepoTagCollectionView = Backbone.View.extend({
+	return Backbone.View.extend({
 		initialize : function(){
 			this.collection.bind("reset", this.render, this);
 		},
@@ -39,6 +39,5 @@ define([
 	
 	})
 
-	return RepoTagCollectionView;
 })
 	

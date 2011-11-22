@@ -6,8 +6,8 @@ define([
   'backbone/models/user',
   'backbone/collections/tag_collection',
   'backbone/views/repo_view',
-  'backbone/views/repo_tag_collection_view'
-], function($, _, Backbone, Tag, User, TagCollection, RepoView, RepoTagCollectionView){
+  'backbone/views/repo_tags_view'
+], function($, _, Backbone, Tag, User, TagCollection, RepoView, RepoTagsView){
 	
 	// A collection of Repos.
 	//

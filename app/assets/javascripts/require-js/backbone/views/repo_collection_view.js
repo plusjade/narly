@@ -4,9 +4,9 @@ define([
   'Backbone',
   'backbone/models/repo',
   'backbone/views/repo_view',
-  'backbone/views/repo_tag_collection_view',
+  'backbone/views/repo_tags_view',
   'backbone/views/tag_panel_view'
-], function($, _, Backbone, Repo, RepoView, RepoTagCollectionView, TagPanelView){
+], function($, _, Backbone, Repo, RepoView, RepoTagsView, TagPanelView){
 	
 	// A collection for tags made by user
 	//

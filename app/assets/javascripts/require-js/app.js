@@ -15,7 +15,7 @@ define([
 	'backbone/collections/repo_collection',
 	
 	'backbone/views/repo_collection_view',
-	'backbone/views/repo_tag_collection_view',
+	'backbone/views/repo_tags_view',
 	'backbone/views/repo_view',
 	'backbone/views/tag_panel_view',
 	'backbone/views/tag_view',
@@ -24,7 +24,7 @@ define([
 	Router,
 	Repo, User, Tag,
 	TagCollection, RepoCollection, 
-	RepoCollectionView, RepoTagCollectionView, RepoView, TagPanelView, TagView, FiltersView
+	RepoCollectionView, RepoTagsView, RepoView, TagPanelView, TagView, FiltersView
 	){
 		
 	var App = {
@@ -40,7 +40,7 @@ define([
 		},
 		views : {
 			repoCollectionView : RepoCollectionView,
-			repoTagCollectionView : RepoTagCollectionView,
+			repoTagsView : RepoTagsView,
 			repoView : RepoView,
 			tagPanelView : TagPanelView,
 			tagView : TagView,

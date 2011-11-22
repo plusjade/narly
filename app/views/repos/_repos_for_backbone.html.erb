@@ -10,4 +10,4 @@ App.mainRepoCollectionView.render();
 
 // User Tags shown on the right side panel.
 App.mainRepoCollection.user.tags.reset(<%= raw @tags.to_json %>);
-new App.views.repoTagCollectionView({ el: "#user_tags", collection : App.mainRepoCollection.user.tags });
+new App.views.repoTagsView({ el: "#user_tags", collection : App.mainRepoCollection.user.tags });
