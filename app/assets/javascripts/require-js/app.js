@@ -8,23 +8,24 @@ define([
 	'backbone/router',
 
 	'backbone/models/repo',
-	'backbone/models/user',
 	'backbone/models/tag',
-
-	'backbone/collections/tags',
-	'backbone/collections/repos',
+	'backbone/models/user',
 	
-	'backbone/views/repos_view',
-	'backbone/views/repo_tags_view',
+	'backbone/collections/repos',
+	'backbone/collections/tags',
+	
+	'backbone/views/filters_view',
 	'backbone/views/repo_view',
+	'backbone/views/repo_tags_view',
+	'backbone/views/repos_view',
 	'backbone/views/tag_panel_view',
-	'backbone/views/tag_view',
-	'backbone/views/filters_view'
+	'backbone/views/tag_view'
+	
 ], function($, _, Backbone, z,z, 
 	Router,
-	Repo, User, Tag,
-	Tags, Repos, 
-	ReposView, RepoTagsView, RepoView, TagPanelView, TagView, FiltersView
+	Repo, Tag, User,
+	Repos, Tags,
+	FiltersView, RepoView, RepoTagsView, ReposView, TagPanelView, TagView
 	){
 		
 	var App = {
