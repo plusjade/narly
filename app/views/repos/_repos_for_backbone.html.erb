@@ -9,5 +9,4 @@ App.mainRepos.reset(repos, {silent : true});
 App.mainReposView.render();
 
 // User Tags shown on the right side panel.
-App.mainRepos.user.tags.reset(<%= raw @tags.to_json %>);
-new App.views.userTagsView({ el: "#user_tags", collection : App.mainRepos.user.tags });
+App.mainRepos.user.tags.reset(<%= raw @tags.to_json %>, {silent : true});

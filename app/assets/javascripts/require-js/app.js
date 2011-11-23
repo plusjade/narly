@@ -30,7 +30,9 @@ define([
 	'backbone/views/user_tags_view',
 
 	'backbone/views/user_repo_tag_view',
-	'backbone/views/user_repo_tags_view'
+	'backbone/views/user_repo_tags_view',
+
+	'backbone/views/side_content_view'
 	
 ], function($, _, Backbone, z,z, 
 	Router,
@@ -41,7 +43,8 @@ define([
 	RepoView, ReposView, 
 	RepoTagView, RepoTagsView,
 	UserTagView, UserTagsView,
-	UserRepoTagView, UserRepoTagsView
+	UserRepoTagView, UserRepoTagsView,
+	SideContentView
 	){
 		
 	var App = {
@@ -67,7 +70,9 @@ define([
 			userTagView: UserTagView, 
 			userTagsView: UserTagsView,
 			userRepoTagView: UserRepoTagView, 
-			userRepoTagsView: UserRepoTagsView
+			userRepoTagsView: UserRepoTagsView,
+			
+			sideContentView : SideContentView
 		},
 		
 		initialize : function(boot){
@@ -76,6 +81,8 @@ define([
 			App.mainRepos.currentUser = new User;
 			App.mainReposView = new ReposView({collection : App.mainRepos});
 			App.filtersView = new FiltersView({collection : App.mainRepos });
+			App.sideContentView = new SideContentView({collection : App.mainRepos.user.tags})
+			
 
 		// Setup Routing.
 			App.Router = new Router;
