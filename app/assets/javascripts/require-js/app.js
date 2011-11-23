@@ -51,17 +51,38 @@ define([
 		},
 		
 		initialize : function(boot){
+
+		// Setup initial models and views.
+			App.mainRepos = new Repos;
+			App.mainRepos.currentUser = new User;
+			App.mainReposView = new ReposView({collection : App.mainRepos});
+			App.filtersView = new FiltersView({collection : App.mainRepos });
+
+		// Setup Routing.
+			App.Router = new Router;
+
+			App.mainRepos.bind("filterChange", function(){
+				console.log("routing: " + this.permalink());
+				App.Router.navigate(this.permalink(), true);
+			});
+
+			App.Router.bind("route:users", function(login) {
+				App.mainRepos.route(login, "");
+			})
+			App.Router.bind("route:users_repos_tagged", function(login, tags) {
+				App.mainRepos.route(login, tags);
+			});
+			
 			Backbone.history.start({pushState: true, silent: true})
+			
 			console.log("app.js initialized");
 			console.log(App);
 			
 			boot();
 			
-			$(function(){
-				console.log("DOM ready");
-			})
-		}
-	}
+		} // initialize
+
+	} // App
 	
 	// Return our App object which should require the references we need so our other modules can use them.
 	// Remember everything is freaking in a closure so nothing is in the global namespace

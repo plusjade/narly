@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head rel="<%= current_user.login if current_user %>">
+<head id="<%= current_user.login if current_user %>">
   <title>narly.us</title>
 	<% if Rails.env.production? %>
 		<%= stylesheet_link_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.css" %>
@@ -155,52 +155,25 @@
 // This is essently my main.js bootstrapping file.
 	require.config({
 		baseUrl: "/assets/require-js",
-		priority: ['jquery'],
 	  paths: {
 	    Underscore: 'libs/underscore/underscore',
 	    Backbone: 'libs/backbone/backbone'
 	  }
-
 	});
 
 	require([
-		'order!jquery',
+		'jquery',
 	  'order!libs/underscore/underscore-min',
 	  'order!libs/backbone/backbone-0.5.3',
 		'app',
-	], function($,_,Backbone, App){
+	], function($,_,Backbone,App){
 		console.log("Start");
-		
-		App.currentUser = new App.models.user({login : $("head").attr("rel")});
-		
-	// Setup Standard Views.
-		App.mainRepos = new App.collections.repos;
-		App.mainRepos.currentUser = App.currentUser;
-		App.mainReposView = new App.views.reposView({collection : App.mainRepos});
-		
-		// Add the Tag Filters if any.
-		App.mainRepos.tags.reset(<%= raw @tag_filters.to_json %>, {silent : true});
 
-		// Setup the FilterView.
-		var fview = new App.views.filtersView({collection : App.mainRepos });
-
-	// Routing Stuff.
-		var Router = new App.router;
-		
-		App.mainRepos.bind("filterChange", function(){
-			console.log("routing: " + this.permalink());
-			Router.navigate(this.permalink(), true);
-		});
-		
-		Router.bind("route:users", function(login) {
-			App.mainRepos.route(login, "");
-		})
-		Router.bind("route:users_repos_tagged", function(login, tags) {
-			App.mainRepos.route(login, tags);
-		});
-		
-					
 	  App.initialize(function(){
+			console.log("bootCallback");
+			App.mainRepos.currentUser.set({login : document.getElementsByTagName("head")[0].id});
+			App.mainRepos.tags.reset(<%= raw @tag_filters.to_json %>, {silent : true});
+			
 			<%= yield :scripts %>
 		});
 		
