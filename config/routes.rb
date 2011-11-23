@@ -17,7 +17,8 @@ Superwatch::Application.routes.draw do
   
     get "/tag" => "users#tag", :as => :tag
     get "/untag" => "users#untag", :as => :untag
-    get "/tags" => "tags#index", :as => :tags
+
+    get "/tags(/:format)" => "tags#index", :as => :tags
   
   end
   

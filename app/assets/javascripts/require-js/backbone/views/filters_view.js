@@ -91,10 +91,13 @@ define([
 		
 		updateUser : function(){
 			console.log("updateUser:"+ this.collection.user.get("login"));
-			this.$("input.login").val(this.collection.user.get("login"));
-			if(this.collection.user.get("login") === "")
+
+			if(_.isEmpty(this.collection.user.get("login"))){
 				this.$("a").first().hide();
+				this.$("input.login").val("*");
+			}
 			else{
+				this.$("input.login").val(this.collection.user.get("login"));
 				this.$("a").first().show().attr("href", "/users/"+this.collection.user.get("login"))
 					.find("img").attr("src", this.collection.user.get("avatar_url"));
 			}

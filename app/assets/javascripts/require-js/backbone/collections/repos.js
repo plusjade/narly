@@ -26,6 +26,10 @@ define([
 			this.tags = new Tags;
 			this.user = new User;
 			
+			// Monitor the avatar_url because this will be set when
+			// the collection returns. We don't want this to trigger
+			// when we set the :login because we do this throughout the app.
+			//
 			this.user.bind("change:avatar_url", this.renewUserTags, this);
 		},
 		

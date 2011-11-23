@@ -9,7 +9,7 @@ define([
 		model : Tag,
 
 		url : function(){
-			console.log("try URL");
+			console.log("try tag collection URL");
 			var url = "";
 			
 			switch(this.type){
@@ -20,7 +20,10 @@ define([
 				url = "/repos/"+this.repo.get("full_name")+"/tags/json";
 			  break;
 			case "user":
-				url = "/users/"+this.user.get("login")+"/tags/json";
+				if(_.isEmpty(this.user.get("login")))
+					url = "/tags/json";
+				else
+					url = "/users/"+this.user.get("login")+"/tags/json";
 			}
 			
 			return url;
