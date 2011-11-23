@@ -4,8 +4,8 @@ define([
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/views/tag_view'
-], function($, _, Backbone, z,z, TagView){
+	'backbone/views/repo_tag_view'
+], function($, _, Backbone, z,z, RepoTagView){
 	
 	// A view for the inline tags on a RepoView.
 	//
@@ -17,7 +17,7 @@ define([
 		render : function(){
 			var cache = [];
 			$.each(this.collection.models, function(){
-				cache.push(new TagView({model : this}).renderRepoTag());
+				cache.push(new RepoTagView({model : this}).render());
 			})
 		
 			$.fn.append.apply($(this.el).empty(), cache);

@@ -110,15 +110,23 @@
 			<li><a href="http://github.com" target="_blank">github.com</a></li>
 		</ul>
 	</div>
-	
-	<script id="tagTemplateRemove" type="text/x-jquery-tmpl">
-			<span class="options">
-				<a href="#" class="up btn danger" title="{{name}}">x</a>
-			</span>
+
+	<script id="user_tag_template" type="text/x-jquery-tmpl">
 			<a href="#" class="tag" title="{{name}}">{{relative_count}}-{{name}}</a>
 	</script>
 
-	<script id="tagTemplateAdd" type="text/x-jquery-tmpl">
+	<script id="repo_tag_template" type="text/x-jquery-tmpl">
+			<a href="#" class="tag" title="{{name}}">{{relative_count}}-{{name}}</a>
+	</script>
+	
+	<script id="user_repo_tag_template" type="text/x-jquery-tmpl">
+			<span class="options">
+				<a href="#" class="up btn danger" title="{{name}}">x</a>
+			</span>
+			<a href="#" class="tag" title="{{name}}">{{name}}</a>
+	</script>
+
+	<script id="repo_tag_panel_template" type="text/x-jquery-tmpl">
 			<span class="options">
 				<a href="#" class="up btn success" title="{{name}}">+1</a>
 			</span>

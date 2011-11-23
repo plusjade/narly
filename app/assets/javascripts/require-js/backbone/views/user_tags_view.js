@@ -4,8 +4,8 @@ define([
   'Backbone',
 	'jquery/showStatus',
 	'jquery/mustache',
-	'backbone/views/tag_view'
-], function($, _, Backbone, z,z, TagView){
+	'backbone/views/user_tag_view'
+], function($, _, Backbone, z,z, UserTagView){
 	
 	// A view for a Tag Collection for a User.
 	// This view is shown on the sidebar.
@@ -18,7 +18,7 @@ define([
 		render : function(){
 			var cache = [];
 			$.each(this.collection.models, function(){
-				cache.push(new TagView({model : this}).renderUserTag());
+				cache.push(new UserTagView({model : this}).render());
 			})
 		
 			$.fn.append.apply($(this.el).empty(), cache);
