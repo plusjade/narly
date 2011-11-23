@@ -71,7 +71,6 @@ define([
 		},
 		
 		initialize : function(boot){
-
 		// Setup initial models and views.
 			App.mainRepos = new Repos;
 			App.mainRepos.currentUser = new User;
@@ -89,6 +88,9 @@ define([
 			App.Router.bind("route:users", function(login) {
 				App.mainRepos.route(login, "");
 			})
+			App.Router.bind("route:repos_tagged", function(tags) {
+				App.mainRepos.route("", tags);
+			});
 			App.Router.bind("route:users_repos_tagged", function(login, tags) {
 				App.mainRepos.route(login, tags);
 			});
