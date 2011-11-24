@@ -31,9 +31,15 @@ define([
 
 			this.collection.user.bind("change", this.updateUser, this);
 			this.collection.tags.bind("reset", this.updateTags, this);
+			
+			this.collection.tags.bind("add", function(){
+				this.collection.trigger("filterChange");
+			}, this)
+			
 			this.collection.tags.bind("remove", function(){
 				this.collection.trigger("filterChange");
 			}, this)
+			
 		},
 		
 		getUser : function(){
@@ -71,7 +77,9 @@ define([
 			if(name !== ""){
 				var tags = this.collection.tags.pluck("name");
 				if($.inArray(name, tags) === -1){
-					this.collection.tags.add({name : name});
+					// silently add the tag since parseTags is called by
+					// the form submit and we want only one trigger on change.
+					this.collection.tags.add({name : name}, {silent : true});
 					changed = true;
 				}
 			}	

@@ -6,6 +6,10 @@ define([
 ], function($, _, Backbone){
 
 	return Backbone.Model.extend({
+
+		initialize : function(attrs){
+			this.id = attrs.name;
+		},
 		
 		// Add validations so empty tags cannot be added to collections.
 		//

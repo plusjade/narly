@@ -81,7 +81,7 @@ define([
 			App.mainRepos.currentUser = new User;
 			App.mainReposView = new ReposView({collection : App.mainRepos});
 			App.filtersView = new FiltersView({collection : App.mainRepos });
-			App.sideContentView = new SideContentView({collection : App.mainRepos.user.tags})
+			App.sideContentView = new SideContentView({collection : App.mainRepos})
 			
 
 		// Setup Routing.
