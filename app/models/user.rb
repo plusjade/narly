@@ -10,7 +10,7 @@ class User
   property :ghid, Integer, :unique => true, :required => true
   property :provider, String, :default => "github"
   property :name, String
-  property :login, String, :unique => true, :required => true
+  property :login, String, :unique => true, :required => true, :default => ""
   property :email, String
   property :avatar_url, String, :length => 256
   property :created_at, DateTime
