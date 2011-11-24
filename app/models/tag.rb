@@ -18,6 +18,10 @@ class Tag
     raise "tag cant be blank" if self.name.blank?
   end
   
+  def self.top_tags(conditions = {})
+    self.spawn_from_taylor_swift_data(self.taylor_get(conditions))
+  end  
+
   def users(conditions = {})
     User.spawn_from_taylor_swift_data(self.taylor_get(:users, conditions))
   end
