@@ -92,8 +92,16 @@
 	<div id="top_spacer">&#160;</div>
 
 	<div id="main_content_container">
-		<div id="main_content">
-			<%= yield %>
+		<div id="main_content" style="border:1px solid red">
+		
+			<div id="singular_repo" class="singular_repo" style="border:1px solid red">
+				<%= yield :singular_repo %>
+			</div>
+			
+			<div id="multiple_repos" class="multiple_repos">
+				<%= yield :multiple_repos %>
+			</div>
+			
 		</div>
 	</div>
 
@@ -159,6 +167,34 @@
 			</div>
 	</script>
 
+	<script id="repo_view_full" type="text/x-jquery-tmpl">
+		<h2 class="title">
+			<a href="#" class="add_tag btn success" title="{{full_name}}" style="float:right">+/- tags</a>
+			blah: {{full_name}}
+		</h2>
+
+		<div class="repo_outline boxy">
+
+			<p style="font-weight:bold">
+				<a href="{{html_url}}" target="_blank">{{html_url}}</a>
+			</p>
+			<p>{{description}}</p>
+			<ul>
+				<li><strong>is fork?</strong>: {{is_fork}}</li>
+				<li><strong>Language</strong>: {{language}}</li>
+				<li><strong>Forks</strong>: {{forks}}</li>
+			</ul>
+
+		</div>
+
+		<h3>tagged by</h3>
+		<div id="tagged_by_container" class="tagged_by_container">
+			heroo
+		</div>
+
+		<h3>similar repos</h3>
+	</script>
+	
 <script>
 // This is essently my main.js bootstrapping file.
 	require.config({

@@ -1,3 +1,9 @@
+<% content_for :multiple_repos do %>
+	<% @repos.each do |repo| %>
+		<%= render :partial => "repos/repo", :object => repo %>
+	<% end %>
+<% end %>
+
 <% content_for :side_content do %>
 	<strong>Top Tags</strong>
 	<ul id="user_tags" class="tag_box">
@@ -5,10 +11,6 @@
 		<li><%= link_to_tag(tag, repos_tagged_path(tag.name) )%></li>
 	<% end %>
 	</ul>
-<% end %>
-
-<% @repos.each do |repo| %>
-	<%= render :partial => "repos/repo", :object => repo %>
 <% end %>
 
 <% content_for :scripts do %>

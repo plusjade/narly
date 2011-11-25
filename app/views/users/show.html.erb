@@ -1,3 +1,9 @@
+<% content_for :multiple_repos do %>
+	<% @repos.each do |repo| %>
+		<%= render :partial => "repos/repo", :object => repo %>
+	<% end %>
+<% end %>
+
 <% content_for :side_content do %>
 	<strong><%= @owner.login %></strong>
 	<ul id="user_tags" class="tag_box">
@@ -7,11 +13,6 @@
 	</ul>
 <% end %>
 
-<% @repos.each do |repo| %>
-	<%= render :partial => "repos/repo", :object => repo %>
-<% end %>
-
 <% content_for :scripts do %>
 	<%= render :partial => "repos/repos_for_backbone", :locals => {:repos => @repos } %>
 <% end %>
-
