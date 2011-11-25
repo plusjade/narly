@@ -78,13 +78,16 @@ define([
 		},
 		
 		initialize : function(boot){
-		// Setup initial models and views.
+	  // Setup singular main repo objects
 			App.mainRepo = new Repo;
+			App.mainRepoView = new RepoViewFull({model : App.mainRepo});
+			
+		// Setup multiple main repos objects
 			App.mainRepos = new Repos;
 			App.mainRepos.currentUser = new User;
-
-			App.mainRepoView = new RepoViewFull({model : App.mainRepo});
 			App.mainReposView = new ReposView({collection : App.mainRepos});
+			
+		// Setup filter view and side content view	
 			App.filtersView = new FiltersView({collection : App.mainRepos });
 			App.sideContentView = new SideContentView({collection : App.mainRepos})
 			
@@ -125,8 +128,18 @@ define([
 			
 			boot();
 			
-		} // initialize
+		}, // initialize
+		
+		bootMulti : function(data, userTags){
+			console.log("bootmulti");
 
+			App.mainRepos.reset(data.repos, {silent : true});
+			App.mainReposView.render();
+
+			// User Tags shown on the right side panel.
+			App.mainRepos.user.tags.reset(userTags);
+		}
+		
 	} // App
 	
 	//_.extend(App, Backbone.Events);
