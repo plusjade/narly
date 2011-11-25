@@ -21,7 +21,8 @@ define([
 		tagTemplate : $("#tagTemplateAdd").html(),
 		
 		events : {
-			"click .add_tag" : "showPanel"
+			"click .add_tag" : "showPanel",
+			"click img" : "filterByUser"
 		},
 		
 		initialize : function(){
@@ -47,6 +48,16 @@ define([
 			this.model.trigger("showPanel", this.model);
 			
 			e.preventDefault();
+			return false;
+		},
+		
+		filterByUser : function(e){
+			if(this.model.get("login") !== this.model.collection.user.get("login")){
+				this.model.collection.user.set({login : this.model.get("login")}, {silent :true})
+				this.model.collection.trigger("filterChange");
+			}
+			
+			e.preventDefault;
 			return false;
 		}
 	
