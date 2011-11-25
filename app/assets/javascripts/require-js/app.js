@@ -87,11 +87,16 @@ define([
 		// Setup Routing.
 			App.Router = new Router;
 
+			App.mainRepos.bind("navigate", function(url){
+				console.log("routing: " + url);
+				App.Router.navigate(url, true);
+			});
+			
 			App.mainRepos.bind("filterChange", function(){
 				console.log("routing: " + this.permalink());
 				App.Router.navigate(this.permalink(), true);
 			});
-
+			
 			App.Router.bind("route:users", function(login) {
 				App.mainRepos.route(login, "");
 			})

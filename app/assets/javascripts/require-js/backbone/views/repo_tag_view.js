@@ -11,11 +11,24 @@ define([
  	return Backbone.View.extend({
 		tagName : "li",
 		template : $("#repo_tag_template").html(),
-	
+   
+    events : {
+			"click a" : "clickTag"
+		},
+			
 		render : function(){
-			return $(this.el).html($.mustache(this.template, this.model.attributes));
+			var data = this.model.attributes;
+			data.url = "/repos/tagged/" + this.model.get("name");
+			return $(this.el).html($.mustache(this.template, data));
 		},
 	
+		clickTag : function(e){
+			this.model.collection.repo.trigger("navigate", e.currentTarget.pathname);
+			
+			e.preventDefault()
+			return false;
+		}
+		
 	});
 
 });
