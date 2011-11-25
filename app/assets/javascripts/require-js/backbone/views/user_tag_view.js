@@ -18,7 +18,11 @@ define([
 		
 		render: function(){
 			var data = this.model.attributes;
-			data.url = "/users/" + this.model.collection.user.get("login") + "/repos/tagged/" + this.model.get("name");
+			data.url = "";
+			if(!_.isEmpty(this.model.collection.user.get("login")))
+				data.url += "/users/" + this.model.collection.user.get("login");
+			
+			data.url += "/repos/tagged/" + this.model.get("name");
 			return $(this.el).html($.mustache(this.template, data));
 	  },
 	
