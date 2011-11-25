@@ -1,3 +1,46 @@
+## Backbone
+
+top (filterView) section
+singular_repo section
+Multiple_repo section
+side_panel section
+
+	
+App 
+
+	has repo - (singular_repo view)
+		has tags - (side_panel view)
+
+	has repos - (multiple_repo view)
+		has tags - (as filters) (optional)
+		has repo - (as filter) (optional) # this is the case for a repo showing similar repos.
+		has user - (as filter) (optional)
+			has tags (side_panel view)
+		has currentUser (the logged in user)
+		
+		
+### Views
+
+top Filter View
+	App.repos
+		tags
+		user
+		repo
+
+Side_panelview
+	App.repos.user
+		tags
+	App.repo
+		tags
+	
+Multiple Repos
+		App.repos
+
+Singular Repo
+		App.repo
+
+
+
 ## Core feature outline
 
 - the user should be able to add tags to his repos.
