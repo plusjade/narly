@@ -70,30 +70,25 @@ define([
 			return changed;
 		},
 		
+		// Parse the tag inputs from the form.
+		// silently add the tag since parseTags is called by
+		// the form submit and we want only one trigger on change.
+		//
 		parseTags : function(){
 			var changed = false;
 			var name = this.getTag();
 			
-			if(name !== ""){
-				var tags = this.collection.tags.pluck("name");
-				if($.inArray(name, tags) === -1){
-					// silently add the tag since parseTags is called by
-					// the form submit and we want only one trigger on change.
-					this.collection.tags.add({name : name}, {silent : true});
-					changed = true;
-				}
-			}	
+			if( name !== "" && _.isUndefined(this.collection.tags.get(name)) ){
+				this.collection.tags.add({name : name}, {silent : true});
+				changed = true;
+			}
 			
 			return changed;
 		},
 		
 		// Remove a tag from the collection.
 		remove : function(e){
-			var name = $(e.currentTarget).text();
-			var tagToRemove = null;
-			this.collection.tags.each(function(tag){
-				if(tag.get("name") == name) tagToRemove = tag;
-			})
+			var tagToRemove = this.collection.tags.get($(e.currentTarget).text())
 			this.collection.tags.remove(tagToRemove);
 		},
 		
