@@ -23,8 +23,8 @@ define([
 	  },
 	
 		clickTag : function(e){
-			// This event is being monitored on this tags parent collection.
-			this.model.trigger("addToFilter", this.model);
+			this.model.trigger("navigate", e.currentTarget.pathname);
+
 			e.preventDefault()
 			return false;
 		}

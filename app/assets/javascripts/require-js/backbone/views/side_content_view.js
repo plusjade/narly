@@ -18,7 +18,7 @@ define([
 		
 		initialize : function(){
 			this.collection.user.tags.bind("reset", this.render, this);
-			this.collection.user.tags.bind("addToFilter", this.addToFilter, this);
+			this.collection.user.tags.bind("navigate", this.navigate, this);
 			
 			new UserTagsView({ el: this.$(".tag_box"), collection : this.collection.user.tags });
 			
@@ -33,9 +33,8 @@ define([
 			return this;	
 		},
 		
-		addToFilter : function(tag){
-			if(_.isUndefined(this.collection.tags.get(tag.id)))
-				this.collection.tags.add(tag);
+		navigate : function(url){
+			this.collection.trigger("navigate", url);
 		}
 		
 	});
