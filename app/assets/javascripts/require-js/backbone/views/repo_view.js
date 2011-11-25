@@ -32,9 +32,7 @@ define([
 				$(this.el).html($.mustache(this.template, this.model.attributes));
 
 			this.tagsView = new RepoTagsView({collection : this.model.tags, el : this.$("ul.tag_box") });
-			
-			if(this.el.id === "")
-				this.tagsView.render();
+			this.tagsView.render();
 		},
 
 		// Return the HTML template
