@@ -21,6 +21,7 @@ define([
 	'backbone/views/repo_tags_panel_view',
 	
 	'backbone/views/repo_view',
+	'backbone/views/repo_view_full',
 	'backbone/views/repos_view',
 
 	'backbone/views/repo_tag_view',
@@ -40,7 +41,7 @@ define([
 	Repos, Tags,
 	FiltersView, 
 	TagPanelView, RepoTagPanelView, RepoTagsPanelView, 
-	RepoView, ReposView, 
+	RepoView, RepoViewFull, ReposView, 
 	RepoTagView, RepoTagsView,
 	UserTagView, UserTagsView,
 	UserRepoTagView, UserRepoTagsView,
@@ -64,6 +65,7 @@ define([
 			repoTagPanelView: RepoTagPanelView, 
 			repoTagsPanelView: RepoTagsPanelView, 
 			repoView: RepoView, 
+			repoViewFull: RepoViewFull, 
 			reposView: ReposView, 
 			repoTagView: RepoTagView, 
 			repoTagsView: RepoTagsView,
@@ -77,8 +79,11 @@ define([
 		
 		initialize : function(boot){
 		// Setup initial models and views.
+			App.mainRepo = new Repo;
 			App.mainRepos = new Repos;
 			App.mainRepos.currentUser = new User;
+
+			App.mainRepoView = new RepoViewFull({model : App.mainRepo});
 			App.mainReposView = new ReposView({collection : App.mainRepos});
 			App.filtersView = new FiltersView({collection : App.mainRepos });
 			App.sideContentView = new SideContentView({collection : App.mainRepos})
@@ -107,6 +112,12 @@ define([
 				App.mainRepos.route(login, tags);
 			});
 			
+			// repo show
+			App.Router.bind("route:repos", function(login) {
+				console.log("repo show");
+				//App.mainRepos.route(login, "");
+			})
+			
 			Backbone.history.start({pushState: true, silent: true})
 			
 			console.log("app.js initialized");
@@ -117,6 +128,8 @@ define([
 		} // initialize
 
 	} // App
+	
+	//_.extend(App, Backbone.Events);
 	
 	// Return our App object which should require the references we need so our other modules can use them.
 	// Remember everything is freaking in a closure so nothing is in the global namespace
