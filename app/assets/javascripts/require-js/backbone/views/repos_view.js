@@ -11,7 +11,7 @@ define([
 	// A view for a Repo Collection.
 	//
 	return Backbone.View.extend({
-		el : "#main_content",
+		el : "#multiple_repos",
 		model : Repo,
 
 		initialize : function(){
