@@ -25,15 +25,23 @@ define([
 		},
 		
 		initialize : function(){
-			console.log("Repo full view!");
+			this.tagsView = new RepoTagsView({collection : this.model.tags, el : this.$("ul.tag_box") });
+			//this.tagsView.render();
+			this.model.bind("change", this.render, this);
+			this.model.bind("wipe", this.wipe, this);
 		},
-
+		
 		// Return the HTML template
 		render : function(){
 			// The element.id will be blank for newly created views.
 			// However on bootstrapped elements (on page load) the id will be set.
 			//if(this.el.id === "")
 			$(this.el).html($.mustache(this.template, this.model.attributes));
+		},
+		
+		wipe : function(){
+			this.model.clear({silent : true});
+			$(this.el).empty();
 		},
 		
 		showPanel : function(e){

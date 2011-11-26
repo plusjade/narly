@@ -51,8 +51,9 @@ define([
 		},
 		
 		filterByUser : function(e){
-			if(this.model.get("login") !== this.model.collection.user.get("login")){
-				this.model.collection.user.set({login : this.model.get("login")}, {silent :true})
+			console.log("filterbyuser");
+			if(this.model.get("login") !== this.model.collection.owner.get("login")){
+				this.model.collection.owner.set({login : this.model.get("login")}, {silent :true})
 				this.model.collection.trigger("filterChange");
 			}
 			

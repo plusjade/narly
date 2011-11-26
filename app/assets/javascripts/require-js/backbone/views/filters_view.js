@@ -16,7 +16,7 @@ define([
 	//
 	return Backbone.View.extend({
 		model : Repo,
-		user : User,
+		owner : User,
 		el : "#filters",
 		
 		events : {
@@ -25,18 +25,18 @@ define([
 		},
 		
 		initialize : function(){
-			// Manually set the user on the repo collection since the collection
+			// Manually set the owner on the repo collection since the collection
 			// is bootstrapped into place via serverside objects. 
-			this.collection.user.set({login : this.getUser()}, {silent:true});
+			this.collection.owner.set({login : this.getUser()}, {silent:true});
 
-			this.collection.user.bind("change", this.updateUser, this);
-			this.collection.tags.bind("reset", this.updateTags, this);
+			this.collection.owner.bind("change", this.updateUser, this);
+			this.collection.tagFilters.bind("reset", this.updateTags, this);
 			
-			this.collection.tags.bind("add", function(){
+			this.collection.tagFilters.bind("add", function(){
 				this.collection.trigger("filterChange");
 			}, this)
 			
-			this.collection.tags.bind("remove", function(){
+			this.collection.tagFilters.bind("remove", function(){
 				this.collection.trigger("filterChange");
 			}, this)
 			
@@ -62,8 +62,8 @@ define([
 		
 		parseUser : function(){
 			var changed = false;
-			if(this.collection.user.get("login") !== this.getUser()){
-				this.collection.user.set({login : this.getUser()}, {silent : true});
+			if(this.collection.owner.get("login") !== this.getUser()){
+				this.collection.owner.set({login : this.getUser()}, {silent : true});
 				changed = true;
 			}
 
@@ -78,8 +78,8 @@ define([
 			var changed = false;
 			var name = this.getTag();
 			
-			if( name !== "" && _.isUndefined(this.collection.tags.get(name)) ){
-				this.collection.tags.add({name : name}, {silent : true});
+			if( name !== "" && _.isUndefined(this.collection.tagFilters.get(name)) ){
+				this.collection.tagFilters.add({name : name}, {silent : true});
 				changed = true;
 			}
 			
@@ -88,21 +88,21 @@ define([
 		
 		// Remove a tag from the collection.
 		remove : function(e){
-			var tagToRemove = this.collection.tags.get($(e.currentTarget).text())
-			this.collection.tags.remove(tagToRemove);
+			var tagToRemove = this.collection.tagFilters.get($(e.currentTarget).text())
+			this.collection.tagFilters.remove(tagToRemove);
 		},
 		
 		updateUser : function(){
-			console.log("updateUser:"+ this.collection.user.get("login"));
+			console.log("updateUser:"+ this.collection.owner.get("login"));
 
-			if(_.isEmpty(this.collection.user.get("login"))){
+			if(_.isEmpty(this.collection.owner.get("login"))){
 				this.$("a").first().hide();
 				this.$("input.login").val("*");
 			}
 			else{
-				this.$("input.login").val(this.collection.user.get("login"));
-				this.$("a").first().show().attr("href", "/users/"+this.collection.user.get("login"))
-					.find("img").attr("src", this.collection.user.get("avatar_url"));
+				this.$("input.login").val(this.collection.owner.get("login"));
+				this.$("a").first().show().attr("href", "/users/"+this.collection.owner.get("login"))
+					.find("img").attr("src", this.collection.owner.get("avatar_url"));
 			}
 		},
 		
@@ -111,7 +111,7 @@ define([
 		//
 		updateTags : function(){
 			var data = "";
-			this.collection.tags.each(function(tag){
+			this.collection.tagFilters.each(function(tag){
 				data += "<span>" + tag.get("name") + "</span> + ";
 			})
 			this.$("p").html(data);

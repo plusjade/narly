@@ -23,7 +23,7 @@ define([
 		},
 	
 		clickTag : function(e){
-			this.model.collection.repo.trigger("navigate", e.currentTarget.pathname);
+			this.model.collection.owner.trigger("navigate", e.currentTarget.pathname);
 			
 			e.preventDefault()
 			return false;

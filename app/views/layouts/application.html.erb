@@ -148,9 +148,7 @@
 				<img src="{{owner.avatar_url}}" class="thumb" />
 			</a>
 
-			<span class="name">
-				<a href="/repos/{{full_name}}" title="{{full_name}}">{{full_name}}</a>
-			</span>
+			<a href="/repos/{{full_name}}" class="repo_name" title="{{full_name}}">{{full_name}}</a>
 
 			<div class="meta">
 				<span class="watchers-forks">watchers:  {{watchers}} </span> | <span class="language">{{language}}</span>
@@ -215,8 +213,9 @@
 
 	  App.initialize(function(){
 			console.log("bootCallback");
+			App.mainRepo.currentUser.set({login : document.getElementsByTagName("head")[0].id});
 			App.mainRepos.currentUser.set({login : document.getElementsByTagName("head")[0].id});
-			App.mainRepos.tags.reset(<%= raw @tag_filters.to_json %>, {silent : true});
+			App.mainRepos.tagFilters.reset(<%= raw @tag_filters.to_json %>, {silent : true});
 			
 			<%= yield :scripts %>
 		});

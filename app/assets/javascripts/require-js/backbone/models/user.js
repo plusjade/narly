@@ -12,7 +12,7 @@ define([
 			console.log("init User");
 			this.tags = new Tags();
 			this.tags.type = "user";
-			this.tags.user = this;
+			this.tags.owner = this;
 		},
 		
 		url : function(){

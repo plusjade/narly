@@ -22,7 +22,7 @@ define([
 		// add tag for user on repo
 		//
 		add : function(){
-			var repo = this.collection.repo;
+			var repo = this.collection.owner;
 			
 			$.showStatus('submitting');
 			$.ajax({
@@ -38,7 +38,7 @@ define([
 		// remove a tag from repo with respect to user
 		//
 		remove : function(){
-			var repo = this.collection.repo;
+			var repo = this.collection.owner;
 			
 			$.showStatus('submitting');
 			$.ajax({

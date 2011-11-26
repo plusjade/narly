@@ -5,9 +5,10 @@ define([
 	'backbone/models/repo',
 	'jquery/showStatus',
 	'jquery/mustache',
+	'backbone/models/user',
 	'backbone/views/repo_tags_panel_view',
 	'backbone/views/user_repo_tags_view'
-], function($, _, Backbone, Repo, z,z, RepoTagsPanelView, UserRepoTagsView){
+], function($, _, Backbone, Repo, z,z, Repo, RepoTagsPanelView, UserRepoTagsView){
 
 	// The TagPanelView is responsible for adding and deleting tags on a repo.
 	//
@@ -22,11 +23,11 @@ define([
 			// listen to the show panel event which fires from individual
 			// repos but bubbles up to their parent collections.
 			this.collection.bind("showPanel", this.render, this);
+			this.options.mainRepo.bind("showPanel", this.render, this);
 		},
 		
 		render : function(repo){
 			this.model = repo;
-
 			// build a fresh repoTagcollection view
 			this.tagsView = new RepoTagsPanelView({collection : this.model.tags, el : "#add_tag_container"});
 			this.tagsView.render();

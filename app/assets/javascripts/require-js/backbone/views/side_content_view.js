@@ -9,32 +9,41 @@ define([
 	'backbone/views/user_tags_view'
 ], function($, _, Backbone, z,z, Repo, User, UserTagsView){
 	
-	// The collection on this view is the Repo Collection we are displaying.
+	// The model should be either a user or repo with a collection of tags
+	//
+	// 
+	// 
 	//
 	return Backbone.View.extend({
-		model : Repo,
-		user : User,
+		model : User,
+
 		el : "#side_content",
 		
 		initialize : function(){
-			this.collection.user.tags.bind("reset", this.render, this);
-			this.collection.user.tags.bind("navigate", this.navigate, this);
-			
-			new UserTagsView({ el: this.$(".tag_box"), collection : this.collection.user.tags });
-			
+			this.model.tags.bind("reset", this.render, this);
+			this.model.tags.bind("navigate", this.navigate, this);
+
+			new UserTagsView({ el: this.$(".tag_box"), collection : this.model.tags });
 		},
 		
+		
 		render : function(){
-			if(_.isEmpty(this.collection.user.get("login")))
+			console.log("sidepanelView render:");
+			console.log(this.model);
+			if(_.isEmpty(this.model.get("login")))
 				this.$("strong").html("Top Tags");
+			else if(_.isEmpty(this.model.get("full_name")))
+				this.$("strong").html(this.model.get("login"));
 			else
-				this.$("strong").html(this.collection.user.get("login"));
+				this.$("strong").html(this.model.get("full_name"));
 			
 			return this;	
 		},
 		
+		// App.js is Monitoring the side_content view for navigate events.
 		navigate : function(url){
-			this.collection.trigger("navigate", url);
+			console.log("navigate trigger in side_content_view.js");
+			this.trigger("navigate", url);
 		}
 		
 	});

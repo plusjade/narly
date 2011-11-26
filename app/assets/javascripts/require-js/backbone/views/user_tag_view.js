@@ -6,7 +6,9 @@ define([
 	'jquery/mustache',
 ], function($, _, Backbone, z,z){
 	
-	// A singular tag view for the user tag list (usually on the right side column)
+	// A singular tag view a tag list (usually on the right side column)
+	// A tag collection can be long to either a repo or a user but it has to belong to something
+	// even if that something is empty.
 	//
  	return Backbone.View.extend({
 		tagName : "li",
@@ -19,14 +21,17 @@ define([
 		render: function(){
 			var data = this.model.attributes;
 			data.url = "";
-			if(!_.isEmpty(this.model.collection.user.get("login")))
-				data.url += "/users/" + this.model.collection.user.get("login");
+			
+			// needs to be a user tag and not be a blank user.
+			if(this.model.collection.type === "user" && !_.isEmpty(this.model.collection.owner.get("login")))
+				data.url += "/users/" + this.model.collection.owner.get("login");
 			
 			data.url += "/repos/tagged/" + this.model.get("name");
 			return $(this.el).html($.mustache(this.template, data));
 	  },
 	
 		clickTag : function(e){
+			console.log("clicky");
 			this.model.trigger("navigate", e.currentTarget.pathname);
 
 			e.preventDefault()

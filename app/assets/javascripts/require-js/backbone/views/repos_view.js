@@ -15,7 +15,6 @@ define([
 		model : Repo,
 
 		initialize : function(){
-			this.tagPanelView = new TagPanelView({collection : this.collection});
 			this.collection.bind("reset", this.renderFresh, this);
 		},
 

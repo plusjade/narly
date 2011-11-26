@@ -15,55 +15,59 @@ define([
 	return Backbone.Collection.extend({
 		model : Repo,
 		
-		// This User should be the whatever this collection is scoped to if any.
+		// This User|Repo should be the whatever this collection is scoped to if any.
 		//
-		user : User,
+		owner : User,
 		// currentUser is the logged in user if any.
 		//
 		currentUser : User,
 
 		initialize : function(){
-			this.tags = new Tags;
-			this.user = new User;
+			this.tagFilters = new Tags;
+			this.owner = new User;
 			
 			// Monitor the avatar_url because this will be set when
 			// the collection returns. We don't want this to trigger
 			// when we set the :login because we do this throughout the app.
 			//
-			this.user.bind("change:avatar_url", this.renewUserTags, this);
+			this.owner.bind("change:avatar_url", this.renewUserTags, this);
 		},
 		
 		renewUserTags : function(){
 			console.log("===renewUserTags====");
-			this.user.tags.fetch();
+			this.owner.tags.fetch();
 		},
 		
 		parse : function(response){
-			this.user.set({login : response.login, avatar_url : response.avatar_url})
+			this.owner.clear({silent : true})
+			this.owner.set({login : response.login, avatar_url : response.avatar_url})
 			return response.repos;
 		},
 		
 		// Called by the router to fetch the results but also
 		// make sure the URL and the UI is in sync with the call.
 		// The UI will be updated as a callback to fetch
-		route : function(login, tagString){
-			this.user.set({login : login}, {silent : true})
-			this.tags.resetFromTagString(tagString);
+		route : function(login, tagFilters){
+			this.owner.set({login : login}, {silent : true})
+			// these tags are always from a user even if that user is blank.
+			this.owner.tags.type = "user";
+			
+			this.tagFilters.resetFromTagString(tagFilters);
 			this.fetch();
 		},
 		
 		// set this to be dynamic based on user/repo/tag filters.
 		url : function(){
 			var url = "/";
-			var tagNames = this.tags.pluck("name");
-			var userPath = "/users/" + this.user.get("login");
+			var tagNames = this.tagFilters.pluck("name");
+			var userPath = "/users/" + this.owner.get("login");
 			var tagsPath = "/repos/tagged/" + tagNames.join(":");
 			
 			if(tagNames.length > 0)
-				if(this.user.get("login") === "") url = tagsPath;
+				if(this.owner.get("login") === "") url = tagsPath;
 				else url = userPath + tagsPath;
 			else
-				if(this.user.get("login") === "") url = "/repos";
+				if(this.owner.get("login") === "") url = "/repos";
 				else  url = userPath;
 
 			return url+"/json";	

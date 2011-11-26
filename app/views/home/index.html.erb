@@ -44,5 +44,5 @@
 
 <% content_for :scripts do %>
 	// User Tags shown on the right side panel.
-	App.mainRepos.user.tags.reset(<%= raw @tags.to_json %>);
+	App.mainRepos.owner.tags.reset(<%= raw @tags.to_json %>);
 <% end %>	
