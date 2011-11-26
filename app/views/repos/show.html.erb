@@ -52,23 +52,5 @@
 <% end %>
 
 <% content_for :scripts do %>
-  App.mainRepo.set(<%= raw @data.to_json %>);
-	//App.mainRepoView.render();
-	
-	
-	/*
-	var repos = [];
-	<% @similar_repos.each do |repo| %>
-		var repo = new App.models.repo(<%= raw repo.to_json(:methods => [:tags]) %>);
-		repos.push(repo);
-	<% end %>
-	// push the similar repos into the mainRepo collection.	
-	App.mainRepos.reset(repos, {silent : true});
-	App.mainReposView.render();
-*/
-
-
-	// Repo Tags shown on the right side panel.
-	App.mainRepos.user.set({login : ""})
-	App.mainRepos.user.tags.reset(<%= raw @tags.to_json %>);
+	App.bootSingle(<%= raw @data.to_json %>, <%= raw @tags.to_json %>)
 <% end %>
