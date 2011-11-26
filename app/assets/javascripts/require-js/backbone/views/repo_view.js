@@ -22,7 +22,8 @@ define([
 		
 		events : {
 			"click .add_tag" : "showPanel",
-			"click img" : "filterByUser"
+			"click img" : "filterByUser",
+			"click a.repo_name" : "clickRepoName"
 		},
 		
 		initialize : function(){
@@ -56,6 +57,14 @@ define([
 			}
 			
 			e.preventDefault;
+			return false;
+		},
+		
+		clickRepoName : function(e){
+			console.log("clickRepoName");
+			this.model.trigger("navigate", e.currentTarget.pathname);
+
+			e.preventDefault()
 			return false;
 		}
 	
