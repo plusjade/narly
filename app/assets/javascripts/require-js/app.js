@@ -100,7 +100,6 @@ define([
 			// update side panel	
 				App.mainRepos.owner.clear({silent : true})
 				App.mainRepos.owner.set(this.attributes)
-				App.mainRepos.owner.tags.type = "repo";
 				App.mainRepos.owner.tags.reset(this.get("tags"));
 				
 			// show similar repos in the mainRepos collection.
@@ -166,8 +165,8 @@ define([
 			App.mainReposView.render();
 
 		// Repo Tags shown on the right side panel.
-			App.mainRepos.owner.set(data)
-			App.mainRepos.owner.tags.type = "repo";
+			App.mainRepos.owner.clear({silent : true});
+			App.mainRepos.owner.set(data);
 			App.mainRepos.owner.tags.reset(repoTags);			
 		},
 		

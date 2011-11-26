@@ -39,7 +39,6 @@ define([
 		},
 		
 		parse : function(response){
-			this.owner.clear({silent : true})
 			this.owner.set({login : response.login, avatar_url : response.avatar_url})
 			return response.repos;
 		},
@@ -48,9 +47,8 @@ define([
 		// make sure the URL and the UI is in sync with the call.
 		// The UI will be updated as a callback to fetch
 		route : function(login, tagFilters){
+			this.owner.clear({silent : true})
 			this.owner.set({login : login}, {silent : true})
-			// these tags are always from a user even if that user is blank.
-			this.owner.tags.type = "user";
 			
 			this.tagFilters.resetFromTagString(tagFilters);
 			this.fetch();

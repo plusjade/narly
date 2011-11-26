@@ -5,40 +5,37 @@ define([
   'backbone/models/tag'
 ], function($, _, Backbone, Tag){
 	
+	// A collection of Tags.
+	// All tag collections should have an owner (User|Repo) even if its blank.
+	//
 	return Backbone.Collection.extend({
 		model : Tag,
-		// All tag collections should have an owner (User|Repo) even if its blank
 		owner : null,
 		initalize : function(){
 
 		},
-		
+
 		url : function(){
 			console.log("try tag collection URL");
 			var url = "";
 
-			switch(this.type){
-			// "userRepo" only displays on the TagPanel.
-			// they are tags created by user on repo.
-			case "userRepo":
+		  // "userRepo" only displays on the TagPanel.
+		  // they are tags created by user on repo.
+			if(this.type === "userRepo")
 				if(_.isUndefined(this.owner.collection))
 					url = "/users/"+this.owner.currentUser.get("login")+"/repos/"+this.owner.get("full_name")+"/tags/json";
 				else
 					url = "/users/"+this.owner.collection.currentUser.get("login")+"/repos/"+this.owner.get("full_name")+"/tags/json";
-			  break;
-			// "repo" is a repo's tags.
-			case "repo":
-				url = "/repos/"+this.owner.get("full_name")+"/tags/json";
-			  break;
-			// "user" is a user's tags.
-			case "user":
-			
-				if(_.isEmpty(this.owner.get("login")))
+		  // This means this is a user Object's tags.			
+			else if( _.isUndefined(this.owner.get("full_name")) )
+				if( _.isEmpty(this.owner.get("login")) )
 					url = "/tags/json";
 				else
 					url = "/users/"+this.owner.get("login")+"/tags/json";
-			}
-			
+			// this means this is a repo object's tags.			
+			else 
+				url = "/repos/"+this.owner.get("full_name")+"/tags/json";
+
 			return url;
 		},
 

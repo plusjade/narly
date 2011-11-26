@@ -11,7 +11,6 @@ define([
 		initialize : function(){
 			console.log("init User");
 			this.tags = new Tags();
-			this.tags.type = "user";
 			this.tags.owner = this;
 		},
 		
