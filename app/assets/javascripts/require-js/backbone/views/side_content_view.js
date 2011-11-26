@@ -35,7 +35,7 @@ define([
 			else if(_.isEmpty(this.model.get("full_name")))
 				this.$("strong").html(this.model.get("login"));
 			else
-				this.$("strong").html(this.model.get("full_name"));
+				this.$("strong").html("Tags on " + this.model.get("full_name"));
 			
 			return this;	
 		},

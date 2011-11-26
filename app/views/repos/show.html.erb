@@ -18,13 +18,13 @@
 				<li><strong>Forks</strong>: <%= @repo.forks %></li>
 			</ul>
 		
-		</div>
-
-		<h3>tagged by</h3>
-		<div id="tagged_by_container">
-			<% @repo.users.each do |user| %>
-				<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
-			<% end %>
+			<h4>tagged by</h4>
+			<div id="tagged_by_container">
+				<% @repo.users.each do |user| %>
+					<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
+				<% end %>
+			</div>
+			
 		</div>
 
 		<h3>similar repos</h3>	
@@ -43,7 +43,7 @@
 <% end %>
 
 <% content_for :side_content do %>
-	<h4>Tags on <%= @repo.full_name %></h4>
+	<strong>Tags on <%= @repo.full_name %></strong>
 	<ul class="tag_box">
 		<% @tags.each do |tag| %>
 			<li><%= link_to_tag(tag, repos_tagged_path(tag.name))%></li>

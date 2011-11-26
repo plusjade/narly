@@ -92,9 +92,9 @@
 	<div id="top_spacer">&#160;</div>
 
 	<div id="main_content_container">
-		<div id="main_content" style="border:1px solid red">
+		<div id="main_content">
 		
-			<div id="singular_repo" class="singular_repo" style="border:1px solid red">
+			<div id="singular_repo" class="singular_repo">
 				<%= yield :singular_repo %>
 			</div>
 			
@@ -168,7 +168,7 @@
 	<script id="repo_view_full" type="text/x-jquery-tmpl">
 		<h2 class="title">
 			<a href="#" class="add_tag btn success" title="{{full_name}}" style="float:right">+/- tags</a>
-			blah: {{full_name}}
+			{{full_name}}
 		</h2>
 
 		<div class="repo_outline boxy">
@@ -182,12 +182,12 @@
 				<li><strong>Language</strong>: {{language}}</li>
 				<li><strong>Forks</strong>: {{forks}}</li>
 			</ul>
-
-		</div>
-
-		<h3>tagged by</h3>
-		<div id="tagged_by_container" class="tagged_by_container">
-			heroo
+			
+			<h4>tagged by</h4>
+			<div id="tagged_by_container" class="tagged_by_container">
+				heroo
+			</div>
+			
 		</div>
 
 		<h3>similar repos</h3>
