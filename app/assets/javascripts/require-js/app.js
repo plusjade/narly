@@ -98,6 +98,7 @@ define([
 				console.log(this);
 				
 			// update side panel	
+				App.mainRepos.owner.clear({silent : true})
 				App.mainRepos.owner.set(this.attributes)
 				App.mainRepos.owner.tags.type = "repo";
 				App.mainRepos.owner.tags.reset(this.get("tags"));
@@ -138,6 +139,7 @@ define([
 			// repo show
 			App.Router.bind("route:repos", function(repo_login, repo_name) {
 				console.log("repo show");
+				App.mainRepo.clear({silent : true});
 				App.mainRepo.set({login : repo_login, name : repo_name}, {silent :true});
 				App.mainRepo.fetch();
 			})
@@ -156,7 +158,7 @@ define([
 			console.log("bootSingle");
 			console.log(data);
 		// populate and render the mainRepo	
-		  App.mainRepo.set(data);
+		  App.mainRepo.set(data, {silent : true});
 			App.mainRepoView.render();
 
 		// show similar repos in the mainRepos collection.
