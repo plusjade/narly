@@ -6,12 +6,12 @@ class UsersController < ApplicationController
     @repos = @owner.repos(:via => @tag_filters, :limit => 25)
     @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
     
-    data = @owner.as_json
-    data["repos"] = @repos.as_json(:methods => [:tags, :owner])
+    @data = @owner.as_json
+    @data["repos"] = @repos.as_json(:methods => [:tags, :owner])
     
     respond_to do |format|
       format.json do
-        render :json => data
+        render :json => @data
       end
       
       
