@@ -1,9 +1,8 @@
 <div id="<%= repo_css_id(repo) %>" class="repo">
 	<%= link_to "+/- tags", "#", :class => "add_tag btn", :title => repo.full_name  %>
 	<%= link_to (image_tag repo.owner.avatar_url, :class => "thumb"), user_path(repo.login) %>
-	<span class="name">
-		<%= link_to repo.full_name, repo_path(repo.login, repo.name), :title => repo.full_name %>
-	</span>
+	
+	<%= link_to repo.full_name, repo_path(repo.login, repo.name), :title => repo.full_name, :class => "repo_name" %>
 	
 	<div class="meta">
 		<span class="watchers-forks">watchers: <%= repo.watchers %></span> | <span class="language"><%= repo.language %></span>
