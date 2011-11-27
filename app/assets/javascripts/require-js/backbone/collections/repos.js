@@ -16,10 +16,9 @@ define([
 		model : Repo,
 		
 		// This User|Repo should be the whatever this collection is scoped to if any.
-		//
 		owner : User,
+
 		// currentUser is the logged in user if any.
-		//
 		currentUser : User,
 
 		initialize : function(){
@@ -34,7 +33,7 @@ define([
 		},
 		
 		renewUserTags : function(){
-			console.log("===renewUserTags====");
+			console.log("===renewOwnerTags====");
 			this.owner.tags.fetch();
 		},
 		
