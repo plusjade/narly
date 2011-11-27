@@ -1,51 +1,83 @@
 class Repository
-  include DataMapper::Resource
   include HubWire
   include TaylorSwift::Base
+  attr_accessor :full_name, :login, :avatar_url, :name, :description, :language, :watchers, :forks, :fork # :created_at, :updated_at
   
   githubify :type => "repo"
   tell_taylor_swift :items, :identifier => :full_name
   
-  property :id, Serial
-  property :ghid, Integer, :unique => true, :required => true
-  property :full_name, String, :unique => true, :required => true, :length => 256
-  property :login, String, :required => true
-  property :name, String, :required => true
-  property :description, Text, :lazy => false
-  property :language, String
-  property :watchers, Integer
-  property :forks, Integer
-  property :fork, Boolean
-
-  property :created_at, DateTime
-  property :updated_at, DateTime
+  RedisContainer = "REPOS"
   
-  belongs_to :owner, :model => User, 
-    :parent_key => [:login],
-    :child_key => [:login]
-
-
-  # Find from our mysql cache or else try to fetch it from the api
-  # Notes:
-  #   I tried to overload the native self.first method with this check but
-  #   what happens is the self.first method is getting called 
-  #   when checking the object for validity i.e. user.valid? or user.save
-  #   so we get an infinite loop. Took me a while to figure that out.
+  # New Repo instance from the data stored in redis.
   #
-  def self.first_or_fetch(*args)
-    repo = self.first(*args)
+  def initialize(data = nil)
+    ActiveSupport::JSON.decode(data).each do |k, v|
+      self.send("#{k}=", v) if self.respond_to?("#{k}=")
+    end if data
+  end
+  
+  # New Repo instance from the github api.
+  #
+  def self.new_from_github_hash(gh_hash={})
+    return nil if gh_hash.blank?
+    instance = new
 
-    if repo.nil? && (login = args.first[:login]) && (name = args.first[:name])
-      puts "repo to network!"
-      repo = new_from_github(login, name)
-      repo = nil unless repo.save
-    end  
-
+    gh_hash.each do |k, v|
+      if instance.respond_to?("#{k}=")
+        instance.send("#{k}=", v)
+      end
+    end
+    
+    instance.login = gh_hash["owner"]["login"]
+    instance.avatar_url = gh_hash["owner"]["avatar_url"]
+    instance.full_name = "#{instance.login}/#{instance.name}"
+    instance
+  end
+  
+  # Return a singular repo instance from the database.
+  # If the repo doesn't exist in our database try to fetch it from github api.
+  #
+  def self.first(full_name)
+    repo = $redis.hget RedisContainer, full_name
+    
+    if repo
+      repo = new(repo)
+    else
+      repo = self.new_from_github(*full_name.split("/"))
+      repo.save! if repo
+    end
+      
     repo
   end
   
+  # Return a collection of repo instances from the database.
+  #
+  def self.all(full_names)
+    full_names = Array(full_names)
+    return [] if full_names.blank?
+
+    repos = $redis.send(:hmget, *full_names.unshift(RedisContainer)).compact
+    repos.blank? ? [] : repos.map! { |repo| new(repo) } 
+  end
+    
   def self.first!(*args)
-    self.first_or_fetch(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
+    self.first(*args) || raise(DataMapper::ObjectNotFoundError, "Could not find repository with conditions: #{args.first.inspect}") 
+  end
+  
+  # A class level taylor_get method but returns Repo instances for convenience.
+  #
+  def self.taylor_get_as_resource(conditions)
+    self.all(self.taylor_get(conditions))
+  end
+  
+  # persist to redis but only if not already in the database.
+  def save
+    $redis.hsetnx RedisContainer, self.full_name, self.to_json
+  end
+
+  # persist to redis and overwrite any existing entry.
+  def save!
+    $redis.hset RedisContainer, self.full_name, self.to_json
   end
   
   def tags(conditions = {})
@@ -58,19 +90,23 @@ class Repository
   
   def similar(conditions = {})
     conditions.merge!({:similar => true})
-    Repository.spawn_from_taylor_swift_data(self.taylor_get(:items, conditions))
+    Repository.all(self.taylor_get(:items, conditions))
   end
   
   def html_url
     "http://github.com/#{self.full_name}"
   end
-  
-  def self.taylor_get_as_resource(conditions)
-    self.spawn_from_taylor_swift_data(self.taylor_get(conditions))
+
+  def as_json(options ={})
+    result = super(options)
+
+    # add methods
+    Array(options[:methods]).each do |method|
+      next unless respond_to?(method)
+      result[method] = __send__(method)
+    end
+
+    result
   end
-  
-  def self.spawn_from_taylor_swift_data(data)
-    self.all(:full_name => data, :order => [:full_name])
-  end
-  
+
 end

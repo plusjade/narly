@@ -16,7 +16,6 @@ class User
   property :created_at, DateTime
   property :updated_at, DateTime
   
-  has n, :repositories, :child_key => [:login]
   
   def repos(conditions = {})
     names = self.taylor_get(:items , conditions)
@@ -26,7 +25,7 @@ class User
       names = self.import_mine + self.import_watched(1)
     end
 
-    Repository.spawn_from_taylor_swift_data(names)
+    Repository.all(names)
   end
     
   def tags(conditions = {})
@@ -80,7 +79,7 @@ class User
   def import_mine
     HubWire::DSL.repositories(self.login).map do |repo|
       r = Repository.new_from_github_hash(repo)
-      r.save
+      r.save 
       self.taylor_tag(r, Tag.new(:name => self.login))
       r.full_name
     end

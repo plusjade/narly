@@ -27,7 +27,7 @@ class Tag
   end
   
   def repos(conditions = {})
-    Repository.spawn_from_taylor_swift_data(self.taylor_get(:items, conditions))
+    Repository.all(self.taylor_get(:items, conditions))
   end
   
   # tags_data format: 
