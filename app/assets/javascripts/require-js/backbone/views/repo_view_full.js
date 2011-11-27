@@ -36,7 +36,9 @@ define([
 			// The element.id will be blank for newly created views.
 			// However on bootstrapped elements (on page load) the id will be set.
 			//if(this.el.id === "")
-			$(this.el).html($.mustache(this.template, this.model.attributes));
+			var data = this.model.attributes;
+			data.fork = data.fork ? "yes" : "no";
+			$(this.el).html($.mustache(this.template, data));
 		},
 		
 		wipe : function(){
