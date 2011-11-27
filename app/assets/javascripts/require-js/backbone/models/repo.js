@@ -16,15 +16,10 @@ define([
 			this.userTags.owner = this;
 			this.userTags.type = "userRepo";
 
-			this.bind("change", this.updateTags, this);
-
-			this.bind("change", function(){
-				this.tags.owner = this;
-			})
-
 		},
 		
 		parse : function(response){
+			this.tags.reset(response.tags);
 			return response;
 		},
 		
@@ -35,10 +30,6 @@ define([
 		refresh : function(){
 			this.tags.fetch();
 			this.userTags.fetch();
-		},
-		
-		updateTags : function(){
-			this.tags.reset(this.get("tags"));
 		},
 		
 		// This is the css id for the RepoView div when it's being bootstrapped.
