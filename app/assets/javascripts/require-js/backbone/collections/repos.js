@@ -42,6 +42,19 @@ define([
 			return response.repos;
 		},
 		
+		// Update this repo collection with respect to a repo object.
+		// This is needed when showing a singular repo page.
+		// Mainly to show the repos tags in the side_content panel
+		// and to update this repo collection with the repo's similar repos array.
+		//
+		updateFromRepo : function(repo){
+			this.owner.clear({silent : true})
+			this.owner.set(repo.attributes)
+			this.owner.tags.reset(repo.get("tags"));
+			
+			this.reset(repo.get("similar_repos"));
+		},
+		
 		// Called by the router to fetch the results but also
 		// make sure the URL and the UI is in sync with the call.
 		// The UI will be updated as a callback to fetch

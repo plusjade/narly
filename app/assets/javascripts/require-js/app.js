@@ -87,56 +87,43 @@ define([
 		},
 		
 		initialize : function(boot){
-	  // Setup singular main repo objects
-			App.mainRepo = new Repo;
-			App.mainRepo.currentUser = new User;
-			App.mainRepoView = new RepoViewFull({model : App.mainRepo});
 			
 		// Setup multiple main repos objects
 			App.mainRepos = new Repos;
 			App.mainRepos.currentUser = new User;
 			App.mainReposView = new ReposView({collection : App.mainRepos});
-		
+
+	  // Setup singular main repo objects
+			App.mainRepo = new Repo;
+			App.mainRepo.currentUser = new User;
+			App.mainRepoView = new RepoViewFull({model : App.mainRepo});
+				
 		// Setup tagPanelView filterView and sideContentView	
 			App.tagPanelView = new TagPanelView({collection : App.mainRepos, mainRepo : App.mainRepo });
 			App.filtersView = new FiltersView({collection : App.mainRepos });
 			App.sideContentView = new SideContentView({model : App.mainRepos.owner })
-			
+		
+		// Setup references via binding.
+			// Ideally we should be able to reference objects to one another
+			// by binding events between them. So here's my attempt at managing that.
+
+			// If the main repo changes it means we are trying to show a single repo page
+			// So we need to update the mainRepos to complete the page.
 			App.mainRepo.bind("change", function(){
-				console.log("getting Repo");
-				console.log(this);
-				
-			// update side panel	
-				App.mainRepos.owner.clear({silent : true})
-				App.mainRepos.owner.set(this.attributes)
-				App.mainRepos.owner.tags.reset(this.get("tags"));
-				
-			// show similar repos in the mainRepos collection.
-				App.mainRepos.reset(this.get("similar_repos"));
+				App.mainRepos.updateFromRepo(this);
 			});
+		
 			
-		// Setup Routing.
+    // Setup Routing.
 			App.Router = new Router;
 			
-			App.mainRepoView.bind("navigate", function(url){
-				console.log("mainRepoView routing: " + url);
-				App.Router.navigate(url, true);
-			});
-			
-			App.sideContentView.bind("navigate", function(url){
-				console.log("side content routing: " + url);
-				App.Router.navigate(url, true);
-			});
-			App.mainRepos.bind("navigate", function(url){
-				console.log("routing: " + url);
-				App.Router.navigate(url, true);
-			});
-			App.mainRepos.bind("filterChange", function(){
-				console.log("routing: " + this.permalink());
-				App.Router.navigate(this.permalink(), true);
-			});
-			
-			
+			// These Routing bindings are what actually get the data and update the UI.
+			// Page change events that happen within the app should ultimately trigger *App.router* 
+			// which then trigger one of these functions to handle the request.
+			//
+			// This is preferred so that the back/forward buttons will work as expected
+			// since Back/Forward triggers *App.router*.
+			//
 			App.Router.bind("route:users", function(login) {
 				App.mainRepo.trigger("wipe");
 				App.mainRepos.route(login, "");
@@ -149,44 +136,57 @@ define([
 				App.mainRepo.trigger("wipe");
 				App.mainRepos.route(login, tags);
 			});
-			// repo show
 			App.Router.bind("route:repos", function(repo_login, repo_name) {
-				console.log("repo show");
 				App.mainRepo.clear({silent : true});
 				App.mainRepo.set({login : repo_login, name : repo_name}, {silent :true});
 				App.mainRepo.fetch();
 			})
 			
+		// Setup "navigate" monitoring.
+			// "navigate" events are triggered by native links in the app
+			// such as tag hrefs, userIcon hrefs, repo hrefs. 
+			// We monitor them through their parent views below and trigger
+			// the *App.Router* to handle the href through Backbone.
+			//
+			App.mainRepos.bind("navigate", function(url){
+				App.Router.navigate(url, true);
+			});
+			App.mainRepoView.bind("navigate", function(url){
+				App.Router.navigate(url, true);
+			});
+			App.sideContentView.bind("navigate", function(url){
+				App.Router.navigate(url, true);
+			});
+			
+			// FilterChange events are triggered by the FilterView form
+			// based on the filter state. If the state changes this event is
+			// triggered which triggers the Router which in turn
+			// triggers the routing function for that route.
+			//
+			App.mainRepos.bind("filterChange", function(){
+				App.Router.navigate(this.permalink(), true);
+			});
 			
 			Backbone.history.start({pushState: true, silent: true})
 			
-			console.log("app.js initialized");
-			console.log(App);
-			
+			// Call the boot function after everything has been setup.
 			boot();
-			
 		}, // initialize
 		
-		bootSingle : function(data, repoTags){
-			console.log("bootSingle");
-			console.log(data);
-		// populate and render the mainRepo	
-		  App.mainRepo.set(data, {silent : true});
-			App.mainRepoView.render();
-
-		// show similar repos in the mainRepos collection.
-			App.mainRepos.reset(data.similar_repos, {silent : true});
-			App.mainReposView.render();
-
-		// Repo Tags shown on the right side panel.
-			App.mainRepos.owner.clear({silent : true});
-			App.mainRepos.owner.set(data);
-			App.mainRepos.owner.tags.reset(repoTags);			
+		// Boots the singular repo page into Backbone.
+		// ex: /repos/plusjade/apron
+		// 
+		bootSingle : function(data){
+		  App.mainRepo.set(data);
 		},
 		
+		// Boots any multiple repos page into Backbone.
+		// ex:
+		//   /users/plusjade
+		//   /users/plusjade/repos/tagged/ruby
+		//   /repos/tagged/ruby:redis
+		//
 		bootMulti : function(data, userTags){
-			console.log("bootmulti");
-
 			App.mainRepos.reset(data.repos, {silent : true});
 			App.mainReposView.render();
 
@@ -195,8 +195,6 @@ define([
 		}
 		
 	} // App
-	
-	//_.extend(App, Backbone.Events);
 	
 	// Return our App object which should require the references we need so our other modules can use them.
 	// Remember everything is freaking in a closure so nothing is in the global namespace
