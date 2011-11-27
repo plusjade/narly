@@ -2,7 +2,7 @@ class ReposController < ApplicationController
 
   def index
     @tag_filters = Tag.new_from_tag_string(params[:tags])
-    @repos = Repository.taylor_get_as_resource(:via => @tag_filters, :limit => 25)
+    @repos = Repo.taylor_get_as_resource(:via => @tag_filters, :limit => 25)
     
     @data = Owner.new().as_json
     @data["repos"] = @repos.as_json(:methods => [:tags, :owner])
@@ -20,7 +20,7 @@ class ReposController < ApplicationController
   
   def show
     @owner = Owner.first!(params[:repo_login])
-    @repo = Repository.first!("#{@owner.login}/#{params[:repo_name]}")
+    @repo = Repo.first!("#{@owner.login}/#{params[:repo_name]}")
     #@similar_repos = @repo.similar(:limit => 10)
     @similar_repos = @owner.repos(:limit => 2)
     
@@ -45,7 +45,7 @@ class ReposController < ApplicationController
   end
   
   def tags
-    @repo = Repository.first!("#{params[:repo_login]}/#{params[:repo_name]}")
+    @repo = Repo.first!("#{params[:repo_login]}/#{params[:repo_name]}")
     render :json => @repo.tags(:limit => 10)
   end
   

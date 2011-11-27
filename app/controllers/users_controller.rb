@@ -43,7 +43,7 @@ class UsersController < ApplicationController
   
   def tag
     if current_user
-      @repo = Repository.first!(params[:repo][:full_name])
+      @repo = Repo.first!(params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
         current_user.taylor_tag(@repo, tag)
       end
@@ -62,7 +62,7 @@ class UsersController < ApplicationController
 
   def untag
     if current_user
-      repo = Repository.new(:full_name => params[:repo][:full_name])
+      repo = Repo.new(:full_name => params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
         current_user.taylor_untag(repo, tag)
       end
@@ -88,7 +88,7 @@ class UsersController < ApplicationController
   #
   def repo_tags
     @owner = Owner.first!(params[:login])
-    @repo = Repository.first!("#{params[:repo_login]}/#{params[:repo_name]}")
+    @repo = Repo.first!("#{params[:repo_login]}/#{params[:repo_name]}")
     render :json => @owner.taylor_get(:tags, :via => @repo).map {|name| Tag.new(:name => name) }
   end
   

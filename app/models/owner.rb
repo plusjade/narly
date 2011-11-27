@@ -86,7 +86,7 @@ class Owner
       names = self.import_mine + self.import_watched(1)
     end
 
-    Repository.all(names)
+    Repo.all(names)
   end
     
   def tags(conditions = {})
@@ -102,7 +102,7 @@ class Owner
   # Returns an array of resource_identifiers for the imported repos.
   def import_mine
     HubWire::DSL.repositories(self.login).map do |repo|
-      r = Repository.new_from_github_hash(repo)
+      r = Repo.new_from_github_hash(repo)
       r.save 
       self.taylor_tag(r, Tag.new(:name => self.login))
       r.full_name
@@ -113,7 +113,7 @@ class Owner
   # Returns an array of resource_identifiers for the imported repos.
   def import_watched(page)
     HubWire::DSL.watched(self.login, page).map do |repo|
-      r = Repository.new_from_github_hash(repo)
+      r = Repo.new_from_github_hash(repo)
       r.save
       self.taylor_tag(r, Tag.new(:name => "watching"))
       r.full_name

@@ -27,7 +27,7 @@ class Tag
   end
   
   def repos(conditions = {})
-    Repository.all(self.taylor_get(:items, conditions))
+    Repo.all(self.taylor_get(:items, conditions))
   end
   
   # tags_data format: 

@@ -1,4 +1,4 @@
-class Repository
+class Repo
   include HubWire
   include TaylorSwift::Base
   attr_accessor :full_name, :login, :avatar_url, :name, :description, :language, :watchers, :forks, :fork # :created_at, :updated_at
@@ -90,7 +90,7 @@ class Repository
   
   def similar(conditions = {})
     conditions.merge!({:similar => true})
-    Repository.all(self.taylor_get(:items, conditions))
+    Repo.all(self.taylor_get(:items, conditions))
   end
   
   def html_url
