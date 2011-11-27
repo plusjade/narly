@@ -41,47 +41,6 @@ module HubWire
       new_from_github_hash(load_json_from_github(login, repo_name))
     end
 
-
-    # Spawn a new instance from the hash returned from the github api
-    #
-    def new_from_github_hash(hash)
-      return new() if hash.blank?
-      
-      type = self.github_object_type
-      
-      if type == "user"
-        
-        instance = new({:provider => "github", :ghid => hash["id"]})
-
-      elsif type == "repo"
-
-        # Todo: a better way?
-        # Make sure we have the owner
-        if User.first(:login => hash["owner"]["login"]).nil?
-          User.new_from_github_hash(hash["owner"]).save
-        end
-
-        instance = new({
-          :ghid => hash["id"], 
-          :login => hash["owner"]["login"],
-          :full_name => "#{hash["owner"]["login"]}/#{hash["name"]}"
-        })
-        
-        hash.delete("owner")
-      else
-        instance = new()
-      end
-      
-      hash.each do |k, v|
-        if instance.respond_to?("#{k}=")
-          instance.send("#{k}=", v)
-        end
-      end
-      
-      instance.id = nil # don't set this via the attrs
-      instance
-    end
-    
   end # ClassMethods
 
 
