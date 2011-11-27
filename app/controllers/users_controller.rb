@@ -3,11 +3,12 @@ class UsersController < ApplicationController
   def show
     @owner = User.first!(:login => params[:login])
     @tag_filters = Tag.new_from_tag_string(params[:tags])
+    
     @repos = @owner.repos(:via => @tag_filters, :limit => 25)
     @tags = @owner.tags # get these last in case the owner.repos call spawns defaults
     
-    @data = @owner.as_json
-    @data["repos"] = @repos.as_json(:methods => [:tags, :owner])
+    @data = @owner.as_json(:methods =>[:tags])
+    @data["repos"] = @repos.as_json(:methods => [:tags])
     
     respond_to do |format|
       format.json do
@@ -42,7 +43,7 @@ class UsersController < ApplicationController
   
   def tag
     if current_user
-      @repo = Repository.first!(:full_name => params[:repo][:full_name])
+      @repo = Repository.first!(params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
         current_user.taylor_tag(@repo, tag)
       end
@@ -87,7 +88,7 @@ class UsersController < ApplicationController
   #
   def repo_tags
     @owner = User.first!(:login => params[:login])
-    @repo = Repository.first!(:full_name => "#{params[:repo_login]}/#{params[:repo_name]}")
+    @repo = Repository.first!("#{params[:repo_login]}/#{params[:repo_name]}")
     render :json => @owner.taylor_get(:tags, :via => @repo).map {|name| Tag.new(:name => name) }
   end
   

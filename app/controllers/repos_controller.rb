@@ -20,17 +20,14 @@ class ReposController < ApplicationController
   
   def show
     @owner = User.first!(:login => params[:repo_login].to_s)
-    @repo = Repository.first!({
-      :login => @owner.login, 
-      :name => params[:repo_name].to_s
-    })
+    @repo = Repository.first!("#{@owner.login}/#{params[:repo_name]}")
     #@similar_repos = @repo.similar(:limit => 10)
     @similar_repos = @owner.repos(:limit => 2)
     
     @tags = @repo.tags
     
-    @data = @repo.as_json(:methods => [:tags, :owner])
-    @data["similar_repos"] = @similar_repos.as_json(:methods => [:tags, :owner])
+    @data = @repo.as_json(:methods => [:tags])
+    @data["similar_repos"] = @similar_repos.as_json(:methods => [:tags])
     @data["users"] = @repo.users(:limit => 25)
     
     respond_to do |format|
@@ -48,7 +45,7 @@ class ReposController < ApplicationController
   end
   
   def tags
-    @repo = Repository.first!(:full_name => "#{params[:repo_login]}/#{params[:repo_name]}")
+    @repo = Repository.first!("#{params[:repo_login]}/#{params[:repo_name]}")
     render :json => @repo.tags(:limit => 10)
   end
   
