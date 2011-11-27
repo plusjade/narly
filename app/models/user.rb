@@ -1,15 +1,12 @@
+# Users are github users that have authenticated through github.
+# they are narly.us users.
 class User
-  # Users are github users that have authenticated through github.
-  # they are narly.us users. 
-  
   include DataMapper::Resource
-  include HubWire
-  include TaylorSwift::Base
 
   property :id, Serial
   property :provider, String, :default => "github"
   property :name, String
-  property :login, String, :unique => true, :required => true, :default => ""
+  property :login, String, :unique => true, :required => true
   property :email, String
   property :avatar_url, String, :length => 256
   
@@ -17,12 +14,16 @@ class User
   property :updated_at, DateTime
   
   def self.create_with_omniauth(auth)
-    create! do |user|
-      user.provider = auth["provider"]
-      user.name = auth["user_info"]["name"]
-      user.login = auth["user_info"]["nickname"]
-      user.email = auth["user_info"]["email"]
-    end
+    puts "create_with_omniauth"
+    user = new
+    user.provider = auth["provider"]
+    user.login = auth["user_info"]["nickname"]
+    user.name = auth["user_info"]["name"]
+    user.email = auth["user_info"]["email"]
+    user.avatar_url = auth["extra"]["user_hash"]["avatar_url"]
+    user.created_at = DateTime.now
+    user.save!
+    user
   end
   
 end
