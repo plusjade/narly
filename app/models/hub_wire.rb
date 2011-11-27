@@ -24,6 +24,7 @@ module HubWire
     #
     def load_json_from_github(login, repo_name = nil)
       type = self.github_object_type
+      puts "#{type} to network!"
       
       if type == "user"
         HubWire::DSL::user(login)

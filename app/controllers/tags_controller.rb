@@ -5,7 +5,7 @@ class TagsController < ApplicationController
     
     respond_to do |format|
       format.json do
-        data = User.new.as_json
+        data = Owners.new.as_json
         data["tags"] = @tags
         
         render :json => @tags

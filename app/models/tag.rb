@@ -23,7 +23,7 @@ class Tag
   end  
 
   def users(conditions = {})
-    User.spawn_from_taylor_swift_data(self.taylor_get(:users, conditions))
+    Owner.all(self.taylor_get(:users, conditions))
   end
   
   def repos(conditions = {})
