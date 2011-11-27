@@ -20,7 +20,7 @@
 			</ul>
 		
 			<h4>tagged by</h4>
-			<div id="tagged_by_container">
+			<div id="tagged_by_container" class="tagged_by_container">
 				<% @repo.users.each do |user| %>
 					<%= link_to (image_tag user.avatar_url, :class => "thumb"), user_path(user.login) %>
 				<% end %>

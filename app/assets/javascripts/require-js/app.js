@@ -10,9 +10,11 @@ define([
 	'backbone/models/repo',
 	'backbone/models/tag',
 	'backbone/models/user',
+	'backbone/models/user_icon',
 	
 	'backbone/collections/repos',
 	'backbone/collections/tags',
+	'backbone/collections/user_icons',
 	
 	'backbone/views/filters_view',
 	
@@ -33,18 +35,22 @@ define([
 	'backbone/views/user_repo_tag_view',
 	'backbone/views/user_repo_tags_view',
 
+	'backbone/views/user_icon_view',
+	'backbone/views/user_icons_view',
+
 	'backbone/views/side_content_view'
 	
 ], function($, _, Backbone, z,z, 
 	Router,
-	Repo, Tag, User,
-	Repos, Tags,
+	Repo, Tag, User, UserIcon,
+	Repos, Tags, UserIcons,
 	FiltersView, 
 	TagPanelView, RepoTagPanelView, RepoTagsPanelView, 
 	RepoView, RepoViewFull, ReposView, 
 	RepoTagView, RepoTagsView,
 	UserTagView, UserTagsView,
 	UserRepoTagView, UserRepoTagsView,
+	UserIconView, UserIconsView,
 	SideContentView
 	){
 		
@@ -53,11 +59,13 @@ define([
 		models : {
 			repo : Repo,
 			user : User,
+			userIcon : UserIcon,
 			tag : Tag
 		},
 		collections : {
 			tags : Tags,
-			repos : Repos
+			repos : Repos,
+			userIcons : UserIcons
 		},
 		views : {
 			filtersView:FiltersView , 
@@ -73,7 +81,8 @@ define([
 			userTagsView: UserTagsView,
 			userRepoTagView: UserRepoTagView, 
 			userRepoTagsView: UserRepoTagsView,
-			
+			userIconView : UserIconView,
+			userIconsView : UserIconsView,
 			sideContentView : SideContentView
 		},
 		
@@ -108,7 +117,12 @@ define([
 			
 		// Setup Routing.
 			App.Router = new Router;
-
+			
+			App.mainRepoView.bind("navigate", function(url){
+				console.log("mainRepoView routing: " + url);
+				App.Router.navigate(url, true);
+			});
+			
 			App.sideContentView.bind("navigate", function(url){
 				console.log("side content routing: " + url);
 				App.Router.navigate(url, true);

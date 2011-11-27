@@ -31,6 +31,7 @@ class ReposController < ApplicationController
     
     @data = @repo.as_json(:methods => [:tags, :owner])
     @data["similar_repos"] = @similar_repos.as_json(:methods => [:tags, :owner])
+    @data["users"] = @repo.users(:limit => 25)
     
     respond_to do |format|
       format.json do
