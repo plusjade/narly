@@ -1,0 +1,78 @@
+<script id="user_icon_template" type="text/z-jquery-tmpl">
+	<img class="thumb" src="{{avatar_url}}"/>
+</script>
+
+<script id="user_tag_template" type="text/x-jquery-tmpl">
+		<a href="{{url}}" class="tag" title="{{name}}">{{relative_count}}-{{name}}</a>
+</script>
+
+<script id="repo_tag_template" type="text/x-jquery-tmpl">
+		<a href="{{url}}" class="tag" title="{{name}}">{{relative_count}}-{{name}}</a>
+</script>
+
+<script id="user_repo_tag_template" type="text/x-jquery-tmpl">
+		<span class="options">
+			<a href="#" class="up btn danger" title="{{name}}">x</a>
+		</span>
+		<a href="#" class="tag" title="{{name}}">{{name}}</a>
+</script>
+
+<script id="repo_tag_panel_template" type="text/x-jquery-tmpl">
+		<span class="options">
+			<a href="#" class="up btn success" title="{{name}}">+1</a>
+		</span>
+		<a href="#" class="tag" title="{{name}}">{{relative_count}}-{{name}}</a>
+</script>
+
+<script id="repoTemplate" type="text/x-jquery-tmpl">
+		<a href="#" class="add_tag btn" title="{{full_name}}">+/- tags</a>
+		
+		<a href="/users/{{login}}">
+			<img src="{{owner.avatar_url}}" class="thumb" />
+		</a>
+
+		<a href="/repos/{{full_name}}" class="repo_name" title="{{full_name}}">{{full_name}}</a>
+
+		<div class="meta">
+			<span class="watchers-forks">watchers:  {{watchers}} </span> | <span class="language">{{language}}</span>
+		</div>
+
+		<div class="main">
+			<p class="description" title="{{description}}">
+				{{description}}
+			</p>
+
+			<ul class="tag_box inline">
+			</ul>
+
+		</div>
+</script>
+
+<script id="repo_view_full" type="text/x-jquery-tmpl">
+	<h2 class="title">
+		<a href="#" class="add_tag btn success" title="{{full_name}}" style="float:right">+/- tags</a>
+		{{full_name}}
+	</h2>
+
+	<div class="repo_outline boxy">
+
+		<p style="font-weight:bold">
+			<a href="http://github.com/{{full_name}}" target="_blank">http://github.com/{{full_name}}</a>
+		</p>
+		<p>{{description}}</p>
+		<ul>
+			<li><strong>is fork?</strong>: {{fork}}</li>
+			<li><strong>language</strong>: {{language}}</li>
+			<li><strong>forks</strong>: {{forks}}</li>
+			<li><strong>watchers</strong>: {{watchers}}</li>
+		</ul>
+		
+		<h4>tagged by</h4>
+		<div id="tagged_by_container" class="tagged_by_container">
+			heroo
+		</div>
+		
+	</div>
+
+	<h3>similar repos</h3>
+</script>
