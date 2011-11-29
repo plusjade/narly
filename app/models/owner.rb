@@ -101,23 +101,35 @@ class Owner
   # Import owned repos from github.
   # Returns an array of resource_identifiers for the imported repos.
   def import_mine
-    HubWire::DSL.repositories(self.login).map do |repo|
-      r = Repo.new_from_github_hash(repo)
-      r.save 
-      self.taylor_tag(r, Tag.new(:name => self.login))
-      r.full_name
-    end
+    repos = HubWire::DSL.repositories(self.login).map { |repo|
+      Repo.new_from_github_hash(repo)
+    }
+    
+    Repo.save_multi!(repos)
+    
+    # tag the repo and return an array of full_names
+    default_tag  = Tag.new(:name => self.login)
+    repos.map { |repo| 
+      self.taylor_tag(repo, default_tag)
+      repo.full_name
+    }
   end
   
   # Import watched repos from github.
   # Returns an array of resource_identifiers for the imported repos.
   def import_watched(page)
-    HubWire::DSL.watched(self.login, page).map do |repo|
-      r = Repo.new_from_github_hash(repo)
-      r.save
-      self.taylor_tag(r, Tag.new(:name => "watching"))
-      r.full_name
-    end
+    repos = HubWire::DSL.watched(self.login, page).map { |repo|
+      Repo.new_from_github_hash(repo)
+    }
+    
+    Repo.save_multi!(repos)
+    
+    # tag the repo and return an array of full_names
+    default_tag  = Tag.new(:name => "watching")
+    repos.map { |repo| 
+      self.taylor_tag(repo, default_tag)
+      repo.full_name
+    }
   end
     
     

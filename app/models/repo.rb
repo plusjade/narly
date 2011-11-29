@@ -79,6 +79,19 @@ class Repo
   def save!
     $redis.hset RedisContainer, self.full_name, self.to_json
   end
+
+  # Save multiple repo objects to redis.
+  # This is an optimization since we only need to hit redis once via hmset
+  #
+  def self.save_multi!(repos)
+    data = []
+    Array(repos).each do |repo| 
+      data << repo.full_name
+      data << repo.to_json
+    end
+    
+    $redis.send(:hmset, *data.unshift(RedisContainer))
+  end
   
   def tags(conditions = {})
     Tag.spawn_from_taylor_swift_data(self.taylor_get(:tags, conditions))
