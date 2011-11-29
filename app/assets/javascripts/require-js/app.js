@@ -132,6 +132,10 @@ define([
 				App.mainRepo.trigger("wipe");
 				App.mainRepos.route("", tags);
 			});
+			App.Router.bind("route:repos_top", function() {
+				App.mainRepo.trigger("wipe");
+				App.mainRepos.route("", "");
+			});
 			App.Router.bind("route:users_repos_tagged", function(login, tags) {
 				App.mainRepo.trigger("wipe");
 				App.mainRepos.route(login, tags);
