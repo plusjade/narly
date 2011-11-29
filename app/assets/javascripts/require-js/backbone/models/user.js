@@ -8,6 +8,11 @@ define([
 	return Backbone.Model.extend({
 		tags : null,
 		
+		get : function(attribute) {
+			var value = Backbone.Model.prototype.get.call(this, attribute);
+			return _.isUndefined(value) ? "" : value;
+		},
+		
 		initialize : function(){
 			console.log("init User");
 			this.tags = new Tags();

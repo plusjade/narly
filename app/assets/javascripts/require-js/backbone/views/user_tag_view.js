@@ -23,7 +23,7 @@ define([
 			data.url = "";
 			
 			// needs to be a user tag and not be a blank user.
-			if( _.isUndefined( this.model.collection.owner.get("full_name") ) 
+			if( _.isEmpty( this.model.collection.owner.get("full_name") ) 
 				&& !_.isEmpty( this.model.collection.owner.get("login") ) )
 					data.url += "/users/" + this.model.collection.owner.get("login");
 			

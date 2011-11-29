@@ -27,7 +27,7 @@ define([
 				else
 					url = "/users/"+this.owner.collection.currentUser.get("login")+"/repos/"+this.owner.get("full_name")+"/tags/json";
 		  // This means this is a user Object's tags.			
-			else if( _.isUndefined(this.owner.get("full_name")) )
+			else if( _.isEmpty(this.owner.get("full_name")) )
 				if( _.isEmpty(this.owner.get("login")) )
 					url = "/tags/json";
 				else
