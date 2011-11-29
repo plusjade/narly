@@ -97,8 +97,9 @@ class Repo
     "http://github.com/#{self.full_name}"
   end
 
-  def as_json(options ={})
+  def as_json(options = {})
     result = super(options)
+    return result if options.blank?
 
     # add methods
     Array(options[:methods]).each do |method|
