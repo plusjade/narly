@@ -12,6 +12,7 @@ Superwatch::Application.routes.draw do
     get "/users/" => "users#show"
     
     get "/repos/tagged/:tags(/:format)" => "repos#index", :as => :repos_tagged
+    get "/repos(/:format)" => "repos#top", :as => :repos_top
     get "/repos/:repo_login/:repo_name/tags(/:format)" => "repos#tags", :as => :repo_tags
     get "/repos/:repo_login/:repo_name(/:format)" => "repos#show", :as => :repo
   
