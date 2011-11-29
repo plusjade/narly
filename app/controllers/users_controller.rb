@@ -45,7 +45,7 @@ class UsersController < ApplicationController
     if current_user
       @repo = Repo.first!(params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
-        current_user.taylor_tag(@repo, tag)
+        current_user.owner.taylor_tag(@repo, tag)
       end
       
       render :json => {
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     if current_user
       repo = Repo.new(:full_name => params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
-        current_user.taylor_untag(repo, tag)
+        current_user.owner.taylor_untag(repo, tag)
       end
       
       render :json => {

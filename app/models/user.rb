@@ -26,4 +26,7 @@ class User
     user
   end
   
+  def owner
+    Owner.first(self.login)
+  end
 end
