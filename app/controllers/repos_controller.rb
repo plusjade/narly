@@ -45,8 +45,7 @@ class ReposController < ApplicationController
   def show
     @owner = Owner.first!(params[:repo_login])
     @repo = Repo.first!("#{@owner.login}/#{params[:repo_name]}")
-    #@similar_repos = @repo.similar(:limit => 10)
-    @similar_repos = @owner.repos(:limit => 2)
+    @similar_repos = @repo.similar(:limit => 10)
     
     @tags = @repo.tags
     
