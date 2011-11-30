@@ -48,10 +48,10 @@ define([
 		// and to update this repo collection with the repo's similar repos array.
 		//
 		updateFromRepo : function(repo){
-			this.owner.clear({silent : true})
-			this.owner.set(repo.attributes)
+			this.owner.clear();
+			// silent so this does not trigger a .fetch();
+			this.owner.set(repo.attributes, {silent: true});
 			this.owner.tags.reset(repo.get("tags"));
-			
 			this.reset(repo.get("similar_repos"));
 		},
 		
