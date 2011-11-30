@@ -110,6 +110,7 @@ class Owner
     # tag the repo and return an array of full_names
     default_tag  = Tag.new(:name => self.login)
     repos.map { |repo| 
+      self.taylor_tag(repo, Tag.new(:name => repo.language))  unless repo.language.blank?
       self.taylor_tag(repo, default_tag)
       repo.full_name
     }
@@ -127,6 +128,7 @@ class Owner
     # tag the repo and return an array of full_names
     default_tag  = Tag.new(:name => "watching")
     repos.map { |repo| 
+      self.taylor_tag(repo, Tag.new(:name => repo.language)) unless repo.language.blank?
       self.taylor_tag(repo, default_tag)
       repo.full_name
     }
