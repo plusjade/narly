@@ -55,7 +55,6 @@ define([
 		},
 		
 		showPanel : function(e){
-			console.log("showPanel");
 			// showPanel bubbles up to the tagPanelView which is listening
 			// for this event through monitoring its collection.
 			this.model.trigger("showPanel", this.model);

@@ -32,7 +32,6 @@ define([
 	  },
 	
 		clickTag : function(e){
-			console.log("clicky");
 			this.model.trigger("navigate", e.currentTarget.pathname);
 
 			e.preventDefault()

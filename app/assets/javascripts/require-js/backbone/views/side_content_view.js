@@ -28,8 +28,6 @@ define([
 		
 		
 		render : function(){
-			console.log("sidepanelView render:");
-			console.log(this.model);
 			if(_.isEmpty(this.model.get("login")))
 				this.$("strong").html("Top Tags");
 			else if(_.isEmpty(this.model.get("full_name")))
@@ -42,7 +40,6 @@ define([
 		
 		// App.js is Monitoring the side_content view for navigate events.
 		navigate : function(url){
-			console.log("navigate trigger in side_content_view.js");
 			this.trigger("navigate", url);
 		}
 		

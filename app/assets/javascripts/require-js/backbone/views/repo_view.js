@@ -57,7 +57,6 @@ define([
 		},
 		
 		clickRepoName : function(e){
-			console.log("clickRepoName");
 			this.model.trigger("navigate", e.currentTarget.pathname);
 
 			e.preventDefault()

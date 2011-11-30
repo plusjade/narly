@@ -46,7 +46,6 @@ define([
 		},
 	
 		saveTags : function(){
-			console.log("savetags");
 			$.showStatus('submitting');
 			var repo = this.model;
 			$.ajax({

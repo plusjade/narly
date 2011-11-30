@@ -33,7 +33,6 @@ define([
 		},
 		
 		renewUserTags : function(){
-			console.log("===renewOwnerTags====");
 			this.owner.tags.fetch();
 		},
 		

@@ -25,7 +25,6 @@ define([
 		},
 		
 		renderFresh : function(){
-			console.log("renderFresh");
 			var cache = [];
 			this.collection.each(function(repo){
 				cache.push(new RepoView({model : repo}).render());

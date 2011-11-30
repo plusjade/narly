@@ -93,7 +93,6 @@ define([
 		},
 		
 		updateUser : function(){
-			console.log("updateUser:"+ this.collection.owner.get("login"));
 
 			if(_.isEmpty(this.collection.owner.get("login"))){
 				this.$("a").first().hide();

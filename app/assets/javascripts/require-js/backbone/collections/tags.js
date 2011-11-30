@@ -16,7 +16,6 @@ define([
 		},
 
 		url : function(){
-			console.log("try tag collection URL");
 			var url = "";
 
 		  // "userRepo" only displays on the TagPanel.
