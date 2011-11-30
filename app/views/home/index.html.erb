@@ -1,37 +1,50 @@
-<div id="home_text">
-	<p>
-		I <em>"watch"</em> repos on GitHub as a kind of <span class="bookmark">bookmark</span> -
-		<br/>there are tons of great people building tons of great stuff.</h2>
-	
-		<br/>But having one massive list of <span class="bookmark">bookmarks</span> doesn't make much sense -
-		<br/>I rarely find anything.
-	</p>
+<% content_for :singular_repo do %>
 
-	<p>
-		So I am building <strong>narly.us - A tagging system for GitHub projects.</strong>
-	</p>
 
-	<p>
-		Now you can:
-	</p>
+	<div class="popover fade below in" style="display: block; z-index:1; top:10px; left:10px">
+		<div class="arrow" style="left:33%;"></div>
+		<div class="inner" style="width:650px; background:#FFF">
+			<h3 class="title" style="background:#57A957; color:#FFF">Try a Search!</h3>
+			<div class="content">
+				<ol>
+					<li>Enter a github username in the first box to filter by that user. A blank username scopes to all users.</li>
+					<li>Add tags to your search with the second input box. Remove a tag by clicking on it.</li>
+					<li>Hit enter to update your query.</li>
+				</ol>
+
+			</div>
+		</div>
+	</div>
+
+
 	
+<div id="home_text" style="margin-top:150px">
+	<h1>Narly is a tagging system for GitHub projects.</h1>
+
 	<ul>
 		<li>
-			Manage any and all projects you are interested in by <span class="tagging">tagging</span> them.
+			Help others find your favorite projects by <span class="tagging">tagging</span> them with appropriate keywords.
 		</li>
+		
 		<li>
-			Help others find projects by <span class="tagging">tagging</span> them with appropriate descriptions.
+			Discover great projects based on the specific attributes you're looking for.
 		</li>
 	</ul>
 
 	<p>
-		I'll import your repos as well as the repos you are <em>"watching"</em> automatically.
-		<br/>You can go to your page right now, just type in your GitHub username:
-		<%= form_tag "/users", :method => :get do %>
-			<input type="text" name="login" /> <button class="btn success">Show My Page</button>
+		<% unless current_user %>
+			<%= link_to "Sign in with Github", "/auth/github", :class => "signin btn large primary" %> 
+			<p>
+				Narly will automatically import your personal (public) repos and your watched repos.
+				<br/>You can freely browse narly without signing in but you'll need to sign in to tag repos.
+			</p>
 		<% end %>
 	</p>
+	
 </div>
+
+
+<% end %>
 
 <% content_for :side_content do %>
 	<strong>Top Tags</strong>

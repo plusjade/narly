@@ -1,0 +1,112 @@
+<% content_for :multiple_repos do %>
+<h1>Technical Stack and Thanks</h1>
+
+<h2>Summary</h2>
+<p>
+	My timeline was 7 days to push out my MVP. I actually met that deadline and narly.us has been 'live' online since Nov 1st. But it wasn't very good.
+	<br/>I decided it was important to make the UI responsive and intuitive ... which meant checking out Backbone.js
+	<br/>A month later and I've got it working! =)
+</p>
+<p>
+	<br/>I am happy with my design decisions even though it is taken me more time to learn so many things I didn't know.
+	<br/>The two main decisions were deciding to rely on Backbone for a modern interface and building out my own tagging system  using redis.
+	<br/>Sure I could have used "acts_as_taggable" or what have you but
+	integrating a gem is hardly a showcase of my ability to solve problems through software.
+	<br/>I really dislike ActiveRecord as well.
+</p>
+
+<p>
+	Also I believe in redis. I believe its well suited for answering tagging related questions <em>super fast</em> but I have yet
+	to prove that Redis can scale cheaply or that I won't do something stupid to compromise my data.
+</p>
+<p>
+	If any body would like to help, please fork my <a href="http://github.com/plusjade/narly">narly</a> repo as well as my <a href="https://github.com/plusjade/taylor-swift">TaylorSwift</a> gem 
+	- thanks!
+</p>
+<p>
+	Narly.us source is available at <a href="http://github.com/plusjade/narly">http://github.com/plusjade/narly</a>.
+</p>
+
+<h2>Data</h2>
+<p>
+	<a href="http://redis.io">Redis</a> is used as the primary data storage.
+	<br/><a href="http://mysql.com/">Mysql</a> is used for storing authenticated users.
+</p>
+
+<h2>Backend</h2>
+	
+<p>	
+	<a href="http://rubyonrails.org/">Rails 3.1</a> serves the primary application interface and the data endpoints.
+	<br/><a href="https://github.com/intridea/omniauth">Omniauth</a> + <a href="http://datamapper.org">DataMapper</a> is used for user authentication.
+</p>
+<p>	
+	The <a href="http://developer.github.com">GitHub API</a> is used for authentication and for all for all repository and user data.
+	<br/>The api is is accessed via <a href="https://github.com/jnunemaker/httparty">httparty</a> with methods from <a href="https://github.com/diogenes/hubruby ">hubruby</a>.
+</p>	
+
+<p>
+	The tagging strategy is implemented with my <a href="https://github.com/plusjade/taylor-swift">TaylorSwift</a> gem.
+</p>
+
+<h2>Frontend</h2>
+<p>
+	<a href="http://jquery.com">jQuery</a> of course.
+	<br/><a href="http://documentcloud.github.com/backbone/">Backbone.js</a> powers every cool thing about the UI. Also supports pushState for seamless back and forward navigation - OhBoy!
+	<br/><a href="http://requirejs.org">Require.js</a> makes my billion javascript files manageable and the optimizer is :D
+	<br/><a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> for the CSS framework.
+</p>
+
+<h2>Infrastructure</h2>
+
+<p>	
+	<a href="http://wiki.nginx.org/Main">Nginx</a> for the web server.
+	<br/>1 <a href="http://aws.amazon.com/ec2/">Amazon ec2 micro</a> for the app server (mysql is on the same server)
+	<br/>1 <a href="http://aws.amazon.com/ec2/">Amazon ec2 micro</a> for the redis server.
+</p>
+
+<h2>Development</h2>
+<p>
+	<a href="http://www.apple.com/macbookair/">MacbookAir</a>.
+	<br/><a href="http://macromates.com/">Textmate</a>.
+	<br/><a href="http://www.google.com/chrome">Google Chrome</a>.
+	<br/><a href="http://git-scm.com/">Git</a>.
+	<br/><a href="http://github.com">GitHub</a>.
+	<br/><a href="https://github.com/capistrano/capistrano">Capistrano</a>.
+	<br/><a href="http://trancearoundtheworld.com/">TranceAroundTheWorld</a>.
+</p>
+
+<h2>Unsolicited Advice</h2>
+<ul>
+	<li>DataMapper is better than ActiveRecord.</li>
+	<li>Require.js is better than the asset pipeline.</li>
+	<li>Javascript shouldn't be managed in any way by Rails.</li>
+	<li>"Don't reinvent the wheel" is for programmers who value money first, their craft second.</li>
+</ul>
+
+<h2>Thanks</h2>
+
+<p>
+	I've taken a ton of other products, services, and people for granted by excluding them from this list.
+	<br/>So many things are freely given away in our industry that we forget a lot of hard work went into them.
+	<br/> I would especially like to thank everyone who has and continues to contribute to Open Source.
+</p>
+<p>
+	Everything I create is publicly available on my github profile.
+	<br/>One day my code will be so good that people will actually use it =).
+</p>
+
+<p>
+	I have learned so much from so many people that have taken the time to publish their code
+	or write about their code, or throw up a bug fix on their blog, or write a tutorial or the companies that say 
+	"hey we do it like this..".
+</p>
+<p>
+	We are part of a beautiful industry.
+	<br/>We are part of an industry that has immense power to impact all of Humanity.
+</p>
+
+<p>
+	I would not have the life I have without all of you.
+</p>
+<strong>Thank You</strong>
+<% end %>
