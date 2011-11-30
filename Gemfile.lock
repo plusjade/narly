@@ -1,5 +1,6 @@
-PATH
-  remote: ~/Dropbox/gems/taylor-swift
+GIT
+  remote: https://github.com/plusjade/taylor-swift
+  revision: d9914f0311d1a3971adefb1291644689e2f81173
   specs:
     taylor-swift (0.1.0)
 
