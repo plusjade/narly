@@ -2,12 +2,8 @@
 <html>
 <head id="<%= current_user.login if current_user %>">
   <title>narly.us</title>
-	<% if Rails.env.production? %>
-		<%= stylesheet_link_tag "/assets/application-a520b44b9824ea5af73cb27bfdd9c451.css" %>
-	<% else %>
-		<%= stylesheet_link_tag "application" %>
-	<% end %>
-		<script src="/assets/require-js/require.js"></script>
+	<%= stylesheet_link_tag Rails.env.production? ? "/assets/application-a021fb3bf22c2b7b3217b2a2111e1b44.css" : "application" %>
+	<script src="<%= require_js_url %>/require.js"></script>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -125,14 +121,14 @@
 <script>
 	// This is essently my main.js bootstrapping file.
 	require.config({
-		baseUrl: "/assets/require-js",
+		baseUrl: "<%= require_js_url %>",
 	  paths: {
 	    Underscore: 'libs/underscore/underscore',
 	    Backbone: 'libs/backbone/backbone'
 	  }
 	});
 	require([
-		'jquery',
+		'order!jquery',
 	  'order!libs/underscore/underscore-min',
 	  'order!libs/backbone/backbone-0.5.3',
 		'app',
