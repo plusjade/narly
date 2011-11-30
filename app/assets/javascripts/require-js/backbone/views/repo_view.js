@@ -51,12 +51,7 @@ define([
 		},
 		
 		filterByUser : function(e){
-			console.log("filterbyuser");
-			if(this.model.get("login") !== this.model.collection.owner.get("login")){
-				this.model.collection.owner.set({login : this.model.get("login")}, {silent :true})
-				this.model.collection.trigger("filterChange");
-			}
-			
+			this.model.trigger("navigate", "/users/"+this.model.get("login"));
 			e.preventDefault;
 			return false;
 		},
