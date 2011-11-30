@@ -116,7 +116,11 @@ define([
 			
     // Setup Routing.
 			App.Router = new Router;
-			
+
+			App.Router.bind("all", function(){
+				$("body").animate({"scrollTop": 0});
+			});
+
 			// These Routing bindings are what actually get the data and update the UI.
 			// Page change events that happen within the app should ultimately trigger *App.router* 
 			// which then trigger one of these functions to handle the request.
