@@ -62,7 +62,7 @@ class UsersController < ApplicationController
 
   def untag
     if current_user
-      repo = Repo.new(:full_name => params[:repo][:full_name])
+      repo = Repo.first!(params[:repo][:full_name])
       Tag.new_from_tag_string(params[:tag]).each do |tag|
         current_user.owner.taylor_untag(repo, tag)
       end
