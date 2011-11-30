@@ -112,12 +112,17 @@ define([
 			App.mainRepo.bind("change", function(){
 				App.mainRepos.updateFromRepo(this);
 			});
-		
+
+			App.mainRepos.bind("reset", function(){
+				$.showStatus('hide');
+			});
 			
     // Setup Routing.
 			App.Router = new Router;
 
 			App.Router.bind("all", function(){
+				$.showStatus('submitting', "Working...");
+				$(App.mainReposView.el).html("<h3>If you are seeing this, narly is importing a lot of repos for you... hang tight =)</h3>");
 				$("body").animate({"scrollTop": 0});
 			});
 

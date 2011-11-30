@@ -6,9 +6,10 @@ define(['jquery'], function($){
 
 		},
 		
-	  submitting : function(){
+	  submitting : function(msg){
+			if(typeof msg === "undefined") msg = "Submitting...";
 	    $('#status-bar div.responding.active').remove();
-	    $('#submitting').show();
+	    $('#submitting').show().find("strong").text(msg);
 	  },
  
 	  respond : function(rsp){
@@ -21,7 +22,12 @@ define(['jquery'], function($){
 	    $('div.responding').hide().clone().addClass('active ' + blah.status).html(blah.message).show().insertAfter('div.responding');
 			$("div.responding.active").fadeOut(4000);
 	  },
- 
+ 		
+		hide : function(){
+	    $('#submitting').hide();
+	    $('div.responding.active').remove();
+		},
+		
 	  fadeFlash : function(){
 	    if ($("#flash_message").length > 0){
 	      setTimeout( function() {
