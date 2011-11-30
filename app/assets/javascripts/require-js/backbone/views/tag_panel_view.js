@@ -35,7 +35,8 @@ define([
 			// build a fresh userRepoTags view
 			this.userTagsView = new UserRepoTagsView({collection : this.model.userTags, el : "#my_tags_on_repo"});
 			// only fetch this when the tagPanel opens (which is now).
-			this.model.userTags.fetch();
+			if(!_.isEmpty(this.collection.currentUser.get("login")))
+				this.model.userTags.fetch();
 
 			this.$("a.repo_name").text(this.model.get("full_name"))
 			this.$("input.full_name").val(this.model.get("full_name"));
