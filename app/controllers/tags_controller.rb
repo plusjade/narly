@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
 
   def index
-    @tags = Tag.top_tags(:limit => 50)
+    @tags = Tag.top_tags(:limit => 125)
     
     respond_to do |format|
       format.json do
