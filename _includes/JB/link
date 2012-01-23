@@ -1,0 +1,6 @@
+{% for post in site.posts %}
+{% if post.id contains link %}
+   {{ post.url }}
+{% endif %}
+{% endfor %}
+{% assign link = null %}
